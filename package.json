@@ -1,0 +1,8 @@
+{
+  "name": "archie-life-coach",
+  "version": "1.0.0",
+  "description": "Archie the Architect — AI Life Coach",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  }
+}
