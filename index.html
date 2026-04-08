@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Archie — AI Life Coach</title>
+<meta name="description" content="Your personal AI life coach — design your week, track your goals, build the life you want."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  function trackEvent(n,p){if(localStorage.getItem('archie_consent')==='granted')gtag('event',n,p||{});}
+  if(localStorage.getItem('archie_consent')==='granted')gtag('config','G-XXXXXXXXXX',{anonymize_ip:true});
+</script>
+<style>
+:root{
+  --bg:#050d1a;--surface:#0b1628;--surface2:#0f1e35;--surface3:#14263f;
+  --border:rgba(26,106,255,0.12);--border2:rgba(26,106,255,0.25);
+  --blue:#1a6aff;--cyan:#00d4ff;--green:#00e5a0;--orange:#ff8c42;--pink:#ff4d8d;--gold:#f4c430;
+  --text:#e8edf5;--muted:#6b7fa3;--muted2:#3d4f6e;
+  --grad:linear-gradient(135deg,#1a6aff,#00d4ff);
+  --grad-btn:linear-gradient(135deg,#1a6aff,#0047d4);
+  --grad-premium:linear-gradient(135deg,#f4c430,#ff8c42);
+  --r:12px;--rl:18px;--sidebar:260px;
+  --font-h:'Barlow Condensed',sans-serif;--font-b:'Outfit',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:var(--font-b);font-size:14px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(26,106,255,0.25);border-radius:10px;}
+button{cursor:pointer;font-family:var(--font-b);border:none;}
+textarea,input{font-family:var(--font-b);}
+textarea{resize:none;}
+input{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);
+  padding:12px 16px;color:var(--text);font-size:14px;width:100%;}
+input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,106,255,0.1);}
+input::placeholder{color:var(--muted2);}
+
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(26,106,255,0.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(26,106,255,0.04) 1px,transparent 1px);background-size:40px 40px;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(26,106,255,0.08) 0%,transparent 70%);}
+
+/* CONSENT */
+#consent{position:fixed;bottom:0;left:0;right:0;z-index:9000;background:var(--surface2);
+  border-top:1px solid var(--border2);padding:14px 24px;display:flex;align-items:center;
+  gap:16px;flex-wrap:wrap;box-shadow:0 -8px 32px rgba(0,0,0,0.5);animation:slideUp .35s ease;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#consent p{font-size:12.5px;color:var(--muted);flex:1;min-width:180px;line-height:1.5;}
+#consent p a{color:var(--blue);}
+.c-btns{display:flex;gap:8px;}
+.c-acc{background:var(--grad-btn);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:none;}
+.c-dec{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:8px 14px;border-radius:8px;font-size:13px;border-style:solid;}
+
+/* TOAST */
+#toast{position:fixed;top:16px;right:16px;z-index:9999;border-radius:var(--r);
+  padding:12px 18px;font-size:13px;max-width:340px;line-height:1.5;
+  display:none;animation:mIn .3s ease;box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+#toast.err{background:#1a0a0f;border:1px solid rgba(255,77,141,0.4);color:var(--pink);}
+#toast.ok{background:#0a1a12;border:1px solid rgba(0,229,160,0.4);color:var(--green);}
+
+/* SCREEN LANDING */
+#screen-landing{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:40px 24px;text-align:center;
+  transition:opacity .5s,transform .5s;}
+#screen-landing.out{opacity:0;transform:translateY(-24px);pointer-events:none;}
+.land-logo{width:80px;height:80px;border-radius:20px;background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 24px;
+  box-shadow:0 0 60px rgba(26,106,255,0.45);animation:logoPulse 3s ease-in-out infinite;}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 60px rgba(26,106,255,0.45)}50%{box-shadow:0 0 90px rgba(26,106,255,0.7)}}
+.land-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(26,106,255,0.1);
+  border:1px solid rgba(26,106,255,0.3);border-radius:100px;padding:6px 16px 6px 10px;
+  font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--cyan);margin-bottom:24px;}
+.land-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.land-title{font-family:var(--font-h);font-size:clamp(52px,9vw,96px);font-weight:900;
+  letter-spacing:.01em;line-height:.92;margin-bottom:20px;}
+.land-title .g{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.land-sub{font-size:clamp(15px,2.2vw,19px);color:var(--muted);max-width:500px;
+  margin:0 auto 28px;font-weight:300;line-height:1.6;}
+.land-feats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:36px;}
+.land-feat{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);border-radius:100px;padding:6px 13px;font-size:12px;color:var(--muted);}
+.land-cta{display:inline-flex;align-items:center;gap:12px;background:var(--grad-btn);
+  color:#fff;padding:16px 38px;border-radius:var(--r);font-size:17px;font-weight:600;
+  box-shadow:0 4px 32px rgba(26,106,255,0.5);transition:transform .2s,box-shadow .2s;border:none;}
+.land-cta:hover{transform:translateY(-3px);box-shadow:0 8px 44px rgba(26,106,255,0.65);}
+.land-cta .arr{transition:transform .2s;}
+.land-cta:hover .arr{transform:translateX(5px);}
+.land-note{font-size:12px;color:var(--muted2);margin-top:12px;}
+
+/* SCREEN AUTH */
+#screen-auth{position:fixed;inset:0;z-index:101;display:none;align-items:center;
+  justify-content:center;padding:24px;background:var(--bg);}
+#screen-auth.active{display:flex;}
+.auth-box{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--rl);overflow:hidden;animation:mIn .35s ease;}
+.auth-head{padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--border);}
+.auth-logo{font-size:32px;margin-bottom:12px;}
+.auth-title{font-family:var(--font-h);font-size:26px;font-weight:800;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.auth-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+.auth-body{padding:24px 28px;}
+.auth-tabs{display:flex;gap:0;background:var(--surface2);border-radius:var(--r);
+  padding:3px;margin-bottom:22px;}
+.auth-tab{flex:1;padding:8px;border-radius:calc(var(--r) - 2px);font-size:13px;
+  font-weight:500;color:var(--muted);background:transparent;border:none;transition:all .2s;}
+.auth-tab.on{background:var(--surface3);color:var(--text);font-weight:600;}
+.auth-field{margin-bottom:14px;}
+.auth-label{font-size:11.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;
+  font-weight:600;margin-bottom:6px;display:block;}
+.auth-btn{width:100%;background:var(--grad-btn);color:#fff;padding:13px;
+  border-radius:var(--r);font-size:15px;font-weight:600;border:none;
+  box-shadow:0 4px 20px rgba(26,106,255,0.35);transition:transform .15s,box-shadow .15s;margin-top:6px;}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(26,106,255,0.5);}
+.auth-btn:disabled{opacity:.4;cursor:default;transform:none;}
+.auth-err{font-size:12.5px;color:var(--pink);margin-top:8px;display:none;}
+.auth-forgot{font-size:12px;color:var(--blue);text-align:right;margin-top:6px;cursor:pointer;}
+.auth-forgot:hover{color:var(--cyan);}
+
+/* SCREEN CHAT */
+#screen-chat{position:fixed;inset:0;z-index:99;display:none;flex-direction:column;
+  align-items:center;background:var(--bg);}
+#screen-chat.active{display:flex;}
+#screen-chat.out{opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .5s,transform .5s;}
+.chat-hd{width:100%;max-width:720px;padding:18px 24px 14px;display:flex;align-items:center;
+  gap:12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.chat-hd-mark{width:34px;height:34px;border-radius:9px;background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+.chat-hd-name{font-family:var(--font-h);font-size:20px;font-weight:800;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.chat-hd-sub{font-size:10px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase;}
+.chat-hd-status{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 7px var(--green);animation:blink 2.5s infinite;}
+.chat-prog{width:100%;max-width:720px;padding:8px 24px;flex-shrink:0;}
+.prog-bar{height:3px;background:var(--surface3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .6s ease;width:0%;}
+.prog-lbl{font-size:10px;color:var(--muted2);margin-top:5px;text-align:right;}
+.chat-msgs{width:100%;max-width:720px;flex:1;overflow-y:auto;padding:18px 24px 10px;scroll-behavior:smooth;}
+.chat-inp-wrap{width:100%;max-width:720px;padding:10px 24px 22px;flex-shrink:0;}
+
+/* SHARED MSG */
+.mrow{display:flex;gap:12px;margin-bottom:16px;animation:mIn .28s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.mrow.user{flex-direction:row-reverse;}
+.mav{width:32px;height:32px;border-radius:9px;flex-shrink:0;margin-top:2px;
+  background:var(--grad-btn);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.mbub{max-width:78%;padding:11px 15px;font-size:14px;line-height:1.75;border-radius:var(--rl);}
+.mrow.assistant .mbub{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rl) var(--rl) var(--rl) 4px;}
+.mrow.user .mbub{background:linear-gradient(135deg,#0c2a6b,#0a3d5c);border:1px solid rgba(26,106,255,0.22);border-radius:var(--rl) var(--rl) 4px var(--rl);}
+.mbub strong,.mbub b{color:var(--cyan);font-weight:600;}
+.mbub h3{font-family:var(--font-h);font-size:15px;font-weight:700;color:var(--text);margin:10px 0 5px;}
+.mbub ul,.mbub ol{padding-left:17px;margin:5px 0;}
+.mbub li{margin-bottom:3px;}
+.mbub p{margin-bottom:7px;}
+.mbub p:last-child{margin-bottom:0;}
+.mbub hr{border:none;border-top:1px solid var(--border);margin:10px 0;}
+.trow{display:flex;gap:12px;margin-bottom:16px;}
+.tbub{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rl) var(--rl) var(--rl) 4px;padding:12px 15px;display:flex;gap:5px;align-items:center;}
+.td{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:tdB 1.2s infinite;}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes tdB{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* SHARED INPUT */
+.inp-box{display:flex;gap:10px;align-items:flex-end;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:var(--rl);padding:9px 11px;transition:border-color .2s,box-shadow .2s;}
+.inp-box:focus-within{border-color:rgba(26,106,255,0.45);box-shadow:0 0 0 3px rgba(26,106,255,0.07);}
+.inp-ta{flex:1;background:transparent;border:none;color:var(--text);font-size:14px;line-height:1.5;max-height:110px;overflow-y:auto;}
+.inp-ta:focus{outline:none;}
+.inp-ta::placeholder{color:var(--muted2);}
+.inp-send{width:34px;height:34px;border-radius:8px;flex-shrink:0;background:var(--grad-btn);
+  color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(26,106,255,0.35);transition:transform .15s,box-shadow .15s,opacity .15s;}
+.inp-send:hover:not(:disabled){transform:translateY(-2px);}
+.inp-send:disabled{opacity:.25;cursor:default;transform:none;}
+.inp-hint{font-size:10px;color:var(--muted2);text-align:center;margin-top:6px;}
+
+/* SCREEN LOADER */
+#screen-loading{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;
+  align-items:center;justify-content:center;background:var(--bg);}
+#screen-loading.active{display:flex;}
+.loader-icon{font-size:68px;margin-bottom:22px;animation:build 1s ease-in-out infinite alternate;}
+@keyframes build{from{transform:translateY(0) scale(1)}to{transform:translateY(-12px) scale(1.06)}}
+.loader-title{font-family:var(--font-h);font-size:30px;font-weight:800;letter-spacing:.04em;margin-bottom:8px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.loader-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
+.blueprint{width:260px;height:148px;border-radius:var(--r);
+  background:linear-gradient(135deg,rgba(26,106,255,0.08),rgba(0,212,255,0.04));
+  border:1px solid var(--border2);position:relative;overflow:hidden;margin-bottom:28px;}
+.bp-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(26,106,255,0.15) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(26,106,255,0.15) 1px,transparent 1px);background-size:20px 20px;}
+.bp-block{position:absolute;background:rgba(26,106,255,0.25);border:1px solid rgba(26,106,255,0.5);border-radius:3px;}
+.bp-b1{width:55px;height:28px;top:18px;left:18px;animation:bpR .4s ease .2s both;}
+.bp-b2{width:74px;height:18px;top:18px;left:82px;animation:bpR .4s ease .5s both;}
+.bp-b3{width:36px;height:46px;top:56px;left:18px;animation:bpR .4s ease .8s both;}
+.bp-b4{width:94px;height:28px;top:56px;left:64px;animation:bpR .4s ease 1.1s both;}
+.bp-b5{width:55px;height:18px;top:94px;left:18px;animation:bpR .4s ease 1.4s both;}
+.bp-b6{width:74px;height:18px;top:94px;left:84px;animation:bpR .4s ease 1.7s both;}
+@keyframes bpR{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.bp-cursor{position:absolute;width:9px;height:9px;background:var(--cyan);border-radius:50%;
+  box-shadow:0 0 10px var(--cyan);animation:bpC 2s ease-in-out infinite;}
+@keyframes bpC{0%{top:18px;left:18px}25%{top:18px;left:170px}50%{top:105px;left:170px}75%{top:105px;left:18px}100%{top:18px;left:18px}}
+.loader-steps{display:flex;flex-direction:column;gap:9px;width:260px;}
+.lstep{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);opacity:.4;transition:opacity .4s;}
+.lstep.done{opacity:1;color:var(--text);}
+.lstep.act{opacity:1;color:var(--cyan);}
+.lstep-ic{width:17px;height:17px;border-radius:50%;border:1.5px solid currentColor;
+  display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
+.lstep.done .lstep-ic{background:var(--green);border-color:var(--green);color:#000;}
+.lstep.act .lstep-ic{border-color:var(--cyan);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SCREEN APP */
+#screen-app{position:fixed;inset:0;z-index:98;display:none;}
+#screen-app.active{display:flex;}
+
+/* SIDEBAR */
+.sb{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
+.sb-head{padding:16px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-mark{width:32px;height:32px;border-radius:8px;flex-shrink:0;background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sb-name{font-family:var(--font-h);font-size:20px;font-weight:800;letter-spacing:.03em;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-tag{font-size:9px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-top:-2px;}
+.sb-user{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+.sb-user-av{width:28px;height:28px;border-radius:50%;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.sb-user-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-user-plan{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:600;}
+.sb-user-plan.free{background:rgba(107,127,163,0.2);color:var(--muted);}
+.sb-user-plan.premium{background:rgba(244,196,48,0.15);color:var(--gold);}
+.sb-sec{padding:14px 16px 4px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600;}
+.nav{width:100%;display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:transparent;border:none;border-left:2px solid transparent;
+  color:var(--muted);font-size:13px;font-weight:400;text-align:left;transition:all .15s;position:relative;}
+.nav:hover{color:var(--text);background:rgba(26,106,255,0.06);}
+.nav.on{color:var(--text);background:rgba(26,106,255,0.1);border-left-color:var(--blue);font-weight:600;}
+.nav-ic{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.nav-lock{margin-left:auto;font-size:11px;opacity:.5;}
+
+/* msg counter badge */
+.msg-counter{padding:6px 16px;margin:8px 14px 0;background:rgba(26,106,255,0.06);
+  border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;
+  justify-content:space-between;}
+.msg-counter-lbl{font-size:11px;color:var(--muted);}
+.msg-counter-num{font-size:12px;font-weight:600;color:var(--text);}
+.msg-counter-num.low{color:var(--orange);}
+.msg-counter-num.empty{color:var(--pink);}
+
+/* archie plan btn */
+.archie-btn{margin:10px 14px 4px;background:var(--grad-btn);color:#fff;border-radius:var(--r);
+  padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;
+  box-shadow:0 4px 20px rgba(26,106,255,0.3);transition:transform .15s,box-shadow .15s;border:none;width:calc(100% - 28px);}
+.archie-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(26,106,255,0.5);}
+.archie-btn-label{font-size:13px;font-weight:600;}
+.archie-btn-sub{font-size:10px;opacity:.75;margin-top:1px;}
+
+/* upgrade btn */
+.upgrade-btn{margin:6px 14px 0;background:var(--grad-premium);color:#000;border-radius:var(--r);
+  padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;
+  box-shadow:0 4px 20px rgba(244,196,48,0.25);transition:transform .15s;border:none;width:calc(100% - 28px);}
+.upgrade-btn:hover{transform:translateY(-2px);}
+
+/* streak */
+.sb-streak{margin:8px 14px 14px;background:linear-gradient(135deg,rgba(26,106,255,0.1),rgba(0,212,255,0.05));
+  border:1px solid var(--border2);border-radius:var(--r);padding:12px;}
+.sk-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.sk-num{font-family:var(--font-h);font-size:36px;font-weight:900;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sk-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.sk-bar{height:3px;background:var(--surface3);border-radius:3px;margin-top:8px;overflow:hidden;}
+.sk-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .5s ease;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:54px;
+  padding:0 22px;display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.tb-title{font-family:var(--font-h);font-size:19px;font-weight:700;letter-spacing:.03em;flex:1;}
+.tb-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.tb-week{font-size:11.5px;color:var(--muted);background:var(--surface2);
+  border:1px solid var(--border);border-radius:100px;padding:3px 11px;}
+
+/* DASH SCROLL */
+.dash-scroll{flex:1;overflow-y:auto;padding:18px 20px 0;}
+.dash-scroll::-webkit-scrollbar{width:4px;}
+
+/* GOALS STRIP */
+.goals-strip{display:flex;gap:10px;margin-bottom:18px;align-items:stretch;}
+.goal-card{flex:1;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px 10px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;cursor:pointer;transition:border-color .2s,transform .2s;
+  position:relative;min-width:0;user-select:none;}
+.goal-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.goal-card.complete{background:rgba(0,229,160,0.08);border-color:rgba(0,229,160,0.35);}
+.goal-card.partial{background:rgba(26,106,255,0.07);border-color:rgba(26,106,255,0.3);}
+.goal-emoji{font-size:26px;line-height:1;}
+.goal-name{font-size:10.5px;color:var(--muted);text-align:center;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;}
+.goal-prog{font-size:12px;font-weight:600;color:var(--text);}
+.goal-card.complete .goal-prog{color:var(--green);}
+.goal-dots{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;}
+.goal-dot{width:7px;height:7px;border-radius:50%;background:var(--surface3);
+  border:1px solid var(--muted2);transition:all .2s;}
+.goal-dot.done{background:var(--blue);border-color:var(--blue);}
+.goal-dot.done-all{background:var(--green);border-color:var(--green);}
+.goal-tick{position:absolute;top:5px;right:7px;font-size:12px;opacity:0;transition:opacity .3s;}
+.goal-card.complete .goal-tick{opacity:1;}
+.streak-card{flex:0 0 76px;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:var(--r);padding:12px 8px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;}
+.streak-card-num{font-family:var(--font-h);font-size:30px;font-weight:900;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.streak-card-lbl{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;}
+
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-title{font-family:var(--font-h);font-size:17px;font-weight:700;letter-spacing:.04em;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;}
+.cal-day{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  padding:9px 7px;min-height:110px;display:flex;flex-direction:column;gap:4px;}
+.cal-day.today{border-color:rgba(26,106,255,0.45);background:rgba(26,106,255,0.05);}
+.cal-day-name{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.cal-day-num{font-family:var(--font-h);font-size:17px;font-weight:700;line-height:1;margin-bottom:3px;}
+.cal-day.today .cal-day-num{color:var(--blue);}
+.cal-allday{display:flex;flex-direction:column;gap:2px;}
+.cal-timed{display:flex;flex-direction:column;gap:2px;border-top:1px solid var(--border);padding-top:4px;margin-top:2px;}
+.cal-event{font-size:10px;border-radius:4px;padding:2px 6px;line-height:1.35;word-break:break-word;}
+.cal-event.allday{background:rgba(26,106,255,0.15);color:var(--cyan);border:1px solid rgba(26,106,255,0.2);}
+.cal-event.timed{background:rgba(0,212,255,0.07);color:var(--text);border:1px solid rgba(0,212,255,0.12);}
+.cal-event-time{font-size:9px;color:var(--muted);display:block;margin-bottom:1px;}
+.cal-empty{font-size:10.5px;color:var(--muted2);font-style:italic;padding:3px 0;}
+
+/* ADS BANNER */
+.ads-banner{margin:18px 0 0;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r);padding:10px 16px;display:flex;align-items:center;justify-content:center;
+  min-height:80px;color:var(--muted2);font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
+
+/* RECOMMENDATIONS */
+.rec-section{margin-top:18px;padding-bottom:24px;}
+.rec-title{font-family:var(--font-h);font-size:17px;font-weight:700;letter-spacing:.04em;margin-bottom:10px;}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.rec-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px;text-decoration:none;display:flex;flex-direction:column;gap:7px;
+  transition:border-color .2s,transform .2s;}
+.rec-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.rec-card-top{display:flex;align-items:center;gap:9px;}
+.rec-card-ic{font-size:24px;flex-shrink:0;}
+.rec-card-tag{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:1px;}
+.rec-card-title{font-size:12.5px;font-weight:600;color:var(--text);}
+.rec-card-desc{font-size:11.5px;color:var(--muted);line-height:1.5;}
+.rec-card-cta{font-size:11.5px;color:var(--blue);font-weight:600;display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
+
+/* BLUEPRINT CHAT */
+.bp-chat{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.bp-msgs{flex:1;overflow-y:auto;padding:18px 20px 10px;scroll-behavior:smooth;}
+.bp-msgs::-webkit-scrollbar{width:4px;}
+.bp-inp{padding:10px 20px 16px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
+.aff-wrap{padding-left:44px;margin-bottom:6px;}
+.aff{display:flex;align-items:center;gap:11px;
+  background:linear-gradient(135deg,rgba(26,106,255,0.07),rgba(0,212,255,0.04));
+  border:1px solid rgba(26,106,255,0.18);border-radius:var(--r);
+  padding:11px 13px;max-width:400px;text-decoration:none;transition:border-color .2s,transform .2s;}
+.aff:hover{border-color:rgba(26,106,255,0.4);transform:translateX(3px);}
+.aff-ic{font-size:22px;flex-shrink:0;}
+.aff-tag{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:1px;}
+.aff-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:1px;}
+.aff-desc{font-size:11px;color:var(--muted);}
+.aff-arr{margin-left:auto;color:var(--blue);font-size:15px;flex-shrink:0;}
+
+/* MODALS */
+.modal-bg{position:fixed;inset:0;z-index:500;display:none;align-items:center;
+  justify-content:center;background:rgba(5,13,26,0.85);backdrop-filter:blur(6px);}
+.modal-bg.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rl);
+  width:100%;max-width:480px;overflow:hidden;animation:mIn .3s ease;max-height:90vh;display:flex;flex-direction:column;}
+.modal-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-title{font-family:var(--font-h);font-size:21px;font-weight:700;letter-spacing:.03em;}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:22px;line-height:1;padding:0 4px;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:18px 22px;overflow-y:auto;}
+.modal-body p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.modal-warn{background:rgba(255,140,66,0.08);border:1px solid rgba(255,140,66,0.25);
+  border-radius:var(--r);padding:11px 13px;font-size:13px;color:var(--orange);margin-bottom:16px;line-height:1.5;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btn-p{flex:1;background:var(--grad-btn);color:#fff;padding:11px;border-radius:var(--r);font-size:13.5px;font-weight:600;border:none;}
+.modal-btn-s{flex:1;background:transparent;border:1px solid var(--border2);color:var(--muted);padding:11px;border-radius:var(--r);font-size:13.5px;}
+.modal-btn-s:hover{color:var(--text);}
+.modal-chat-msgs{padding:10px 22px;overflow-y:auto;flex:1;max-height:300px;}
+.modal-inp{padding:10px 22px 18px;border-top:1px solid var(--border);flex-shrink:0;}
+
+/* UPGRADE MODAL */
+.upgrade-modal-box{background:var(--surface);border:1px solid rgba(244,196,48,0.3);border-radius:var(--rl);
+  width:100%;max-width:440px;overflow:hidden;animation:mIn .3s ease;}
+.upgrade-head{padding:24px 24px 18px;text-align:center;
+  background:linear-gradient(135deg,rgba(244,196,48,0.08),rgba(255,140,66,0.05));
+  border-bottom:1px solid rgba(244,196,48,0.15);}
+.upgrade-crown{font-size:40px;margin-bottom:10px;}
+.upgrade-title{font-family:var(--font-h);font-size:28px;font-weight:800;letter-spacing:.04em;
+  background:var(--grad-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.upgrade-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+.upgrade-price{font-family:var(--font-h);font-size:42px;font-weight:900;
+  background:var(--grad-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.upgrade-price span{font-size:16px;}
+.upgrade-features{list-style:none;padding:0;margin:16px 0;}
+.upgrade-features li{display:flex;align-items:center;gap:8px;font-size:13.5px;
+  color:var(--text);padding:7px 0;border-bottom:1px solid var(--border);}
+.upgrade-features li:last-child{border-bottom:none;}
+.upgrade-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+.upgrade-btn-go{width:100%;background:var(--grad-premium);color:#000;padding:14px;
+  border-radius:var(--r);font-size:15px;font-weight:700;border:none;margin-top:8px;
+  box-shadow:0 4px 20px rgba(244,196,48,0.3);transition:transform .15s;}
+.upgrade-btn-go:hover{transform:translateY(-2px);}
+.upgrade-btn-cancel{width:100%;background:transparent;border:none;color:var(--muted);
+  font-size:13px;margin-top:10px;padding:6px;}
+
+/* PAYWALL LOCK */
+.paywall-lock{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;text-align:center;padding:40px 24px;gap:14px;}
+.paywall-icon{font-size:48px;}
+.paywall-title{font-family:var(--font-h);font-size:24px;font-weight:700;}
+.paywall-sub{font-size:14px;color:var(--muted);max-width:320px;line-height:1.6;}
+.paywall-btn{background:var(--grad-premium);color:#000;padding:13px 32px;border-radius:var(--r);
+  font-size:14px;font-weight:700;border:none;box-shadow:0 4px 20px rgba(244,196,48,0.3);}
+
+/* MOBILE */
+@media(max-width:680px){
+  :root{--sidebar:100%;}
+  #screen-app.active{flex-direction:column;}
+  .sb{width:100%;height:auto;flex-direction:row;overflow-x:auto;
+    border-right:none;border-bottom:1px solid var(--border);}
+  .sb-head{border-bottom:none;padding:10px 12px;}
+  .sb-tag,.sb-sec,.sb-streak,.sb-user,.msg-counter,.archie-btn .archie-btn-text,.upgrade-btn span{display:none;}
+  .archie-btn{width:auto;flex-shrink:0;padding:8px 10px;margin:6px 6px 0;}
+  .upgrade-btn{width:auto;flex-shrink:0;padding:8px 10px;margin:0 6px 6px;}
+  .nav{flex-direction:column;padding:8px 10px;gap:2px;font-size:9.5px;
+    border-left:none;border-bottom:2px solid transparent;white-space:nowrap;}
+  .nav.on{border-bottom-color:var(--blue);border-left-color:transparent;}
+  .nav-ic{font-size:17px;}.nav-lock{display:none;}
+  .main{height:calc(100vh - 108px);}
+  .dash-scroll{padding:12px 12px 0;}
+  .cal-grid{grid-template-columns:repeat(7,minmax(76px,1fr));overflow-x:auto;}
+  .rec-grid{grid-template-columns:1fr 1fr;}
+  .mbub{max-width:88%;}
+}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- CONSENT -->
+<div id="consent" style="display:none">
+  <p>We use analytics to improve your experience. Data is never sold. <a href="#">Learn more</a></p>
+  <div class="c-btns">
+    <button class="c-dec" onclick="setConsent('denied')">Decline</button>
+    <button class="c-acc" onclick="setConsent('granted')">Accept</button>
+  </div>
+</div>
+
+<!-- SCREEN 1: LANDING -->
+<div id="screen-landing">
+  <div class="land-badge"><span class="land-badge-dot"></span>Your Personal AI Life Coach</div>
+  <div class="land-logo">🏗️</div>
+  <h1 class="land-title">Architect<br/><span class="g">Your Life</span></h1>
+  <p class="land-sub">Tell Archie about your week, set real goals, and get a visual dashboard that keeps you on track.</p>
+  <div class="land-feats">
+    <div class="land-feat"><span>📅</span><span>Weekly Calendar</span></div>
+    <div class="land-feat"><span>🎯</span><span>Goal Tracking</span></div>
+    <div class="land-feat"><span>🔥</span><span>Streak Tracking</span></div>
+    <div class="land-feat"><span>💰</span><span>Budget Blueprint</span></div>
+    <div class="land-feat"><span>🏃</span><span>Running Blueprint</span></div>
+    <div class="land-feat"><span>💪</span><span>Workout Blueprint</span></div>
+    <div class="land-feat"><span>🥗</span><span>Meal Blueprint</span></div>
+  </div>
+  <button class="land-cta" onclick="goToAuth()">Get started free <span class="arr">→</span></button>
+  <p class="land-note">Free plan available · No credit card required</p>
+</div>
+
+<!-- SCREEN 2: AUTH -->
+<div id="screen-auth">
+  <div class="auth-box">
+    <div class="auth-head">
+      <div class="auth-logo">🏗️</div>
+      <div class="auth-title">Archie</div>
+      <div class="auth-sub">Sign in to start building your week</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <button class="auth-tab on" id="tabLogin" onclick="showAuthTab('login')">Sign in</button>
+        <button class="auth-tab" id="tabSignup" onclick="showAuthTab('signup')">Create account</button>
+      </div>
+      <!-- LOGIN -->
+      <div id="authLogin">
+        <div class="auth-field">
+          <label class="auth-label">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Password</label>
+          <input type="password" id="loginPass" placeholder="Your password" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div class="auth-forgot" onclick="doForgot()">Forgot password?</div>
+        <div class="auth-err" id="loginErr"></div>
+        <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign in →</button>
+      </div>
+      <!-- SIGNUP -->
+      <div id="authSignup" style="display:none">
+        <div class="auth-field">
+          <label class="auth-label">Your first name</label>
+          <input type="text" id="signupName" placeholder="e.g. Alex" autocomplete="given-name"/>
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Password</label>
+          <input type="password" id="signupPass" placeholder="At least 8 characters" autocomplete="new-password"
+            onkeydown="if(event.key==='Enter')doSignup()"/>
+        </div>
+        <div class="auth-err" id="signupErr"></div>
+        <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: ONBOARDING CHAT -->
+<div id="screen-chat">
+  <div class="chat-hd">
+    <div class="chat-hd-mark">🏗️</div>
+    <div><div class="chat-hd-name">Archie</div><div class="chat-hd-sub">Building your blueprint…</div></div>
+    <div class="chat-hd-status"><span class="sdot"></span><span>Listening…</span></div>
+  </div>
+  <div class="chat-prog">
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-lbl" id="progLbl">Getting to know you…</div>
+  </div>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="chat-inp-wrap">
+    <div class="inp-box">
+      <textarea class="inp-ta" id="chatTa" rows="1" placeholder="Tell Archie about your week…"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"
+        oninput="autoResize(this)"></textarea>
+      <button class="inp-send" id="chatSend" onclick="sendChat()">↑</button>
+    </div>
+    <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
+  </div>
+</div>
+
+<!-- SCREEN 4: LOADER -->
+<div id="screen-loading">
+  <div class="loader-icon">🏗️</div>
+  <div class="loader-title">Building Your Blueprint</div>
+  <div class="loader-sub">Archie is designing your personalised dashboard…</div>
+  <div class="blueprint">
+    <div class="bp-grid"></div>
+    <div class="bp-block bp-b1"></div><div class="bp-block bp-b2"></div>
+    <div class="bp-block bp-b3"></div><div class="bp-block bp-b4"></div>
+    <div class="bp-block bp-b5"></div><div class="bp-block bp-b6"></div>
+    <div class="bp-cursor"></div>
+  </div>
+  <div class="loader-steps">
+    <div class="lstep" id="ls1"><div class="lstep-ic">○</div> Mapping your week</div>
+    <div class="lstep" id="ls2"><div class="lstep-ic">○</div> Setting up your goals</div>
+    <div class="lstep" id="ls3"><div class="lstep-ic">○</div> Preparing your blueprints</div>
+    <div class="lstep" id="ls4"><div class="lstep-ic">○</div> Finalising your dashboard</div>
+  </div>
+</div>
+
+<!-- SCREEN 5: APP -->
+<div id="screen-app">
+  <nav class="sb">
+    <div class="sb-head">
+      <div class="sb-mark">🏗️</div>
+      <div><div class="sb-name">Archie</div><div class="sb-tag">AI Life Coach</div></div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-user-av" id="sbUserAv">A</div>
+      <div class="sb-user-name" id="sbUserName">Loading…</div>
+      <div class="sb-user-plan free" id="sbUserPlan">Free</div>
+    </div>
+    <button class="nav on" data-tab="dashboard" onclick="switchTab('dashboard',this)" style="margin-top:6px;">
+      <span class="nav-ic">📅</span> Dashboard
+    </button>
+    <div class="sb-sec">Blueprints</div>
+    <button class="nav" data-tab="budget" onclick="switchTab('budget',this)"><span class="nav-ic">💰</span> Budget<span class="nav-lock" id="lock-budget">🔒</span></button>
+    <button class="nav" data-tab="running" onclick="switchTab('running',this)"><span class="nav-ic">🏃</span> Running<span class="nav-lock" id="lock-running">🔒</span></button>
+    <button class="nav" data-tab="workout" onclick="switchTab('workout',this)"><span class="nav-ic">💪</span> Workout<span class="nav-lock" id="lock-workout">🔒</span></button>
+    <button class="nav" data-tab="diet" onclick="switchTab('diet',this)"><span class="nav-ic">🥗</span> Meals<span class="nav-lock" id="lock-diet">🔒</span></button>
+    <button class="nav" data-tab="hobby" onclick="switchTab('hobby',this)"><span class="nav-ic">🎯</span> Hobby<span class="nav-lock" id="lock-hobby">🔒</span></button>
+    <button class="nav" data-tab="media" onclick="switchTab('media',this)"><span class="nav-ic">📚</span> Film & Books<span class="nav-lock" id="lock-media">🔒</span></button>
+    <button class="nav" data-tab="social" onclick="switchTab('social',this)"><span class="nav-ic">🍽️</span> Restaurants<span class="nav-lock" id="lock-social">🔒</span></button>
+
+    <div class="msg-counter" id="msgCounter">
+      <span class="msg-counter-lbl">Free messages</span>
+      <span class="msg-counter-num" id="msgCounterNum">5 left</span>
+    </div>
+
+    <div style="padding:0 0 4px;">
+      <button class="archie-btn" onclick="openPlanModal()">
+        <span style="font-size:18px;">🏗️</span>
+        <div class="archie-btn-text">
+          <div class="archie-btn-label">Plan with Archie</div>
+          <div class="archie-btn-sub">Edit or build next week</div>
+        </div>
+      </button>
+      <button class="upgrade-btn" id="upgradeBtn" onclick="openUpgradeModal()">
+        <span>👑</span><span>Upgrade to Premium</span>
+      </button>
+    </div>
+
+    <div class="sb-streak">
+      <div class="sk-lbl">Week Streak 🔥</div>
+      <div class="sk-num" id="skNum">0</div>
+      <div class="sk-sub" id="skSub">Complete your goals to build</div>
+      <div class="sk-bar"><div class="sk-fill" id="skFill" style="width:0%"></div></div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tbTitle">Dashboard</div>
+      <div class="tb-status"><span class="sdot"></span><span id="tbSub">Ready</span></div>
+      <div class="tb-week" id="tbWeek"></div>
+    </div>
+    <!-- DASHBOARD VIEW -->
+    <div id="dashView" class="dash-scroll">
+      <div class="goals-strip" id="goalsStrip"></div>
+      <div class="cal-header">
+        <div class="cal-title">This Week</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <!-- AdSense Banner -->
+      <div class="ads-banner" id="adsBanner">
+        <!-- AdSense code goes here once approved -->
+        <span>Advertisement</span>
+      </div>
+      <div class="rec-section">
+        <div class="rec-title">Recommended for You</div>
+        <div class="rec-grid" id="recGrid"></div>
+      </div>
+    </div>
+    <!-- BLUEPRINT VIEW -->
+    <div id="bpView" class="bp-chat" style="display:none;">
+      <div class="bp-msgs" id="bpMsgs"></div>
+      <div class="bp-inp">
+        <div class="inp-box">
+          <textarea class="inp-ta" id="bpTa" rows="1" placeholder="Ask Archie…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendBp();}"
+            oninput="autoResize(this)"></textarea>
+          <button class="inp-send" id="bpSend" onclick="sendBp()">↑</button>
+        </div>
+        <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN MODAL -->
+<div class="modal-bg" id="planModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">🏗️ Plan with Archie</div>
+      <button class="modal-close" onclick="closePlanModal()">×</button>
+    </div>
+    <div id="modalChoose">
+      <div class="modal-body">
+        <p>What would you like to do?</p>
+        <div style="font-size:14px;font-weight:600;color:var(--cyan);margin-bottom:14px;" id="modalWeekLabel"></div>
+        <div class="modal-btns">
+          <button class="modal-btn-s" onclick="checkPremiumThen('edit')">✏️ Edit this week</button>
+          <button class="modal-btn-p" onclick="checkPremiumThen('next')">📅 Build next week</button>
+        </div>
+      </div>
+    </div>
+    <div id="modalConfirm" style="display:none;">
+      <div class="modal-body">
+        <div class="modal-warn">⚠️ Building next week will erase your current week. This cannot be undone.</div>
+        <div class="modal-btns">
+          <button class="modal-btn-s" onclick="showModalChoose()">← Go back</button>
+          <button class="modal-btn-p" onclick="startNextWeek()">Yes, build next week →</button>
+        </div>
+      </div>
+    </div>
+    <div id="modalChatWrap" style="display:none;flex-direction:column;flex:1;">
+      <div class="modal-chat-msgs" id="modalChatMsgs"></div>
+      <div class="modal-inp">
+        <div class="inp-box">
+          <textarea class="inp-ta" id="modalTa" rows="1" placeholder="Tell Archie…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendModalChat();}"
+            oninput="autoResize(this)"></textarea>
+          <button class="inp-send" id="modalSend" onclick="sendModalChat()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-bg" id="upgradeModal">
+  <div class="upgrade-modal-box">
+    <div class="upgrade-head">
+      <div class="upgrade-crown">👑</div>
+      <div class="upgrade-title">Go Premium</div>
+      <div class="upgrade-sub">Unlock everything Archie has to offer</div>
+      <div style="margin-top:12px;"><span class="upgrade-price"><span>£</span>4.99<span>/mo</span></span></div>
+    </div>
+    <div class="modal-body">
+      <ul class="upgrade-features">
+        <li>Unlimited Archie messages</li>
+        <li>Edit & replan your week anytime</li>
+        <li>All 7 Blueprints unlocked</li>
+        <li>Week history — browse past weeks</li>
+        <li>Ad-free experience</li>
+      </ul>
+      <button class="upgrade-btn-go" id="stripeBtn" onclick="startCheckout()">Upgrade for £4.99/month →</button>
+      <button class="upgrade-btn-cancel" onclick="closeUpgradeModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════
+   CONFIG
+══════════════════════════ */
+const SUPABASE_URL = 'https://zwpzcbofwcyvzseprobn.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3cHpjYm9md2N5dnpzZXByb2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjExNzUsImV4cCI6MjA5MTIzNzE3NX0.Gjs3vN9R-Q9ycXhwuQ-dati25HNyICPDWUNZ7LvSxhA';
+const STRIPE_PK = 'pk_test_51TK2VqIrlarv0y2INmyuwL4dqiX9C415P9JslD8f9vkqt8l6940yN0JfbEVpOvvI4riP2kyiG3ZV12NHZkhLh8nn00t6GyrLto';
+const STRIPE_PRICE = 'price_1TK2ZyIrlarv0y2IdR84wKkx';
+const FREE_MSG_LIMIT = 5;
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const stripe = Stripe(STRIPE_PK);
+
+/* ══════════════════════════
+   STATE
+══════════════════════════ */
+let currentUser = null;
+let userProfile = null;
+let weekData = { weekCommencing:'', events:[], goals:[], recommendations:[], streak:0, streakStatus:'active' };
+let bpChats = {};
+let modalMsgs = [];
+let onboardMsgs = [];
+let activeTab = 'dashboard';
+let chatLoading = false;
+let bpLoading = false;
+let modalLoading = false;
+let msgCount = 0;
+let isEditMode = false;
+
+/* ══════════════════════════
+   SYSTEM PROMPTS
+══════════════════════════ */
+const ONBOARD_SYS = `You are Archie the Architect, a friendly AI life coach onboarding a new user. Have a natural warm conversation to collect:
+1. Their week's commitments Mon-Sun (with times if they have them, allDay if not)
+2. Up to 4 goals for this week (name, emoji, how many times to complete)
+
+Once you have BOTH the week's events AND at least 1 goal confirmed, output ONLY this JSON block then BLUEPRINT_READY on a new line:
+
+\`\`\`json
+{
+  "weekCommencing": "YYYY-MM-DD",
+  "events": [
+    {"day": "Monday", "title": "Team standup", "time": "09:00", "allDay": false},
+    {"day": "Saturday", "title": "Family lunch", "time": null, "allDay": true}
+  ],
+  "goals": [
+    {"name": "Run", "emoji": "🏃", "target": 3, "done": 0},
+    {"name": "Read", "emoji": "📚", "target": 5, "done": 0}
+  ],
+  "recommendations": [
+    {"icon": "🏃", "tag": "FITNESS", "title": "Nike Running", "desc": "Gear for your runs", "url": "https://www.nike.com/gb/running", "cta": "Shop now"},
+    {"icon": "📚", "tag": "READING", "title": "Audible", "desc": "Listen on the go", "url": "https://www.audible.co.uk", "cta": "Try free"},
+    {"icon": "💪", "tag": "WELLNESS", "title": "MyFitnessPal", "desc": "Track nutrition free", "url": "https://www.myfitnesspal.com", "cta": "Get started"}
+  ]
+}
+\`\`\`
+BLUEPRINT_READY
+
+Rules:
+- weekCommencing must be the Monday of the CURRENT week in YYYY-MM-DD format. Today is ${new Date().toISOString().split('T')[0]}. Calculate the most recent Monday from today's date.
+- Max 4 goals
+- recommendations: exactly 3, relevant to their goals, only from: Nike, Adidas, Audible, Kindle Unlimited, MyProtein, Gymshark, MyFitnessPal, Headspace, Duolingo, Skillshare, Udemy, Monzo, Revolut, OpenTable, Deliveroo, Airbnb, Booking.com
+- Be warm and casual, ask one thing at a time
+- Use **bold** for emphasis`;
+
+const EDIT_SYS = `You are Archie the Architect helping the user update their week. Ask what they want to change. Once done output updated JSON in same format with BLUEPRINT_READY. Keep it brief. Today is ${new Date().toISOString().split('T')[0]}.`;
+
+const BP_SYS = (tab) => `You are Archie the Architect helping with the user's "${tab}" Blueprint. Stay focused. Use light markdown. Ask questions first, generate plans after. Be warm and concise.`;
+
+/* ══════════════════════════
+   CONSENT
+══════════════════════════ */
+function checkConsent(){ if(!localStorage.getItem('archie_consent')) document.getElementById('consent').style.display='flex'; }
+function setConsent(v){
+  localStorage.setItem('archie_consent',v);
+  document.getElementById('consent').style.display='none';
+  if(v==='granted') gtag('config','G-XXXXXXXXXX',{anonymize_ip:true});
+}
+
+/* ══════════════════════════
+   TOAST
+══════════════════════════ */
+function showToast(msg,type='err'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=type; t.style.display='block';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',4500);
+}
+
+/* ══════════════════════════
+   LANDING → AUTH
+══════════════════════════ */
+function goToAuth(){
+  trackEvent('cta_click');
+  const l=document.getElementById('screen-landing');
+  l.classList.add('out');
+  setTimeout(()=>{ l.style.display='none'; document.getElementById('screen-auth').classList.add('active'); },500);
+}
+
+function showAuthTab(tab){
+  document.getElementById('authLogin').style.display=tab==='login'?'block':'none';
+  document.getElementById('authSignup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('tabLogin').classList.toggle('on',tab==='login');
+  document.getElementById('tabSignup').classList.toggle('on',tab==='signup');
+}
+
+/* ══════════════════════════
+   AUTH
+══════════════════════════ */
+async function doSignup(){
+  const name=document.getElementById('signupName').value.trim();
+  const email=document.getElementById('signupEmail').value.trim();
+  const pass=document.getElementById('signupPass').value;
+  const err=document.getElementById('signupErr');
+  err.style.display='none';
+  if(!name){err.textContent='Please enter your first name.';err.style.display='block';return;}
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  if(pass.length<8){err.textContent='Password must be at least 8 characters.';err.style.display='block';return;}
+  const btn=document.getElementById('signupBtn');
+  btn.disabled=true; btn.textContent='Creating account…';
+  const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Create account →';return;}
+  // Create profile
+  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,is_premium:false});
+  showToast('Account created! Welcome to Archie 🏗️','ok');
+  await loadUserAndContinue(data.user,name);
+}
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true; btn.textContent='Signing in…';
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Sign in →';return;}
+  await loadUserAndContinue(data.user);
+}
+
+async function doForgot(){
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email){showToast('Enter your email address first.');return;}
+  await sb.auth.resetPasswordForEmail(email);
+  showToast('Password reset email sent!','ok');
+}
+
+async function loadUserAndContinue(user, nameOverride=null){
+  currentUser=user;
+  // Load profile
+  const {data:profile}=await sb.from('user_profiles').select('*').eq('id',user.id).single();
+  userProfile=profile;
+  const name=nameOverride||profile?.name||user.email.split('@')[0];
+  // Check for existing week data
+  const {data:weekRow}=await sb.from('user_weeks').select('*').eq('user_id',user.id)
+    .order('created_at',{ascending:false}).limit(1).single();
+  document.getElementById('screen-auth').classList.remove('active');
+  document.getElementById('screen-auth').style.display='none';
+  if(weekRow&&weekRow.events&&weekRow.events.length>0){
+    weekData={
+      weekCommencing:weekRow.week_commencing,
+      events:weekRow.events||[],
+      goals:weekRow.goals||[],
+      recommendations:weekRow.recommendations||[],
+      streak:weekRow.streak||0,
+      streakStatus:weekRow.streak_status||'active'
+    };
+    showApp(name);
+  } else {
+    // New user or no week — start onboarding
+    document.getElementById('screen-chat').classList.add('active');
+    startOnboarding(name);
+  }
+  checkConsent();
+  trackEvent('user_login',{is_premium:profile?.is_premium});
+}
+
+/* ══════════════════════════
+   ONBOARDING
+══════════════════════════ */
+function startOnboarding(name){
+  const opener=`Hey ${name}! I'm **Archie** 🏗️ — your AI life coach.\n\nI'm going to ask you a few quick questions to build your personalised weekly dashboard.\n\n**Let's start with your week — what's already in your diary?** Walk me through any fixed commitments, appointments or events from Monday to Sunday. Include times if you have them, or just say it's all day.`;
+  onboardMsgs=[{role:'assistant',content:opener}];
+  renderChatMsgs();
+}
+
+let onboardProgCount=0;
+function updateProgress(){
+  onboardProgCount++;
+  document.getElementById('progFill').style.width=Math.min(onboardProgCount*13,88)+'%';
+  const labels=['Getting to know you…','Mapping your week…','Understanding your schedule…','Locking in your goals…','Almost done…'];
+  document.getElementById('progLbl').textContent=labels[Math.min(onboardProgCount-1,labels.length-1)];
+}
+
+async function sendChat(){
+  const ta=document.getElementById('chatTa');
+  const text=ta.value.trim();
+  if(!text||chatLoading) return;
+  onboardMsgs.push({role:'user',content:text});
+  ta.value=''; ta.style.height='auto';
+  chatLoading=true; document.getElementById('chatSend').disabled=true;
+  updateProgress(); renderChatMsgs();
+  try{
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:onboardMsgs.slice(-20),system:ONBOARD_SYS})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
+    const data=await res.json();
+    let reply=data.reply||'Something went wrong!';
+    const ready=reply.includes('BLUEPRINT_READY');
+    const jm=reply.match(/```json([\s\S]*?)```/);
+    if(jm){
+      try{const p=JSON.parse(jm[1].trim());weekData={...weekData,...p};}catch(e){}
+      reply=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();
+    }
+    onboardMsgs.push({role:'assistant',content:reply});
+    chatLoading=false; document.getElementById('chatSend').disabled=false;
+    if(ready){
+      document.getElementById('progFill').style.width='100%';
+      document.getElementById('progLbl').textContent='Blueprint complete! ✓';
+      renderChatMsgs();
+      await saveWeekToSupabase();
+      await new Promise(r=>setTimeout(r,900));
+      showLoader(()=>showApp(userProfile?.name||currentUser?.email?.split('@')[0]||'there'));
+    } else { renderChatMsgs(); }
+  }catch(e){
+    onboardMsgs.push({role:'assistant',content:`**Something went wrong.** ${e.message}\n\nTry again!`});
+    chatLoading=false; document.getElementById('chatSend').disabled=false;
+    renderChatMsgs(); showToast(e.message);
+  }
+}
+
+function renderChatMsgs(){
+  const w=document.getElementById('chatMsgs');
+  w.innerHTML='';
+  onboardMsgs.forEach(m=>w.appendChild(buildMsgEl(m)));
+  if(chatLoading) w.appendChild(buildTyping());
+  w.scrollTop=w.scrollHeight;
+}
+
+/* ══════════════════════════
+   SUPABASE SAVE/LOAD
+══════════════════════════ */
+async function saveWeekToSupabase(){
+  if(!currentUser) return;
+  const row={
+    user_id:currentUser.id,
+    week_commencing:weekData.weekCommencing||getThisMonday(),
+    events:weekData.events||[],
+    goals:weekData.goals||[],
+    recommendations:weekData.recommendations||[],
+    streak:weekData.streak||0,
+    streak_status:weekData.streakStatus||'active',
+    updated_at:new Date().toISOString()
+  };
+  // Upsert based on user_id + week_commencing
+  await sb.from('user_weeks').upsert(row,{onConflict:'user_id,week_commencing'});
+}
+
+async function saveGoalsToSupabase(){
+  if(!currentUser||!weekData.weekCommencing) return;
+  await sb.from('user_weeks').update({
+    goals:weekData.goals,
+    streak:weekData.streak,
+    streak_status:weekData.streakStatus,
+    updated_at:new Date().toISOString()
+  }).eq('user_id',currentUser.id).eq('week_commencing',weekData.weekCommencing);
+}
+
+async function updateMessageCount(){
+  if(!currentUser||!userProfile) return;
+  userProfile.message_count=(userProfile.message_count||0)+1;
+  await sb.from('user_profiles').update({message_count:userProfile.message_count}).eq('id',currentUser.id);
+  renderMsgCounter();
+}
+
+/* ══════════════════════════
+   SHOW APP
+══════════════════════════ */
+function showApp(name){
+  document.getElementById('screen-app').classList.add('active');
+  document.getElementById('screen-loading').style.display='none';
+  // Topbar welcome
+  document.getElementById('tbTitle').textContent=`Welcome back, ${name} 👋`;
+  // Sidebar user
+  document.getElementById('sbUserAv').textContent=(name||'A')[0].toUpperCase();
+  document.getElementById('sbUserName').textContent=name||'User';
+  const isPremium=userProfile?.is_premium||false;
+  const planEl=document.getElementById('sbUserPlan');
+  planEl.textContent=isPremium?'Premium':'Free';
+  planEl.className='sb-user-plan '+(isPremium?'premium':'free');
+  // Hide upgrade btn if premium
+  document.getElementById('upgradeBtn').style.display=isPremium?'none':'flex';
+  document.getElementById('msgCounter').style.display=isPremium?'none':'flex';
+  // Hide lock icons if premium
+  ['budget','running','workout','diet','hobby','media','social'].forEach(t=>{
+    const l=document.getElementById('lock-'+t);
+    if(l) l.style.display=isPremium?'none':'inline';
+  });
+  // Hide ads if premium
+  const ads=document.getElementById('adsBanner');
+  if(ads) ads.style.display=isPremium?'none':'flex';
+  renderMsgCounter();
+  renderDashboard();
+}
+
+function renderMsgCounter(){
+  if(userProfile?.is_premium) return;
+  const used=userProfile?.message_count||0;
+  const left=Math.max(0,FREE_MSG_LIMIT-used);
+  const el=document.getElementById('msgCounterNum');
+  el.textContent=left===0?'None left':`${left} left`;
+  el.className='msg-counter-num'+(left===0?' empty':left<=2?' low':'');
+}
+
+/* ══════════════════════════
+   LOADER
+══════════════════════════ */
+function showLoader(cb){
+  document.getElementById('screen-chat').classList.add('out');
+  document.getElementById('screen-chat').style.pointerEvents='none';
+  setTimeout(()=>{
+    document.getElementById('screen-chat').style.display='none';
+    const sl=document.getElementById('screen-loading');
+    sl.classList.add('active');
+    const steps=['ls1','ls2','ls3','ls4'];
+    const delays=[400,1300,2300,3300];
+    steps.forEach((id,i)=>{
+      setTimeout(()=>{
+        if(i>0){const p=document.getElementById(steps[i-1]);p.classList.remove('act');p.classList.add('done');p.querySelector('.lstep-ic').textContent='✓';}
+        document.getElementById(id).classList.add('act');
+      },delays[i]);
+    });
+    setTimeout(()=>{const l=document.getElementById('ls4');l.classList.remove('act');l.classList.add('done');l.querySelector('.lstep-ic').textContent='✓';},4300);
+    setTimeout(cb,4800);
+  },500);
+}
+
+/* ══════════════════════════
+   DASHBOARD
+══════════════════════════ */
+function renderDashboard(){
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date(getThisMonday()+'T00:00:00');
+  const opts={month:'short',day:'numeric'};
+  document.getElementById('tbWeek').textContent=`w/c ${wc.toLocaleDateString('en-GB',opts)}`;
+  renderGoals();
+  renderCalendar();
+  renderRecommendations();
+  renderStreak();
+}
+
+function getThisMonday(){
+  const d=new Date();
+  const day=d.getDay();
+  const diff=d.getDate()-day+(day===0?-6:1);
+  const m=new Date(d);
+  m.setDate(diff);
+  const y=m.getFullYear(),mo=String(m.getMonth()+1).padStart(2,'0'),dd=String(m.getDate()).padStart(2,'0');
+  return `${y}-${mo}-${dd}`;
+}
+
+/* GOALS */
+function renderGoals(){
+  const strip=document.getElementById('goalsStrip');
+  strip.innerHTML='';
+  (weekData.goals||[]).slice(0,4).forEach((g,i)=>{
+    const allDone=g.done>=g.target;
+    const partial=g.done>0&&!allDone;
+    const card=document.createElement('div');
+    card.className=`goal-card${allDone?' complete':partial?' partial':''}`;
+    card.onclick=()=>logGoal(i);
+    let dots='';
+    for(let d=0;d<Math.min(g.target,8);d++){
+      const cls=d<g.done?(allDone?'done-all':'done'):'';
+      dots+=`<div class="goal-dot ${cls}"></div>`;
+    }
+    card.innerHTML=`<div class="goal-tick">✓</div><div class="goal-emoji">${g.emoji||'🎯'}</div>
+      <div class="goal-name">${g.name}</div>
+      <div class="goal-prog">${g.done}/${g.target}</div>
+      <div class="goal-dots">${dots}</div>`;
+    strip.appendChild(card);
+  });
+  // Streak card
+  const sc=document.createElement('div');
+  sc.className='streak-card';
+  sc.innerHTML=`<div style="font-size:20px;">🔥</div><div class="streak-card-num" id="streakCardNum">${weekData.streak||0}</div><div class="streak-card-lbl">Week Streak</div>`;
+  strip.appendChild(sc);
+}
+
+async function logGoal(idx){
+  const g=weekData.goals[idx];
+  if(!g||g.done>=g.target) return;
+  g.done++;
+  // Check if ALL goals complete — update streak
+  const allComplete=(weekData.goals||[]).every(g=>g.done>=g.target);
+  if(allComplete){
+    weekData.streak=(weekData.streak||0)+1;
+    weekData.streakStatus='active';
+    showToast('🔥 All goals complete! Streak updated!','ok');
+  }
+  renderGoals();
+  renderStreak();
+  await saveGoalsToSupabase();
+  trackEvent('goal_logged',{goal:g.name,done:g.done,target:g.target});
+  // Pop animation
+  const cards=document.querySelectorAll('.goal-card');
+  if(cards[idx]){cards[idx].style.transform='scale(1.1)';setTimeout(()=>cards[idx].style.transform='',200);}
+}
+
+function renderStreak(){
+  const s=weekData.streak||0;
+  document.getElementById('skNum').textContent=s;
+  document.getElementById('skSub').textContent=
+    weekData.streakStatus==='frozen'?'❄️ Frozen — push back!':
+    weekData.streakStatus==='reset'?'🔄 Reset — rebuild!':
+    s===0?'Complete your goals to build':'weeks in a row 🔥';
+  document.getElementById('skFill').style.width=Math.min(s*20,100)+'%';
+  const sc=document.getElementById('streakCardNum');
+  if(sc) sc.textContent=s;
+}
+
+/* CALENDAR */
+function renderCalendar(){
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const short=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date(getThisMonday()+'T00:00:00');
+  const today=new Date(); today.setHours(0,0,0,0);
+  days.forEach((day,i)=>{
+    const date=new Date(wc); date.setDate(wc.getDate()+i);
+    const isToday=date.toDateString()===today.toDateString();
+    const dayEvts=(weekData.events||[]).filter(e=>{
+      const d=e.day||'';
+      return d===day||d===day.substring(0,3)||d===short[i];
+    });
+    const allDay=dayEvts.filter(e=>e.allDay||!e.time);
+    const timed=dayEvts.filter(e=>!e.allDay&&e.time).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    const col=document.createElement('div');
+    col.className=`cal-day${isToday?' today':''}`;
+    col.innerHTML=`<div class="cal-day-name">${short[i]}</div>
+      <div class="cal-day-num">${date.getDate()}</div>
+      <div class="cal-allday">${allDay.map(e=>`<div class="cal-event allday">${e.title}</div>`).join('')}</div>
+      ${timed.length?`<div class="cal-timed">${timed.map(e=>`<div class="cal-event timed"><span class="cal-event-time">${e.time}</span>${e.title}</div>`).join('')}</div>`:''}
+      ${!allDay.length&&!timed.length?`<div class="cal-empty">Free</div>`:''}`;
+    grid.appendChild(col);
+  });
+}
+
+/* RECOMMENDATIONS */
+function renderRecommendations(){
+  const grid=document.getElementById('recGrid');
+  grid.innerHTML='';
+  (weekData.recommendations||[]).slice(0,3).forEach(r=>{
+    const card=document.createElement('a');
+    card.className='rec-card'; card.href=r.url; card.target='_blank'; card.rel='noopener';
+    card.onclick=()=>trackEvent('rec_click',{title:r.title});
+    card.innerHTML=`<div class="rec-card-top"><div class="rec-card-ic">${r.icon||'🔗'}</div>
+      <div><div class="rec-card-tag">${r.tag||'PICK'}</div><div class="rec-card-title">${r.title}</div></div></div>
+      <div class="rec-card-desc">${r.desc}</div>
+      <div class="rec-card-cta">${r.cta||'Learn more'} <span>→</span></div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ══════════════════════════
+   TAB SWITCHING
+══════════════════════════ */
+const TABS={
+  dashboard:{title:'Dashboard',sub:'Your week at a glance'},
+  budget:{title:'Budget Blueprint',sub:'Clarity on your finances'},
+  running:{title:'Running Blueprint',sub:'Build your running habit'},
+  workout:{title:'Workout Blueprint',sub:'Train smart, recover well'},
+  diet:{title:'Meal Blueprint',sub:'Fuel your best self'},
+  hobby:{title:'Hobby Blueprint',sub:'Grow a skill you love'},
+  media:{title:'Film & Books Blueprint',sub:'Curated for your growth'},
+  social:{title:'Social Blueprint',sub:'Make memories intentionally'},
+};
+const BP_OPENERS={
+  budget:"Let's get your finances clear 💰\n\n**What's your monthly take-home income** after tax? And what are your biggest fixed costs each month?",
+  running:"Let's build your running plan 🏃\n\n**What's your running goal this week?** Sessions, distance, or both?",
+  workout:"Time to build your routine 💪\n\n**What are your main fitness goals?** And how many days can you train this week?",
+  diet:"Let's sort your nutrition 🥗\n\n**Walk me through a typical day of eating.** Any restrictions or targets?",
+  hobby:"Love that you're building something new 🎯\n\n**What's the hobby?** And what's your current level?",
+  media:"Let's build your list 📚\n\n**What have you finished recently?** And are you after growth, entertainment, or a mix?",
+  social:"Let's make your social time count 🍽️\n\n**What kind of outings** are you thinking about?",
+};
+
+function switchTab(tabId,el){
+  activeTab=tabId;
+  document.querySelectorAll('.nav').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const t=TABS[tabId]||{title:tabId,sub:''};
+  const name=userProfile?.name||currentUser?.email?.split('@')[0]||'there';
+  document.getElementById('tbTitle').textContent=tabId==='dashboard'?`Welcome back, ${name} 👋`:t.title;
+  document.getElementById('tbSub').textContent=t.sub;
+  if(tabId==='dashboard'){
+    document.getElementById('dashView').style.display='block';
+    document.getElementById('bpView').style.display='none';
+    renderDashboard();
+  } else {
+    // Check premium for blueprints
+    if(!userProfile?.is_premium){
+      const used=userProfile?.message_count||0;
+      if(used>=FREE_MSG_LIMIT){ openUpgradeModal(); return; }
+    }
+    document.getElementById('dashView').style.display='none';
+    document.getElementById('bpView').style.display='flex';
+    if(!bpChats[tabId]) bpChats[tabId]=[{role:'assistant',content:BP_OPENERS[tabId]||'How can I help?'}];
+    renderBpMsgs();
+  }
+  trackEvent('tab_switch',{tab:tabId});
+}
+
+/* ══════════════════════════
+   BLUEPRINT CHAT
+══════════════════════════ */
+function renderBpMsgs(){
+  const wrap=document.getElementById('bpMsgs');
+  const msgs=bpChats[activeTab]||[];
+  wrap.innerHTML='';
+  msgs.forEach(m=>wrap.appendChild(buildMsgEl(m)));
+  const AFF={
+    budget:{ic:'💳',tag:'FINANCE',title:'Monzo',desc:'See exactly where your money goes.',url:'https://monzo.com',cta:'Open free account'},
+    running:{ic:'👟',tag:'GEAR',title:'Nike Running',desc:'Gear built for the miles ahead.',url:'https://www.nike.com/gb/running',cta:'Shop now'},
+    workout:{ic:'🏋️',tag:'KIT',title:'Gymshark',desc:'High-performance training kit.',url:'https://www.gymshark.com',cta:'Shop now'},
+    diet:{ic:'🥣',tag:'NUTRITION',title:'Huel',desc:'Complete balanced nutrition.',url:'https://huel.com/en-gb',cta:'Get started'},
+    hobby:{ic:'📖',tag:'LEARNING',title:'Skillshare',desc:'Thousands of creative classes.',url:'https://www.skillshare.com',cta:'Try free'},
+    media:{ic:'📚',tag:'BOOKS',title:'Audible',desc:'Listen to any book, anywhere.',url:'https://www.audible.co.uk',cta:'Try free'},
+    social:{ic:'🍽️',tag:'DINING',title:'OpenTable',desc:'Book the best restaurants instantly.',url:'https://www.opentable.co.uk',cta:'Book now'},
+  };
+  if(msgs.filter(m=>m.role==='assistant').length>=2&&AFF[activeTab]){
+    const a=AFF[activeTab];
+    const w=document.createElement('div');
+    w.className='aff-wrap';
+    w.innerHTML=`<a class="aff" href="${a.url}" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'${activeTab}'})">
+      <div class="aff-ic">${a.ic}</div>
+      <div><div class="aff-tag">${a.tag} · Suggested</div><div class="aff-title">${a.title}</div><div class="aff-desc">${a.desc}</div></div>
+      <div class="aff-arr">→</div></a>`;
+    wrap.appendChild(w);
+  }
+  if(bpLoading) wrap.appendChild(buildTyping());
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+async function sendBp(){
+  if(!userProfile?.is_premium){
+    const used=userProfile?.message_count||0;
+    if(used>=FREE_MSG_LIMIT){ openUpgradeModal(); return; }
+  }
+  const ta=document.getElementById('bpTa');
+  const text=ta.value.trim();
+  if(!text||bpLoading) return;
+  if(!bpChats[activeTab]) bpChats[activeTab]=[];
+  bpChats[activeTab].push({role:'user',content:text});
+  ta.value=''; ta.style.height='auto';
+  bpLoading=true; document.getElementById('bpSend').disabled=true;
+  renderBpMsgs();
+  try{
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:bpChats[activeTab].slice(-20),system:BP_SYS(activeTab)})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
+    const data=await res.json();
+    bpChats[activeTab].push({role:'assistant',content:data.reply||'Something went wrong!'});
+    await updateMessageCount();
+  }catch(e){bpChats[activeTab].push({role:'assistant',content:`**Error** — ${e.message}`});showToast(e.message);}
+  bpLoading=false; document.getElementById('bpSend').disabled=false;
+  renderBpMsgs();
+}
+
+/* ══════════════════════════
+   PLAN MODAL
+══════════════════════════ */
+function openPlanModal(){
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date();
+  document.getElementById('modalWeekLabel').textContent=`Week commencing ${wc.toLocaleDateString('en-GB',{weekday:'long',month:'long',day:'numeric'})}`;
+  showModalChoose();
+  document.getElementById('planModal').classList.add('open');
+}
+function closePlanModal(){document.getElementById('planModal').classList.remove('open');modalMsgs=[];}
+function showModalChoose(){
+  document.getElementById('modalChoose').style.display='block';
+  document.getElementById('modalConfirm').style.display='none';
+  document.getElementById('modalChatWrap').style.display='none';
+}
+function checkPremiumThen(action){
+  if(!userProfile?.is_premium){
+    const used=userProfile?.message_count||0;
+    if(used>=FREE_MSG_LIMIT){closePlanModal();openUpgradeModal();return;}
+  }
+  if(action==='next') document.getElementById('modalConfirm').style.display='block',document.getElementById('modalChoose').style.display='none';
+  else startEditInModal();
+}
+function startEditInModal(){
+  document.getElementById('modalChoose').style.display='none';
+  isEditMode=true;
+  modalMsgs=[{role:'assistant',content:"Sure! What would you like to change — your events, your goals, or both?"}];
+  document.getElementById('modalChatWrap').style.display='flex';
+  renderModalMsgs();
+}
+async function startNextWeek(){
+  // Finalise streak for this week
+  const goals=weekData.goals||[];
+  const missed=goals.filter(g=>g.done<g.target).length;
+  if(missed===0) weekData.streak=(weekData.streak||0)+1;
+  else if(missed>=2){weekData.streak=0;weekData.streakStatus='reset';}
+  // Calculate next Monday
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date();
+  const next=new Date(wc); next.setDate(next.getDate()+7);
+  const y=next.getFullYear(),m=String(next.getMonth()+1).padStart(2,'0'),d=String(next.getDate()).padStart(2,'0');
+  const prevStreak=weekData.streak; const prevStatus=weekData.streakStatus;
+  weekData={weekCommencing:`${y}-${m}-${d}`,events:[],goals:[],recommendations:[],streak:prevStreak,streakStatus:prevStatus};
+  document.getElementById('modalConfirm').style.display='none';
+  isEditMode=false;
+  modalMsgs=[{role:'assistant',content:`Let's build your week of **${next.toLocaleDateString('en-GB',{month:'long',day:'numeric'})}**! 🏗️\n\n**What's in your diary?** Walk me through Monday to Sunday.`}];
+  document.getElementById('modalChatWrap').style.display='flex';
+  renderModalMsgs();
+}
+function renderModalMsgs(){
+  const w=document.getElementById('modalChatMsgs');
+  w.innerHTML='';
+  modalMsgs.forEach(m=>{const r=buildMsgEl(m);r.style.marginBottom='12px';w.appendChild(r);});
+  if(modalLoading) w.appendChild(buildTyping());
+  w.scrollTop=w.scrollHeight;
+}
+async function sendModalChat(){
+  if(!userProfile?.is_premium){
+    const used=userProfile?.message_count||0;
+    if(used>=FREE_MSG_LIMIT){closePlanModal();openUpgradeModal();return;}
+  }
+  const ta=document.getElementById('modalTa');
+  const text=ta.value.trim();
+  if(!text||modalLoading) return;
+  modalMsgs.push({role:'user',content:text});
+  ta.value=''; ta.style.height='auto';
+  modalLoading=true; document.getElementById('modalSend').disabled=true;
+  renderModalMsgs();
+  try{
+    const sys=isEditMode?EDIT_SYS:ONBOARD_SYS;
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:modalMsgs.slice(-20),system:sys})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
+    const data=await res.json();
+    let reply=data.reply||'Something went wrong!';
+    const ready=reply.includes('BLUEPRINT_READY');
+    const jm=reply.match(/```json([\s\S]*?)```/);
+    if(jm){
+      try{const p=JSON.parse(jm[1].trim());weekData={...weekData,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};}catch(e){}
+      reply=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();
+    }
+    modalMsgs.push({role:'assistant',content:reply});
+    await updateMessageCount();
+    modalLoading=false; document.getElementById('modalSend').disabled=false;
+    if(ready){
+      renderModalMsgs();
+      await saveWeekToSupabase();
+      await new Promise(r=>setTimeout(r,700));
+      closePlanModal();
+      const name=userProfile?.name||currentUser?.email?.split('@')[0]||'there';
+      document.getElementById('tbTitle').textContent=`Welcome back, ${name} 👋`;
+      renderDashboard();
+      switchTab('dashboard',document.querySelector('[data-tab="dashboard"]'));
+    } else { renderModalMsgs(); }
+  }catch(e){
+    modalMsgs.push({role:'assistant',content:`**Error** — ${e.message}`});
+    modalLoading=false; document.getElementById('modalSend').disabled=false;
+    renderModalMsgs(); showToast(e.message);
+  }
+}
+
+/* ══════════════════════════
+   UPGRADE / STRIPE
+══════════════════════════ */
+function openUpgradeModal(){document.getElementById('upgradeModal').classList.add('open');trackEvent('upgrade_modal_open');}
+function closeUpgradeModal(){document.getElementById('upgradeModal').classList.remove('open');}
+
+async function startCheckout(){
+  const btn=document.getElementById('stripeBtn');
+  btn.disabled=true; btn.textContent='Redirecting to checkout…';
+  trackEvent('checkout_start');
+  try{
+    const res=await fetch('/.netlify/functions/create-checkout',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({priceId:STRIPE_PRICE,userId:currentUser?.id,email:currentUser?.email})});
+    const data=await res.json();
+    if(data.url) window.location.href=data.url;
+    else throw new Error(data.error||'Checkout failed');
+  }catch(e){
+    showToast(e.message);
+    btn.disabled=false; btn.textContent='Upgrade for £4.99/month →';
+  }
+}
+
+/* ══════════════════════════
+   MSG HELPERS
+══════════════════════════ */
+function buildMsgEl(m){
+  const r=document.createElement('div');
+  r.className=`mrow ${m.role}`;
+  r.innerHTML=m.role==='assistant'
+    ?`<div class="mav">🏗️</div><div class="mbub">${md(m.content)}</div>`
+    :`<div class="mbub">${md(m.content)}</div>`;
+  return r;
+}
+function buildTyping(){
+  const r=document.createElement('div'); r.className='trow';
+  r.innerHTML=`<div class="mav">🏗️</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  return r;
+}
+
+/* ══════════════════════════
+   MARKDOWN
+══════════════════════════ */
+function md(t){
+  t=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/\*(.*?)\*/g,'<em>$1</em>');
+  t=t.replace(/^## (.*?)$/gm,'<h3>$1</h3>');
+  t=t.replace(/^### (.*?)$/gm,'<strong>$1</strong>');
+  t=t.replace(/^[-•] (.*?)$/gm,'<li>$1</li>');
+  t=t.replace(/(<li>[\s\S]*?<\/li>\n?)+/g,s=>`<ul>${s}</ul>`);
+  t=t.replace(/^\d+\. (.*?)$/gm,'<li>$1</li>');
+  t=t.replace(/^---$/gm,'<hr>');
+  t=t.replace(/\n\n+/g,'</p><p>');
+  t=t.replace(/\n/g,'<br>');
+  t=`<p>${t}</p>`;
+  t=t.replace(/<p>(<h3|<ul|<hr)/g,'$1');
+  t=t.replace(/(<\/h3>|<\/ul>|<hr>)<\/p>/g,'$1');
+  t=t.replace(/<p><\/p>/g,'');
+  return t;
+}
+
+/* ══════════════════════════
+   UTILS
+══════════════════════════ */
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+/* ══════════════════════════
+   BOOT
+══════════════════════════ */
+window.addEventListener('DOMContentLoaded',async()=>{
+  trackEvent('page_view');
+  checkConsent();
+  // Check for existing Supabase session
+  const {data:{session}}=await sb.auth.getSession();
+  if(session?.user){
+    document.getElementById('screen-landing').style.display='none';
+    await loadUserAndContinue(session.user);
+  }
+  // Handle Stripe return
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('upgraded')==='true'){
+    showToast('🎉 Welcome to Premium! All features unlocked.','ok');
+    // Refresh profile to get premium status
+    if(currentUser){
+      const {data}=await sb.from('user_profiles').select('*').eq('id',currentUser.id).single();
+      userProfile=data;
+      if(data?.is_premium) showApp(data.name||currentUser.email.split('@')[0]);
+    }
+    window.history.replaceState({},'',window.location.pathname);
+  }
+});
+</script>
+</body>
+</html>
