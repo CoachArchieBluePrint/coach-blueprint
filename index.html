@@ -12,42 +12,26 @@
   window.dataLayer=window.dataLayer||[];
   function gtag(){dataLayer.push(arguments);}
   gtag('js',new Date());
-  function trackEvent(n,p){ if(localStorage.getItem('archie_consent')==='granted') gtag('event',n,p||{}); }
-  if(localStorage.getItem('archie_consent')==='granted') gtag('config','G-XXXXXXXXXX',{anonymize_ip:true});
+  function trackEvent(n,p){if(localStorage.getItem('archie_consent')==='granted')gtag('event',n,p||{});}
+  if(localStorage.getItem('archie_consent')==='granted')gtag('config','G-XXXXXXXXXX',{anonymize_ip:true});
 </script>
 <style>
-/* ── TOKENS ── */
-:root {
-  --bg:        #050d1a;
-  --surface:   #0b1628;
-  --surface2:  #0f1e35;
-  --surface3:  #14263f;
-  --border:    rgba(26,106,255,0.12);
-  --border2:   rgba(26,106,255,0.25);
-  --blue:      #1a6aff;
-  --cyan:      #00d4ff;
-  --green:     #00e5a0;
-  --orange:    #ff8c42;
-  --pink:      #ff4d8d;
-  --text:      #e8edf5;
-  --muted:     #6b7fa3;
-  --muted2:    #3d4f6e;
-  --grad:      linear-gradient(135deg,#1a6aff,#00d4ff);
-  --grad-btn:  linear-gradient(135deg,#1a6aff,#0047d4);
-  --r:         12px;
-  --rl:        18px;
-  --sidebar:   260px;
-  --font-h:    'Barlow Condensed',sans-serif;
-  --font-b:    'Outfit',sans-serif;
+:root{
+  --bg:#050d1a;--surface:#0b1628;--surface2:#0f1e35;--surface3:#14263f;
+  --border:rgba(26,106,255,0.12);--border2:rgba(26,106,255,0.25);
+  --blue:#1a6aff;--cyan:#00d4ff;--green:#00e5a0;--orange:#ff8c42;--pink:#ff4d8d;
+  --text:#e8edf5;--muted:#6b7fa3;--muted2:#3d4f6e;
+  --grad:linear-gradient(135deg,#1a6aff,#00d4ff);
+  --grad-btn:linear-gradient(135deg,#1a6aff,#0047d4);
+  --r:12px;--rl:18px;--sidebar:260px;
+  --font-h:'Barlow Condensed',sans-serif;--font-b:'Outfit',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;font-family:var(--font-b);font-size:14.5px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;}
+html,body{height:100%;font-family:var(--font-b);font-size:14px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(26,106,255,0.25);border-radius:10px;}
 button{cursor:pointer;font-family:var(--font-b);border:none;}
 textarea{font-family:var(--font-b);resize:none;}
-
-/* Grid texture */
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(26,106,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(26,106,255,0.04) 1px,transparent 1px);
   background-size:40px 40px;}
@@ -55,10 +39,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(26,106,255,0.08) 0%,transparent 70%);}
 
 /* ── CONSENT ── */
-#consent{position:fixed;bottom:0;left:0;right:0;z-index:9000;
-  background:var(--surface2);border-top:1px solid var(--border2);
-  padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-  box-shadow:0 -8px 32px rgba(0,0,0,0.5);animation:slideUp .35s ease;}
+#consent{position:fixed;bottom:0;left:0;right:0;z-index:9000;background:var(--surface2);
+  border-top:1px solid var(--border2);padding:14px 24px;display:flex;align-items:center;
+  gap:16px;flex-wrap:wrap;box-shadow:0 -8px 32px rgba(0,0,0,0.5);animation:slideUp .35s ease;}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 #consent p{font-size:12.5px;color:var(--muted);flex:1;min-width:180px;line-height:1.5;}
 #consent p a{color:var(--blue);}
@@ -66,122 +49,66 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .c-acc{background:var(--grad-btn);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;}
 .c-dec{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:8px 14px;border-radius:8px;font-size:13px;}
 
-/* ═══════════════════════════════
+/* ══════════════════════════════
    SCREEN 1: LANDING
-═══════════════════════════════ */
-#screen-landing{
-  position:fixed;inset:0;z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:40px 24px;text-align:center;
-  transition:opacity .5s ease,transform .5s ease;
-}
+══════════════════════════════ */
+#screen-landing{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:40px 24px;text-align:center;
+  transition:opacity .5s,transform .5s;}
 #screen-landing.out{opacity:0;transform:translateY(-24px);pointer-events:none;}
-
-.land-logo{
-  width:80px;height:80px;border-radius:20px;
-  background:var(--grad-btn);display:flex;align-items:center;justify-content:center;
-  font-size:38px;margin:0 auto 28px;
-  box-shadow:0 0 60px rgba(26,106,255,0.45);
-  animation:logoPulse 3s ease-in-out infinite;
-}
+.land-logo{width:80px;height:80px;border-radius:20px;background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 28px;
+  box-shadow:0 0 60px rgba(26,106,255,0.45);animation:logoPulse 3s ease-in-out infinite;}
 @keyframes logoPulse{0%,100%{box-shadow:0 0 60px rgba(26,106,255,0.45)}50%{box-shadow:0 0 90px rgba(26,106,255,0.7)}}
-
-.land-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(26,106,255,0.1);border:1px solid rgba(26,106,255,0.3);
-  border-radius:100px;padding:6px 16px 6px 10px;
-  font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--cyan);
-  margin-bottom:28px;
-}
-.land-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s infinite;}
+.land-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(26,106,255,0.1);
+  border:1px solid rgba(26,106,255,0.3);border-radius:100px;padding:6px 16px 6px 10px;
+  font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--cyan);margin-bottom:28px;}
+.land-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-.land-title{
-  font-family:var(--font-h);font-size:clamp(52px,9vw,96px);
-  font-weight:900;letter-spacing:.01em;line-height:.92;margin-bottom:22px;
-}
+.land-title{font-family:var(--font-h);font-size:clamp(52px,9vw,96px);font-weight:900;
+  letter-spacing:.01em;line-height:.92;margin-bottom:22px;}
 .land-title .g{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-
-.land-sub{
-  font-size:clamp(15px,2.2vw,19px);color:var(--muted);
-  max-width:500px;margin:0 auto 20px;font-weight:300;line-height:1.6;
-}
-
-.land-features{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:44px;
-}
-.land-feat{
-  display:flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  border-radius:100px;padding:7px 14px;font-size:12.5px;color:var(--muted);
-}
-.land-feat span:first-child{font-size:14px;}
-
-.land-cta{
-  display:inline-flex;align-items:center;gap:12px;
-  background:var(--grad-btn);color:#fff;
-  padding:17px 40px;border-radius:var(--r);font-size:17px;font-weight:600;
-  box-shadow:0 4px 32px rgba(26,106,255,0.5);
-  transition:transform .2s,box-shadow .2s;border:none;
-}
+.land-sub{font-size:clamp(15px,2.2vw,19px);color:var(--muted);max-width:500px;
+  margin:0 auto 32px;font-weight:300;line-height:1.6;}
+.land-feats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:44px;}
+.land-feat{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12.5px;color:var(--muted);}
+.land-cta{display:inline-flex;align-items:center;gap:12px;background:var(--grad-btn);
+  color:#fff;padding:17px 40px;border-radius:var(--r);font-size:17px;font-weight:600;
+  box-shadow:0 4px 32px rgba(26,106,255,0.5);transition:transform .2s,box-shadow .2s;border:none;}
 .land-cta:hover{transform:translateY(-3px);box-shadow:0 8px 44px rgba(26,106,255,0.65);}
-.land-cta .arrow{transition:transform .2s;}
-.land-cta:hover .arrow{transform:translateX(5px);}
+.land-cta .arr{transition:transform .2s;}
+.land-cta:hover .arr{transform:translateX(5px);}
 .land-note{font-size:12px;color:var(--muted2);margin-top:14px;}
 
-/* ═══════════════════════════════
+/* ══════════════════════════════
    SCREEN 2: ONBOARDING CHAT
-═══════════════════════════════ */
-#screen-chat{
-  position:fixed;inset:0;z-index:99;display:none;
-  flex-direction:column;align-items:center;justify-content:center;
-}
+══════════════════════════════ */
+#screen-chat{position:fixed;inset:0;z-index:99;display:none;flex-direction:column;
+  align-items:center;background:var(--bg);}
 #screen-chat.active{display:flex;}
 #screen-chat.out{opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .5s,transform .5s;}
-
-.chat-header{
-  width:100%;max-width:720px;padding:20px 24px 16px;
-  display:flex;align-items:center;gap:12px;
-  border-bottom:1px solid var(--border);flex-shrink:0;
-}
-.chat-header-mark{width:36px;height:36px;border-radius:9px;background:var(--grad-btn);
+.chat-hd{width:100%;max-width:720px;padding:20px 24px 16px;display:flex;align-items:center;
+  gap:12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.chat-hd-mark{width:36px;height:36px;border-radius:9px;background:var(--grad-btn);
   display:flex;align-items:center;justify-content:center;font-size:17px;
   box-shadow:0 0 18px rgba(26,106,255,0.35);}
-.chat-header-name{font-family:var(--font-h);font-size:20px;font-weight:800;
+.chat-hd-name{font-family:var(--font-h);font-size:20px;font-weight:800;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.chat-header-sub{font-size:11px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase;}
-.chat-header-status{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
-.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 2.5s infinite;}
-
-.chat-progress{width:100%;max-width:720px;padding:10px 24px;flex-shrink:0;}
+.chat-hd-sub{font-size:11px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase;}
+.chat-hd-status{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 7px var(--green);animation:blink 2.5s infinite;}
+.chat-prog{width:100%;max-width:720px;padding:10px 24px;flex-shrink:0;}
 .prog-bar{height:3px;background:var(--surface3);border-radius:3px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .6s ease;width:0%;}
-.prog-label{font-size:10.5px;color:var(--muted2);margin-top:6px;text-align:right;}
-
-.chat-msgs{
-  width:100%;max-width:720px;flex:1;overflow-y:auto;
-  padding:20px 24px 12px;scroll-behavior:smooth;
-}
+.prog-lbl{font-size:10.5px;color:var(--muted2);margin-top:6px;text-align:right;}
+.chat-msgs{width:100%;max-width:720px;flex:1;overflow-y:auto;padding:20px 24px 12px;scroll-behavior:smooth;}
 .chat-msgs::-webkit-scrollbar{width:4px;}
+.chat-inp-wrap{width:100%;max-width:720px;padding:12px 24px 24px;flex-shrink:0;}
 
-.chat-input-wrap{width:100%;max-width:720px;padding:12px 24px 24px;flex-shrink:0;}
-.chat-input-box{display:flex;gap:10px;align-items:flex-end;
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:var(--rl);padding:10px 12px;transition:border-color .2s,box-shadow .2s;}
-.chat-input-box:focus-within{border-color:rgba(26,106,255,0.5);box-shadow:0 0 0 3px rgba(26,106,255,0.08);}
-.chat-ta{flex:1;background:transparent;border:none;color:var(--text);
-  font-size:14.5px;line-height:1.5;max-height:120px;overflow-y:auto;}
-.chat-ta:focus{outline:none;}
-.chat-ta::placeholder{color:var(--muted2);}
-.chat-send{width:38px;height:38px;border-radius:9px;flex-shrink:0;
-  background:var(--grad-btn);color:#fff;font-size:17px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 12px rgba(26,106,255,0.4);transition:transform .15s,box-shadow .15s,opacity .15s;}
-.chat-send:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 20px rgba(26,106,255,0.55);}
-.chat-send:disabled{opacity:.25;cursor:default;transform:none;}
-.chat-hint{font-size:10.5px;color:var(--muted2);text-align:center;margin-top:7px;}
-
-/* shared message styles */
+/* shared msg styles */
 .mrow{display:flex;gap:12px;margin-bottom:18px;animation:mIn .28s ease;}
 @keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .mrow.user{flex-direction:row-reverse;}
@@ -192,10 +119,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .mrow.assistant .mbub{background:var(--surface2);border:1px solid var(--border);
   border-radius:var(--rl) var(--rl) var(--rl) 4px;}
 .mrow.user .mbub{background:linear-gradient(135deg,#0c2a6b,#0a3d5c);
-  border:1px solid rgba(26,106,255,0.22);
-  border-radius:var(--rl) var(--rl) 4px var(--rl);}
+  border:1px solid rgba(26,106,255,0.22);border-radius:var(--rl) var(--rl) 4px var(--rl);}
 .mbub strong,.mbub b{color:var(--cyan);font-weight:600;}
-.mbub h3{font-family:var(--font-h);font-size:15px;font-weight:700;color:var(--text);margin:10px 0 5px;letter-spacing:.03em;}
+.mbub h3{font-family:var(--font-h);font-size:15px;font-weight:700;color:var(--text);margin:10px 0 5px;}
 .mbub ul,.mbub ol{padding-left:17px;margin:5px 0;}
 .mbub li{margin-bottom:3px;}
 .mbub p{margin-bottom:7px;}
@@ -208,105 +134,193 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
 @keyframes tdB{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 
-/* ═══════════════════════════════
-   SCREEN 3: CONSTRUCTION LOADER
-═══════════════════════════════ */
-#screen-loading{
-  position:fixed;inset:0;z-index:200;display:none;
-  flex-direction:column;align-items:center;justify-content:center;
-  background:var(--bg);
-}
+/* shared input box */
+.inp-box{display:flex;gap:10px;align-items:flex-end;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:var(--rl);padding:9px 11px;
+  transition:border-color .2s,box-shadow .2s;}
+.inp-box:focus-within{border-color:rgba(26,106,255,0.45);box-shadow:0 0 0 3px rgba(26,106,255,0.07);}
+.inp-ta{flex:1;background:transparent;border:none;color:var(--text);
+  font-size:14px;line-height:1.5;max-height:110px;overflow-y:auto;}
+.inp-ta:focus{outline:none;}
+.inp-ta::placeholder{color:var(--muted2);}
+.inp-send{width:36px;height:36px;border-radius:8px;flex-shrink:0;background:var(--grad-btn);
+  color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(26,106,255,0.35);transition:transform .15s,box-shadow .15s,opacity .15s;}
+.inp-send:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 18px rgba(26,106,255,0.5);}
+.inp-send:disabled{opacity:.25;cursor:default;transform:none;}
+.inp-hint{font-size:10.5px;color:var(--muted2);text-align:center;margin-top:7px;}
+
+/* ══════════════════════════════
+   SCREEN 3: LOADER
+══════════════════════════════ */
+#screen-loading{position:fixed;inset:0;z-index:200;display:none;
+  flex-direction:column;align-items:center;justify-content:center;background:var(--bg);}
 #screen-loading.active{display:flex;}
-
-.loader-icon{font-size:72px;margin-bottom:28px;animation:build 1s ease-in-out infinite alternate;}
+.loader-icon{font-size:72px;margin-bottom:24px;animation:build 1s ease-in-out infinite alternate;}
 @keyframes build{from{transform:translateY(0) scale(1)}to{transform:translateY(-12px) scale(1.06)}}
-
-.loader-title{font-family:var(--font-h);font-size:32px;font-weight:800;
-  letter-spacing:.04em;margin-bottom:10px;
+.loader-title{font-family:var(--font-h);font-size:32px;font-weight:800;letter-spacing:.04em;margin-bottom:8px;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.loader-sub{font-size:14px;color:var(--muted);margin-bottom:40px;}
-
-/* Construction animation — animated blueprint grid */
-.blueprint{
-  width:280px;height:160px;border-radius:var(--r);
+.loader-sub{font-size:14px;color:var(--muted);margin-bottom:36px;}
+.blueprint{width:280px;height:160px;border-radius:var(--r);
   background:linear-gradient(135deg,rgba(26,106,255,0.08),rgba(0,212,255,0.04));
-  border:1px solid var(--border2);position:relative;overflow:hidden;margin-bottom:36px;
-}
+  border:1px solid var(--border2);position:relative;overflow:hidden;margin-bottom:32px;}
 .bp-grid{position:absolute;inset:0;
   background-image:linear-gradient(rgba(26,106,255,0.15) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(26,106,255,0.15) 1px,transparent 1px);
-  background-size:20px 20px;}
+  linear-gradient(90deg,rgba(26,106,255,0.15) 1px,transparent 1px);background-size:20px 20px;}
 .bp-block{position:absolute;background:rgba(26,106,255,0.25);border:1px solid rgba(26,106,255,0.5);border-radius:3px;}
-.bp-b1{width:60px;height:30px;top:20px;left:20px;animation:bpReveal .4s ease .2s both;}
-.bp-b2{width:80px;height:20px;top:20px;left:90px;animation:bpReveal .4s ease .5s both;}
-.bp-b3{width:40px;height:50px;top:60px;left:20px;animation:bpReveal .4s ease .8s both;}
-.bp-b4{width:100px;height:30px;top:60px;left:70px;animation:bpReveal .4s ease 1.1s both;}
-.bp-b5{width:60px;height:20px;top:100px;left:20px;animation:bpReveal .4s ease 1.4s both;}
-.bp-b6{width:80px;height:20px;top:100px;left:90px;animation:bpReveal .4s ease 1.7s both;}
-.bp-line{position:absolute;background:rgba(0,212,255,0.4);border-radius:1px;}
-.bp-l1{width:1px;height:80px;top:20px;left:180px;animation:bpReveal .3s ease .6s both;}
-.bp-l2{width:80px;height:1px;top:100px;left:180px;animation:bpReveal .3s ease 1s both;}
+.bp-b1{width:60px;height:30px;top:20px;left:20px;animation:bpR .4s ease .2s both;}
+.bp-b2{width:80px;height:20px;top:20px;left:90px;animation:bpR .4s ease .5s both;}
+.bp-b3{width:40px;height:50px;top:60px;left:20px;animation:bpR .4s ease .8s both;}
+.bp-b4{width:100px;height:30px;top:60px;left:70px;animation:bpR .4s ease 1.1s both;}
+.bp-b5{width:60px;height:20px;top:100px;left:20px;animation:bpR .4s ease 1.4s both;}
+.bp-b6{width:80px;height:20px;top:100px;left:90px;animation:bpR .4s ease 1.7s both;}
+@keyframes bpR{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
 .bp-cursor{position:absolute;width:10px;height:10px;background:var(--cyan);border-radius:50%;
-  box-shadow:0 0 10px var(--cyan);animation:bpCursor 2s ease-in-out infinite;}
-@keyframes bpReveal{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
-@keyframes bpCursor{
-  0%{top:20px;left:20px}25%{top:20px;left:180px}
-  50%{top:110px;left:180px}75%{top:110px;left:20px}100%{top:20px;left:20px}}
-
+  box-shadow:0 0 10px var(--cyan);animation:bpC 2s ease-in-out infinite;}
+@keyframes bpC{0%{top:20px;left:20px}25%{top:20px;left:180px}50%{top:110px;left:180px}75%{top:110px;left:20px}100%{top:20px;left:20px}}
 .loader-steps{display:flex;flex-direction:column;gap:10px;width:280px;}
 .lstep{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);opacity:.4;transition:opacity .4s;}
 .lstep.done{opacity:1;color:var(--text);}
-.lstep.active{opacity:1;color:var(--cyan);}
+.lstep.act{opacity:1;color:var(--cyan);}
 .lstep-ic{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;
   display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
 .lstep.done .lstep-ic{background:var(--green);border-color:var(--green);color:#000;}
-.lstep.active .lstep-ic{border-color:var(--cyan);animation:spinStep 1s linear infinite;}
-@keyframes spinStep{to{transform:rotate(360deg)}}
+.lstep.act .lstep-ic{border-color:var(--cyan);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ═══════════════════════════════
-   SCREEN 4: FULL DASHBOARD
-═══════════════════════════════ */
-#screen-app{
-  position:fixed;inset:0;z-index:98;display:none;
-}
+/* ══════════════════════════════
+   SCREEN 4: APP
+══════════════════════════════ */
+#screen-app{position:fixed;inset:0;z-index:98;display:none;}
 #screen-app.active{display:flex;}
 
 /* SIDEBAR */
 .sb{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
   display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
-.sb-head{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;}
-.sb-mark{width:36px;height:36px;border-radius:9px;flex-shrink:0;background:var(--grad-btn);
-  display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 20px rgba(26,106,255,0.3);}
-.sb-name{font-family:var(--font-h);font-size:21px;font-weight:800;letter-spacing:.03em;
+.sb-head{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-mark{width:34px;height:34px;border-radius:9px;flex-shrink:0;background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;font-size:17px;}
+.sb-name{font-family:var(--font-h);font-size:20px;font-weight:800;letter-spacing:.03em;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sb-tag{font-size:9.5px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-top:-1px;}
-.sb-sec{padding:16px 18px 5px;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600;}
-.nav{width:100%;display:flex;align-items:center;gap:10px;padding:9px 18px;
+.sb-tag{font-size:9px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-top:-2px;}
+.sb-sec{padding:14px 16px 4px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600;}
+.nav{width:100%;display:flex;align-items:center;gap:10px;padding:8px 16px;
   background:transparent;border:none;border-left:2px solid transparent;
   color:var(--muted);font-size:13px;font-weight:400;text-align:left;transition:all .15s;}
 .nav:hover{color:var(--text);background:rgba(26,106,255,0.06);}
 .nav.on{color:var(--text);background:rgba(26,106,255,0.1);border-left-color:var(--blue);font-weight:600;}
-.nav-ic{font-size:15px;width:19px;text-align:center;flex-shrink:0;}
-.sb-streak{margin:auto 14px 14px;
-  background:linear-gradient(135deg,rgba(26,106,255,0.1),rgba(0,212,255,0.05));
-  border:1px solid var(--border2);border-radius:var(--r);padding:14px;}
-.sk-lbl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.sk-num{font-family:var(--font-h);font-size:40px;font-weight:900;line-height:1;
+.nav-ic{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+
+/* Archie plan button */
+.archie-btn{margin:12px 14px;background:var(--grad-btn);color:#fff;border-radius:var(--r);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;
+  box-shadow:0 4px 20px rgba(26,106,255,0.35);transition:transform .15s,box-shadow .15s;border:none;width:calc(100% - 28px);}
+.archie-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(26,106,255,0.5);}
+.archie-btn-ic{font-size:20px;}
+.archie-btn-text{text-align:left;}
+.archie-btn-label{font-size:13px;font-weight:600;}
+.archie-btn-sub{font-size:10px;opacity:.75;margin-top:1px;}
+
+/* Streak */
+.sb-streak{margin:8px 14px 14px;background:linear-gradient(135deg,rgba(26,106,255,0.1),rgba(0,212,255,0.05));
+  border:1px solid var(--border2);border-radius:var(--r);padding:12px;}
+.sk-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.sk-num{font-family:var(--font-h);font-size:36px;font-weight:900;line-height:1;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sk-sub{font-size:11px;color:var(--muted);margin-top:3px;}
-.sk-bar{height:3px;background:var(--surface3);border-radius:3px;margin-top:10px;overflow:hidden;}
+.sk-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.sk-bar{height:3px;background:var(--surface3);border-radius:3px;margin-top:8px;overflow:hidden;}
 .sk-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .5s ease;}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:58px;
-  padding:0 24px;display:flex;align-items:center;gap:14px;flex-shrink:0;}
-.tb-title{font-family:var(--font-h);font-size:21px;font-weight:700;letter-spacing:.03em;flex:1;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:54px;
+  padding:0 22px;display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.tb-title{font-family:var(--font-h);font-size:20px;font-weight:700;letter-spacing:.03em;flex:1;}
 .tb-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
-.msgs-app{flex:1;overflow-y:auto;padding:24px 24px 12px;scroll-behavior:smooth;}
-.msgs-app::-webkit-scrollbar{width:4px;}
+.tb-week{font-size:12px;color:var(--muted);background:var(--surface2);
+  border:1px solid var(--border);border-radius:100px;padding:4px 12px;}
 
-/* Affiliate */
+/* DASHBOARD SCROLL AREA */
+.dash-scroll{flex:1;overflow-y:auto;padding:20px 22px 32px;}
+.dash-scroll::-webkit-scrollbar{width:4px;}
+
+/* ── GOALS STRIP ── */
+.goals-strip{display:flex;gap:12px;margin-bottom:20px;align-items:stretch;}
+.goal-card{flex:1;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 12px;display:flex;flex-direction:column;
+  align-items:center;gap:8px;cursor:pointer;transition:border-color .2s,transform .2s,background .2s;
+  position:relative;min-width:0;}
+.goal-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.goal-card.complete{background:rgba(0,229,160,0.08);border-color:rgba(0,229,160,0.3);}
+.goal-card.partial{background:rgba(26,106,255,0.08);border-color:rgba(26,106,255,0.3);}
+.goal-emoji{font-size:28px;line-height:1;}
+.goal-name{font-size:11px;color:var(--muted);text-align:center;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;}
+.goal-progress{font-size:13px;font-weight:600;color:var(--text);}
+.goal-card.complete .goal-progress{color:var(--green);}
+.goal-dots{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;}
+.goal-dot{width:8px;height:8px;border-radius:50%;background:var(--surface3);
+  border:1px solid var(--muted2);transition:background .2s,border-color .2s;}
+.goal-dot.done{background:var(--blue);border-color:var(--blue);}
+.goal-dot.done-all{background:var(--green);border-color:var(--green);}
+.goal-card-tick{position:absolute;top:6px;right:8px;font-size:14px;opacity:0;transition:opacity .3s;}
+.goal-card.complete .goal-card-tick{opacity:1;}
+
+/* Streak card in goals strip */
+.streak-card{flex:0 0 80px;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:var(--r);padding:14px 10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;}
+.streak-card-num{font-family:var(--font-h);font-size:32px;font-weight:900;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.streak-card-lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;}
+.streak-card-fire{font-size:18px;}
+
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-title{font-family:var(--font-h);font-size:18px;font-weight:700;letter-spacing:.04em;}
+.cal-week-label{font-size:12px;color:var(--muted);background:var(--surface2);
+  border:1px solid var(--border);border-radius:100px;padding:4px 12px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.cal-day{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  padding:10px 8px;min-height:120px;display:flex;flex-direction:column;gap:6px;
+  transition:border-color .2s;}
+.cal-day.today{border-color:rgba(26,106,255,0.4);background:rgba(26,106,255,0.05);}
+.cal-day-name{font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin-bottom:2px;}
+.cal-day-num{font-family:var(--font-h);font-size:18px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px;}
+.cal-day.today .cal-day-num{color:var(--blue);}
+.cal-allday{display:flex;flex-direction:column;gap:3px;}
+.cal-timed{display:flex;flex-direction:column;gap:3px;border-top:1px solid var(--border);padding-top:5px;margin-top:2px;}
+.cal-event{font-size:10.5px;border-radius:5px;padding:3px 7px;line-height:1.3;word-break:break-word;}
+.cal-event.allday{background:rgba(26,106,255,0.15);color:var(--cyan);border:1px solid rgba(26,106,255,0.2);}
+.cal-event.timed{background:rgba(0,212,255,0.08);color:var(--text);border:1px solid rgba(0,212,255,0.15);}
+.cal-event-time{font-size:9.5px;color:var(--muted);display:block;margin-bottom:1px;}
+.cal-empty{font-size:11px;color:var(--muted2);font-style:italic;padding:4px 0;}
+
+/* ── RECOMMENDATIONS ── */
+.rec-section{margin-top:24px;}
+.rec-title{font-family:var(--font-h);font-size:18px;font-weight:700;letter-spacing:.04em;margin-bottom:12px;}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.rec-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;text-decoration:none;display:flex;flex-direction:column;gap:8px;
+  transition:border-color .2s,transform .2s;}
+.rec-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.rec-card-top{display:flex;align-items:center;gap:10px;}
+.rec-card-ic{font-size:26px;flex-shrink:0;}
+.rec-card-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);
+  font-weight:700;margin-bottom:2px;}
+.rec-card-title{font-size:13px;font-weight:600;color:var(--text);}
+.rec-card-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.rec-card-cta{display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;color:var(--blue);font-weight:600;margin-top:auto;}
+
+/* ── BLUEPRINTS CHAT IN MAIN ── */
+.bp-chat{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.bp-msgs{flex:1;overflow-y:auto;padding:20px 22px 12px;scroll-behavior:smooth;}
+.bp-msgs::-webkit-scrollbar{width:4px;}
+.bp-inp{padding:12px 22px 18px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
+
+/* Aff card in blueprint chat */
 .aff-wrap{padding-left:46px;margin-bottom:6px;}
 .aff{display:flex;align-items:center;gap:12px;
   background:linear-gradient(135deg,rgba(26,106,255,0.07),rgba(0,212,255,0.04));
@@ -319,22 +333,34 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .aff-desc{font-size:11.5px;color:var(--muted);}
 .aff-arr{margin-left:auto;color:var(--blue);font-size:16px;flex-shrink:0;}
 
-/* INPUT shared */
-.inpwrap{padding:12px 24px 18px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
-.inpbox{display:flex;gap:10px;align-items:flex-end;background:var(--surface2);
-  border:1px solid var(--border2);border-radius:var(--rl);padding:9px 11px;transition:border-color .2s,box-shadow .2s;}
-.inpbox:focus-within{border-color:rgba(26,106,255,0.45);box-shadow:0 0 0 3px rgba(26,106,255,0.07);}
-.inpta{flex:1;background:transparent;border:none;color:var(--text);
-  font-size:14px;line-height:1.5;max-height:110px;overflow-y:auto;}
-.inpta:focus{outline:none;}
-.inpta::placeholder{color:var(--muted2);}
-.sbtn{width:36px;height:36px;border-radius:8px;flex-shrink:0;
-  background:var(--grad-btn);color:#fff;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 10px rgba(26,106,255,0.35);transition:transform .15s,box-shadow .15s,opacity .15s;}
-.sbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 18px rgba(26,106,255,0.5);}
-.sbtn:disabled{opacity:.25;cursor:default;transform:none;}
-.inphint{font-size:10.5px;color:var(--muted2);text-align:center;margin-top:7px;}
+/* ── PLAN MODAL ── */
+#planModal{position:fixed;inset:0;z-index:500;display:none;align-items:center;
+  justify-content:center;background:rgba(5,13,26,0.85);backdrop-filter:blur(6px);}
+#planModal.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rl);
+  width:100%;max-width:480px;overflow:hidden;animation:mIn .3s ease;}
+.modal-head{padding:20px 22px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:var(--font-h);font-size:22px;font-weight:700;letter-spacing:.03em;}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:22px;line-height:1;padding:0 4px;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:20px 22px;}
+.modal-body p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.modal-week{font-size:15px;font-weight:600;color:var(--cyan);margin-bottom:6px;}
+.modal-warn{background:rgba(255,140,66,0.08);border:1px solid rgba(255,140,66,0.25);
+  border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--orange);
+  margin-bottom:20px;line-height:1.5;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btn-primary{flex:1;background:var(--grad-btn);color:#fff;padding:12px;
+  border-radius:var(--r);font-size:14px;font-weight:600;border:none;}
+.modal-btn-secondary{flex:1;background:transparent;border:1px solid var(--border2);
+  color:var(--muted);padding:12px;border-radius:var(--r);font-size:14px;}
+.modal-btn-secondary:hover{color:var(--text);}
+
+/* ── EDIT WEEK CHAT (inside modal) ── */
+.modal-chat{padding:0 22px 20px;max-height:360px;overflow-y:auto;}
+.modal-chat::-webkit-scrollbar{width:4px;}
+.modal-inp{padding:12px 22px 20px;border-top:1px solid var(--border);}
 
 /* Error toast */
 #errToast{position:fixed;top:16px;right:16px;z-index:9999;
@@ -343,25 +369,29 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   display:none;animation:mIn .3s ease;box-shadow:0 4px 24px rgba(0,0,0,0.4);}
 
 /* MOBILE */
+@media(max-width:900px){
+  .rec-grid{grid-template-columns:1fr 1fr;}
+  .cal-grid{gap:5px;}
+  .cal-event{font-size:9.5px;padding:2px 5px;}
+}
 @media(max-width:680px){
   :root{--sidebar:100%;}
   #screen-app.active{flex-direction:column;}
   .sb{width:100%;height:auto;flex-direction:row;overflow-x:auto;
     border-right:none;border-bottom:1px solid var(--border);}
-  .sb-head{border-bottom:none;padding:10px 14px;}
-  .sb-tag,.sb-sec,.sb-streak{display:none;}
-  .nav{flex-direction:column;padding:10px 12px;gap:3px;font-size:10px;
+  .sb-head{border-bottom:none;padding:10px 12px;}
+  .sb-tag,.sb-sec,.sb-streak,.archie-btn .archie-btn-text{display:none;}
+  .archie-btn{width:auto;flex-shrink:0;padding:10px 12px;}
+  .nav{flex-direction:column;padding:10px 10px;gap:2px;font-size:10px;
     border-left:none;border-bottom:2px solid transparent;white-space:nowrap;}
   .nav.on{border-bottom-color:var(--blue);border-left-color:transparent;}
-  .nav-ic{font-size:19px;}
-  .main{height:calc(100vh - 116px);}
-  .msgs-app{padding:14px 12px 8px;}
-  .inpwrap{padding:10px 12px 14px;}
+  .nav-ic{font-size:18px;}
+  .main{height:calc(100vh - 110px);}
+  .dash-scroll{padding:14px 12px 24px;}
+  .cal-grid{grid-template-columns:repeat(7,minmax(80px,1fr));overflow-x:auto;}
+  .goals-strip{flex-wrap:wrap;}
+  .rec-grid{grid-template-columns:1fr;}
   .mbub{max-width:88%;}
-  #screen-chat{padding:0;}
-  .chat-header,.chat-progress,.chat-msgs,.chat-input-wrap{max-width:100%;}
-  .chat-msgs{padding:14px 16px 10px;}
-  .chat-input-wrap{padding:10px 16px 16px;}
 }
 </style>
 </head>
@@ -380,539 +410,776 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 <!-- ═══════ SCREEN 1: LANDING ═══════ -->
 <div id="screen-landing">
-  <div class="land-badge">
-    <span class="land-badge-dot"></span>
-    Your Personal AI Life Coach
-  </div>
+  <div class="land-badge"><span class="land-badge-dot"></span>Your Personal AI Life Coach</div>
   <div class="land-logo">🏗️</div>
   <h1 class="land-title">Architect<br/><span class="g">Your Life</span></h1>
-  <p class="land-sub">Tell Archie about your week, set real goals, and build a plan that actually works — all in one conversation.</p>
-  <div class="land-features">
-    <div class="land-feat"><span>📅</span><span>Weekly Planner</span></div>
+  <p class="land-sub">Tell Archie about your week, set real goals, and get a visual dashboard that keeps you on track — all from one conversation.</p>
+  <div class="land-feats">
+    <div class="land-feat"><span>📅</span><span>Weekly Calendar</span></div>
+    <div class="land-feat"><span>🎯</span><span>Goal Tracking</span></div>
     <div class="land-feat"><span>🔥</span><span>Streak Tracking</span></div>
-    <div class="land-feat"><span>💰</span><span>Budget Planner</span></div>
-    <div class="land-feat"><span>🏃</span><span>Running Coach</span></div>
-    <div class="land-feat"><span>💪</span><span>Workout Builder</span></div>
-    <div class="land-feat"><span>🥗</span><span>Meal Planner</span></div>
-    <div class="land-feat"><span>📚</span><span>Books & Film</span></div>
-    <div class="land-feat"><span>🍽️</span><span>Social Planning</span></div>
+    <div class="land-feat"><span>💰</span><span>Budget Blueprint</span></div>
+    <div class="land-feat"><span>🏃</span><span>Running Blueprint</span></div>
+    <div class="land-feat"><span>💪</span><span>Workout Blueprint</span></div>
+    <div class="land-feat"><span>🥗</span><span>Meal Blueprint</span></div>
   </div>
-  <button class="land-cta" onclick="goToChat()">
-    Start chatting with Archie <span class="arrow">→</span>
-  </button>
+  <button class="land-cta" onclick="goToChat()">Start chatting with Archie <span class="arr">→</span></button>
   <p class="land-note">Free to use · No account needed · Your data stays private</p>
 </div>
 
 <!-- ═══════ SCREEN 2: ONBOARDING CHAT ═══════ -->
 <div id="screen-chat">
-  <div class="chat-header">
-    <div class="chat-header-mark">🏗️</div>
+  <div class="chat-hd">
+    <div class="chat-hd-mark">🏗️</div>
     <div>
-      <div class="chat-header-name">Archie</div>
-      <div class="chat-header-sub">AI Life Coach</div>
+      <div class="chat-hd-name">Archie</div>
+      <div class="chat-hd-sub">Building your blueprint…</div>
     </div>
-    <div class="chat-header-status">
-      <span class="sdot"></span><span>Building your blueprint…</span>
-    </div>
+    <div class="chat-hd-status"><span class="sdot"></span><span>Listening…</span></div>
   </div>
-  <div class="chat-progress">
+  <div class="chat-prog">
     <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-    <div class="prog-label" id="progLabel">Getting to know you…</div>
+    <div class="prog-lbl" id="progLbl">Getting to know you…</div>
   </div>
   <div class="chat-msgs" id="chatMsgs"></div>
-  <div class="chat-input-wrap">
-    <div class="chat-input-box">
-      <textarea class="chat-ta" id="chatTa" rows="1"
-        placeholder="Tell Archie about your week…"
-        onkeydown="handleChatKey(event)"
+  <div class="chat-inp-wrap">
+    <div class="inp-box">
+      <textarea class="inp-ta" id="chatTa" rows="1" placeholder="Tell Archie about your week…"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"
         oninput="autoResize(this)"></textarea>
-      <button class="chat-send" id="chatSend" onclick="sendChat()">↑</button>
+      <button class="inp-send" id="chatSend" onclick="sendChat()">↑</button>
     </div>
-    <div class="chat-hint">Enter to send · Shift+Enter for new line</div>
+    <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
   </div>
 </div>
 
-<!-- ═══════ SCREEN 3: LOADING ═══════ -->
+<!-- ═══════ SCREEN 3: LOADER ═══════ -->
 <div id="screen-loading">
   <div class="loader-icon">🏗️</div>
   <div class="loader-title">Building Your Blueprint</div>
   <div class="loader-sub">Archie is designing your personalised dashboard…</div>
   <div class="blueprint">
     <div class="bp-grid"></div>
-    <div class="bp-block bp-b1"></div>
-    <div class="bp-block bp-b2"></div>
-    <div class="bp-block bp-b3"></div>
-    <div class="bp-block bp-b4"></div>
-    <div class="bp-block bp-b5"></div>
-    <div class="bp-block bp-b6"></div>
-    <div class="bp-line bp-l1"></div>
-    <div class="bp-line bp-l2"></div>
+    <div class="bp-block bp-b1"></div><div class="bp-block bp-b2"></div>
+    <div class="bp-block bp-b3"></div><div class="bp-block bp-b4"></div>
+    <div class="bp-block bp-b5"></div><div class="bp-block bp-b6"></div>
     <div class="bp-cursor"></div>
   </div>
   <div class="loader-steps">
-    <div class="lstep" id="ls1"><div class="lstep-ic">○</div> Analysing your week</div>
+    <div class="lstep" id="ls1"><div class="lstep-ic">○</div> Mapping your week</div>
     <div class="lstep" id="ls2"><div class="lstep-ic">○</div> Setting up your goals</div>
     <div class="lstep" id="ls3"><div class="lstep-ic">○</div> Preparing your blueprints</div>
     <div class="lstep" id="ls4"><div class="lstep-ic">○</div> Finalising your dashboard</div>
   </div>
 </div>
 
-<!-- ═══════ SCREEN 4: FULL APP ═══════ -->
+<!-- ═══════ SCREEN 4: APP ═══════ -->
 <div id="screen-app">
+
+  <!-- SIDEBAR -->
   <nav class="sb">
     <div class="sb-head">
       <div class="sb-mark">🏗️</div>
-      <div>
-        <div class="sb-name">Archie</div>
-        <div class="sb-tag">AI Life Coach</div>
-      </div>
+      <div><div class="sb-name">Archie</div><div class="sb-tag">AI Life Coach</div></div>
     </div>
-    <button class="nav on" data-tab="dashboard" onclick="switchTab('dashboard',this)" style="margin-top:8px;">
+    <button class="nav on" data-tab="dashboard" onclick="switchTab('dashboard',this)" style="margin-top:6px;">
       <span class="nav-ic">📅</span> Dashboard
     </button>
     <div class="sb-sec">Blueprints</div>
-    <button class="nav" data-tab="budget" onclick="switchTab('budget',this)">
-      <span class="nav-ic">💰</span> Budget Planner
-    </button>
-    <button class="nav" data-tab="running" onclick="switchTab('running',this)">
-      <span class="nav-ic">🏃</span> Running Tracker
-    </button>
-    <button class="nav" data-tab="workout" onclick="switchTab('workout',this)">
-      <span class="nav-ic">💪</span> Workout Routine
-    </button>
-    <button class="nav" data-tab="diet" onclick="switchTab('diet',this)">
-      <span class="nav-ic">🥗</span> Meal Planner
-    </button>
-    <button class="nav" data-tab="hobby" onclick="switchTab('hobby',this)">
-      <span class="nav-ic">🎯</span> Hobby Tracker
-    </button>
-    <button class="nav" data-tab="media" onclick="switchTab('media',this)">
-      <span class="nav-ic">📚</span> Film & Books
-    </button>
-    <button class="nav" data-tab="social" onclick="switchTab('social',this)">
-      <span class="nav-ic">🍽️</span> Restaurants
-    </button>
+    <button class="nav" data-tab="budget" onclick="switchTab('budget',this)"><span class="nav-ic">💰</span> Budget</button>
+    <button class="nav" data-tab="running" onclick="switchTab('running',this)"><span class="nav-ic">🏃</span> Running</button>
+    <button class="nav" data-tab="workout" onclick="switchTab('workout',this)"><span class="nav-ic">💪</span> Workout</button>
+    <button class="nav" data-tab="diet" onclick="switchTab('diet',this)"><span class="nav-ic">🥗</span> Meals</button>
+    <button class="nav" data-tab="hobby" onclick="switchTab('hobby',this)"><span class="nav-ic">🎯</span> Hobby</button>
+    <button class="nav" data-tab="media" onclick="switchTab('media',this)"><span class="nav-ic">📚</span> Film & Books</button>
+    <button class="nav" data-tab="social" onclick="switchTab('social',this)"><span class="nav-ic">🍽️</span> Restaurants</button>
+
+    <!-- Archie plan button -->
+    <div style="margin-top:auto;padding:12px 14px 4px;">
+      <button class="archie-btn" onclick="openPlanModal()">
+        <span class="archie-btn-ic">🏗️</span>
+        <div class="archie-btn-text">
+          <div class="archie-btn-label">Plan with Archie</div>
+          <div class="archie-btn-sub">Edit or build next week</div>
+        </div>
+      </button>
+    </div>
+
     <div class="sb-streak">
       <div class="sk-lbl">Master Streak 🔥</div>
       <div class="sk-num" id="skNum">0</div>
-      <div class="sk-sub" id="skSub">Week 1 — let's go!</div>
+      <div class="sk-sub" id="skSub">Complete your goals to build</div>
       <div class="sk-bar"><div class="sk-fill" id="skFill" style="width:0%"></div></div>
     </div>
   </nav>
-  <div class="main">
+
+  <!-- MAIN -->
+  <div class="main" id="mainArea">
     <div class="topbar">
       <div class="tb-title" id="tbTitle">Weekly Dashboard</div>
-      <div class="tb-status"><span class="sdot"></span><span id="tbSub">Archie is ready</span></div>
+      <div class="tb-status"><span class="sdot"></span><span id="tbSub">Ready</span></div>
+      <div class="tb-week" id="tbWeek"></div>
     </div>
-    <div class="msgs-app" id="msgsApp"></div>
-    <div class="inpwrap">
-      <div class="inpbox">
-        <textarea class="inpta" id="appTa" rows="1"
-          placeholder="Ask Archie anything about your week…"
-          onkeydown="handleAppKey(event)"
-          oninput="autoResize(this)"></textarea>
-        <button class="sbtn" id="appSend" onclick="sendApp()" title="Send">↑</button>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashView" class="dash-scroll">
+      <!-- Goals strip -->
+      <div class="goals-strip" id="goalsStrip"></div>
+      <!-- Calendar -->
+      <div class="cal-header">
+        <div class="cal-title">This Week</div>
       </div>
-      <div class="inphint">Enter to send · Shift+Enter for new line</div>
+      <div class="cal-grid" id="calGrid"></div>
+      <!-- Recommendations -->
+      <div class="rec-section">
+        <div class="rec-title">Recommended for You</div>
+        <div class="rec-grid" id="recGrid"></div>
+      </div>
+    </div>
+
+    <!-- BLUEPRINT CHAT VIEW -->
+    <div id="bpView" class="bp-chat" style="display:none;">
+      <div class="bp-msgs" id="bpMsgs"></div>
+      <div class="bp-inp">
+        <div class="inp-box">
+          <textarea class="inp-ta" id="bpTa" rows="1" placeholder="Ask Archie…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendBp();}"
+            oninput="autoResize(this)"></textarea>
+          <button class="inp-send" id="bpSend" onclick="sendBp()">↑</button>
+        </div>
+        <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PLAN MODAL ═══════ -->
+<div id="planModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">🏗️ Plan with Archie</div>
+      <button class="modal-close" onclick="closePlanModal()">×</button>
+    </div>
+    <div id="modalChoose">
+      <div class="modal-body">
+        <p>What would you like to do?</p>
+        <div class="modal-week" id="modalWeekLabel"></div>
+        <div class="modal-btns" style="margin-bottom:12px;">
+          <button class="modal-btn-secondary" onclick="startEditWeek()">✏️ Edit this week</button>
+          <button class="modal-btn-primary" onclick="showNextWeekConfirm()">📅 Build next week</button>
+        </div>
+      </div>
+    </div>
+    <div id="modalNextWeekConfirm" style="display:none;">
+      <div class="modal-body">
+        <div class="modal-warn">⚠️ Building next week will erase your current week's data and goals. This cannot be undone.</div>
+        <div class="modal-btns">
+          <button class="modal-btn-secondary" onclick="showModalChoose()">← Go back</button>
+          <button class="modal-btn-primary" onclick="startNextWeek()">Yes, build next week →</button>
+        </div>
+      </div>
+    </div>
+    <div id="modalChat" style="display:none;flex-direction:column;">
+      <div class="modal-chat" id="modalChatMsgs"></div>
+      <div class="modal-inp">
+        <div class="inp-box">
+          <textarea class="inp-ta" id="modalTa" rows="1" placeholder="Tell Archie…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendModalChat();}"
+            oninput="autoResize(this)"></textarea>
+          <button class="inp-send" id="modalSend" onclick="sendModalChat()">↑</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 /* ══════════════════════════════════════
-   CONSTANTS
+   SYSTEM PROMPTS
 ══════════════════════════════════════ */
-const ONBOARDING_SYSTEM = `You are Archie the Architect, a warm and friendly AI life coach. You are onboarding a new user by having a natural conversation to understand their week and goals.
+const ONBOARD_SYS = `You are Archie the Architect, a friendly AI life coach onboarding a new user.
 
-Your job in this conversation:
-1. Ask about their week — what fixed commitments, appointments, events do they have Mon→Sun
-2. Ask what goals they want to set this week (goal types: Fitness, Personal Development, Work/Productivity, Social, Misc)
-3. For each goal get specifics (distance, sessions, pages, etc.)
-4. After you have a clear picture of both their week AND their goals, end your message with the exact phrase: BLUEPRINT_READY
+Your goal: have a natural conversation to collect:
+1. Their week's commitments Mon→Sun (with times if they have them, or all-day if not)
+2. Up to 4 goals for this week
+
+For each goal collect: a short name, an emoji that represents it, and how many times they need to do it this week (e.g. run 3 times = target 3).
+
+Once you have BOTH the week's events AND at least 1 goal confirmed, output a JSON block at the very end of your message in this exact format, then add the word BLUEPRINT_READY on a new line after it:
+
+\`\`\`json
+{
+  "weekCommencing": "YYYY-MM-DD",
+  "events": [
+    {"day": "Monday", "title": "Team standup", "time": "09:00", "allDay": false},
+    {"day": "Saturday", "title": "Family lunch", "time": null, "allDay": true}
+  ],
+  "goals": [
+    {"name": "Run", "emoji": "🏃", "target": 3, "done": 0},
+    {"name": "Read", "emoji": "📚", "target": 5, "done": 0}
+  ],
+  "recommendations": [
+    {"icon": "🏃", "tag": "FITNESS", "title": "Nike Running", "desc": "Gear for your runs", "url": "https://www.nike.com/gb/running", "cta": "Shop now"},
+    {"icon": "📚", "tag": "READING", "title": "Audible", "desc": "Listen on the go", "url": "https://www.audible.co.uk", "cta": "Try free"},
+    {"icon": "🥗", "tag": "NUTRITION", "title": "MyFitnessPal", "desc": "Track your nutrition", "url": "https://www.myfitnesspal.com", "cta": "Get started"}
+  ]
+}
+\`\`\`
+BLUEPRINT_READY
 
 Rules:
-- Be warm, casual, encouraging — never clinical
-- Ask one thing at a time, don't overwhelm
-- Use light markdown: **bold** for emphasis, bullet lists where helpful
-- When you have enough info (week mapped + at least 1 goal confirmed), add BLUEPRINT_READY at the very end of your message
-- Don't add BLUEPRINT_READY until you genuinely have week commitments AND at least one specific goal`;
+- weekCommencing should be the Monday of the current week
+- recommendations: pick exactly 3 that are genuinely relevant to their goals/lifestyle from well-known affiliate-friendly sites (Nike, Adidas, Audible, Kindle, MyProtein, Gymshark, MyFitnessPal, Headspace, Duolingo, Skillshare, Udemy, Monzo, Revolut, OpenTable, Deliveroo, Airbnb, Booking.com)
+- Be warm, casual, ask one thing at a time
+- Use **bold** and bullet points for clarity`;
 
-const DASHBOARD_SYSTEM = `You are Archie the Architect, a warm, casual, motivating AI life coach. The user has completed their onboarding and now has their full dashboard available.
+const BP_SYS = (tab) => `You are Archie the Architect, a warm AI life coach helping the user with their "${tab}" Blueprint. Stay focused on this topic. Use light markdown. Ask questions first, generate plans after gathering enough information.`;
 
-You have already collected their week and goals in the conversation history. Now help them:
-- Track goal completion day by day
-- Update their master streak
-- Answer questions about any aspect of their week or plan
-- Be encouraging and practical
-
-Tone: friendly, encouraging, never preachy. Use **bold**, ## headers, bullet lists. Keep responses focused.
-
-Master Streak rules: 1 goal missed = continues; 2 missed = freezes ❄️; 3+ missed = resets to 0 🔄
-When streak changes say clearly: "Your master streak is now X days" OR "Streak frozen" OR "Streak reset to 0"`;
-
-const BLUEPRINT_OPENERS = {
-  budget:  "Let's sort your finances 💰 No judgment — just clarity.\n\n**What's your monthly take-home income** after tax? And what are your biggest fixed costs each month?",
-  running: "Let's build your running plan 🏃\n\n**What's your running goal this week?** Number of sessions, total distance, or both?",
-  workout: "Time to build your routine 💪\n\n**What are your main fitness goals?** Build muscle, lose fat, improve endurance? And how many days can you train?",
-  diet:    "Let's sort your nutrition 🥗\n\n**Walk me through a typical day of eating** — breakfast through to dinner. Any restrictions or targets I should know about?",
-  hobby:   "Love that you're building a new skill 🎯\n\n**What's the hobby?** And where are you right now — total beginner or some experience?",
-  media:   "Let's build your reading and watching list 📚\n\n**What have you finished recently?** And are you after growth, entertainment, or a mix?",
-  social:  "Let's make your social time count 🍽️\n\n**What kind of outings** are you thinking about? What's been on the list that keeps getting pushed back?",
-};
-
-const AFFILIATES = {
-  running:[{ic:'👟',tag:'GEAR PICK',title:'Nike Running — 20% off',desc:'Cushioned trainers built for daily miles.',url:'https://www.nike.com/gb/running'},{ic:'⌚',tag:'TECH PICK',title:'Garmin Forerunner 165',desc:'Track every run with precision GPS.',url:'https://www.garmin.com/en-GB/'}],
-  workout:[{ic:'🏋️',tag:'KIT PICK',title:'Gymshark Training Gear',desc:'High-performance kit for every session.',url:'https://www.gymshark.com/'},{ic:'💊',tag:'NUTRITION',title:'MyProtein — Impact Whey',desc:'Clean protein to support your training.',url:'https://www.myprotein.com/'}],
-  diet:[{ic:'📦',tag:'FOOD PICK',title:'Thrive Market — Organic Staples',desc:'Healthy groceries below supermarket prices.',url:'https://thrivemarket.com/'},{ic:'🥣',tag:'MEAL PICK',title:'Huel — Balanced Nutrition',desc:'Complete meals built around your macros.',url:'https://huel.com/en-gb'}],
-  hobby:[{ic:'📖',tag:'LEARNING',title:'Skillshare — 1 Month Free',desc:'Thousands of creative and practical classes.',url:'https://www.skillshare.com/'},{ic:'🎒',tag:'LEARNING',title:'Udemy — Top Courses on Sale',desc:'Learn anything, lifetime access.',url:'https://www.udemy.com/'}],
-  media:[{ic:'📚',tag:'BOOKS',title:'Audible — 30 Day Free Trial',desc:'Listen to any book, anywhere.',url:'https://www.audible.co.uk/'},{ic:'📖',tag:'READING',title:'Kindle Unlimited',desc:'Unlimited reading for £8.99/mo.',url:'https://www.amazon.co.uk/kindle-dbs/hz/subscribe/ku'}],
-  budget:[{ic:'💳',tag:'FINANCE',title:'Monzo — Smart Money App',desc:'See exactly where every pound goes.',url:'https://monzo.com/'},{ic:'📊',tag:'SAVINGS',title:'Plum — Automated Savings',desc:'AI that puts money aside automatically.',url:'https://withplum.com/'}],
-  social:[{ic:'🎭',tag:'EVENTS',title:'Fever — Events Near You',desc:'Discover the best local experiences.',url:'https://feverup.com/en/london'},{ic:'🍽️',tag:'DINING',title:'OpenTable — Book a Table',desc:'Reserve the best restaurants instantly.',url:'https://www.opentable.co.uk/'}],
-  dashboard:[],
-};
-
-const TABS = {
-  dashboard:{title:'Weekly Dashboard',sub:'Your week at a glance',ph:'Ask Archie about your week…'},
-  budget:{title:'Budget Blueprint',sub:'Clarity on your finances',ph:'Tell Archie about your finances…'},
-  running:{title:'Running Blueprint',sub:'Build your running habit',ph:'What are your running goals?'},
-  workout:{title:'Workout Blueprint',sub:'Train smart, recover well',ph:'Tell Archie about your fitness goals…'},
-  diet:{title:'Meal Blueprint',sub:'Fuel your best self',ph:'What does a typical day of eating look like?'},
-  hobby:{title:'Hobby Blueprint',sub:'Grow a skill you love',ph:'What hobby are you working on?'},
-  media:{title:'Film & Books Blueprint',sub:'Curated for your growth',ph:'What have you been reading or watching?'},
-  social:{title:'Social Blueprint',sub:'Make memories intentionally',ph:'What kind of outings are you planning?'},
-};
+const EDIT_SYS = `You are Archie the Architect helping the user update their current week. Ask what they want to change — events or goals. Once confirmed output updated JSON in the same format as onboarding with BLUEPRINT_READY. Keep it brief and friendly.`;
 
 /* ══════════════════════════════════════
    STATE
 ══════════════════════════════════════ */
-let onboardingMsgs = [];
-let appChats = {};
+let onboardMsgs = [];
+let bpChats = {};
+let modalMsgs = [];
 let activeTab = 'dashboard';
-let appLoading = false;
+let bpLoading = false;
 let chatLoading = false;
-let streak = {days:0,status:'active'};
-// Progress tracking for onboarding
+let modalLoading = false;
 let msgCount = 0;
+let isEditMode = false;
+
+// Week data
+let weekData = {
+  weekCommencing: '',
+  events: [],
+  goals: [],
+  recommendations: [],
+  streak: 0,
+  streakStatus: 'active'
+};
+
+/* ══════════════════════════════════════
+   PERSIST
+══════════════════════════════════════ */
+function saveData(){ try{ localStorage.setItem('archie_week', JSON.stringify(weekData)); localStorage.setItem('archie_bp', JSON.stringify(bpChats)); }catch(e){} }
+function loadData(){
+  try{
+    const w = localStorage.getItem('archie_week');
+    if(w) weekData = JSON.parse(w);
+    const b = localStorage.getItem('archie_bp');
+    if(b) bpChats = JSON.parse(b);
+  }catch(e){}
+}
 
 /* ══════════════════════════════════════
    CONSENT
 ══════════════════════════════════════ */
-function checkConsent(){
-  if(!localStorage.getItem('archie_consent'))
-    document.getElementById('consent').style.display='flex';
-}
+function checkConsent(){ if(!localStorage.getItem('archie_consent')) document.getElementById('consent').style.display='flex'; }
 function setConsent(v){
   localStorage.setItem('archie_consent',v);
   document.getElementById('consent').style.display='none';
   if(v==='granted') gtag('config','G-XXXXXXXXXX',{anonymize_ip:true});
-  trackEvent('consent',{choice:v});
 }
 
 /* ══════════════════════════════════════
-   SCREEN TRANSITIONS
+   SCREEN FLOW
 ══════════════════════════════════════ */
 function goToChat(){
-  trackEvent('cta_click',{location:'landing'});
-  const land = document.getElementById('screen-landing');
-  land.classList.add('out');
+  trackEvent('cta_click');
+  document.getElementById('screen-landing').classList.add('out');
   setTimeout(()=>{
-    land.style.display='none';
-    const chat = document.getElementById('screen-chat');
-    chat.classList.add('active');
-    // Kick off with Archie's opener
+    document.getElementById('screen-landing').style.display='none';
+    document.getElementById('screen-chat').classList.add('active');
     startOnboarding();
     checkConsent();
-  }, 500);
+  },500);
 }
 
-function showLoader(){
+function showLoader(callback){
   document.getElementById('screen-chat').classList.add('out');
+  document.getElementById('screen-chat').style.pointerEvents='none';
   setTimeout(()=>{
     document.getElementById('screen-chat').style.display='none';
-    document.getElementById('screen-loading').classList.add('active');
-    runLoaderSteps();
-  }, 500);
+    const sl = document.getElementById('screen-loading');
+    sl.classList.add('active');
+    runLoaderSteps(()=>{
+      sl.style.display='none';
+      document.getElementById('screen-app').classList.add('active');
+      if(callback) callback();
+    });
+  },500);
 }
 
-function showApp(){
-  document.getElementById('screen-loading').style.display='none';
-  const app = document.getElementById('screen-app');
-  app.classList.add('active');
-  // Seed dashboard with onboarding context
-  const summary = `The user has completed their onboarding. Here is the full conversation where they described their week and goals:\n\n${onboardingMsgs.map(m=>`${m.role.toUpperCase()}: ${m.content}`).join('\n\n')}\n\nNow act as their ongoing coach. Start by giving them a clean summary of their week and goals as their dashboard overview.`;
-  appChats['dashboard'] = [{role:'assistant',content:''}]; // placeholder, will fill from API
-  generateDashboardSummary(summary);
-  trackEvent('dashboard_loaded');
-}
-
-function runLoaderSteps(){
-  const steps = ['ls1','ls2','ls3','ls4'];
-  const delays = [400, 1200, 2200, 3200];
+function runLoaderSteps(done){
+  const steps=['ls1','ls2','ls3','ls4'];
+  const delays=[400,1300,2300,3300];
   steps.forEach((id,i)=>{
     setTimeout(()=>{
-      // Mark previous done
-      if(i>0) {
-        const prev = document.getElementById(steps[i-1]);
-        prev.classList.remove('active');
-        prev.classList.add('done');
-        prev.querySelector('.lstep-ic').textContent='✓';
-      }
-      document.getElementById(id).classList.add('active');
-    }, delays[i]);
+      if(i>0){ const p=document.getElementById(steps[i-1]); p.classList.remove('act'); p.classList.add('done'); p.querySelector('.lstep-ic').textContent='✓'; }
+      document.getElementById(id).classList.add('act');
+    },delays[i]);
   });
-  // After last step, mark done and show app
-  setTimeout(()=>{
-    const last = document.getElementById('ls4');
-    last.classList.remove('active');
-    last.classList.add('done');
-    last.querySelector('.lstep-ic').textContent='✓';
-  }, 4200);
-  setTimeout(showApp, 4800);
+  setTimeout(()=>{ const l=document.getElementById('ls4'); l.classList.remove('act'); l.classList.add('done'); l.querySelector('.lstep-ic').textContent='✓'; },4300);
+  setTimeout(done,4900);
 }
 
 /* ══════════════════════════════════════
-   ONBOARDING CHAT
+   ONBOARDING
 ══════════════════════════════════════ */
-async function startOnboarding(){
-  const opener = "Hey! I'm **Archie** 🏗️ — your AI life coach.\n\nI'm going to ask you a few quick questions so I can build your personalised weekly dashboard. It'll only take a few minutes.\n\n**Let's start with your week — what's already in your diary?** Walk me through any fixed commitments, appointments, or events from Monday to Sunday.";
-  onboardingMsgs = [{role:'assistant', content:opener}];
+function startOnboarding(){
+  const opener = "Hey! I'm **Archie** 🏗️ — your AI life coach.\n\nI'm going to ask you a few questions so I can build your personalised weekly dashboard. Shouldn't take long!\n\n**First — what's already in your diary this week?** Walk me through any fixed commitments, appointments or events, Monday to Sunday. Include times if you have them, or just tell me it's all day.";
+  onboardMsgs = [{role:'assistant',content:opener}];
   renderChatMsgs();
 }
 
 function updateProgress(){
   msgCount++;
-  const pct = Math.min(msgCount * 14, 90);
-  document.getElementById('progFill').style.width = pct+'%';
-  const labels = [
-    'Getting to know you…',
-    'Mapping your week…',
-    'Understanding your schedule…',
-    'Setting your goals…',
-    'Locking in the details…',
-    'Almost ready…',
-  ];
-  document.getElementById('progLabel').textContent = labels[Math.min(msgCount-1, labels.length-1)];
+  const pct = Math.min(msgCount*13, 88);
+  document.getElementById('progFill').style.width=pct+'%';
+  const labels=['Getting to know you…','Mapping your week…','Understanding your schedule…','Locking in your goals…','Almost done…','Nearly there…'];
+  document.getElementById('progLbl').textContent=labels[Math.min(msgCount-1,labels.length-1)];
 }
 
 async function sendChat(){
-  const ta = document.getElementById('chatTa');
-  const text = ta.value.trim();
-  if(!text || chatLoading) return;
-
-  onboardingMsgs.push({role:'user', content:text});
+  const ta=document.getElementById('chatTa');
+  const text=ta.value.trim();
+  if(!text||chatLoading) return;
+  onboardMsgs.push({role:'user',content:text});
   ta.value=''; ta.style.height='auto';
-  chatLoading = true;
-  document.getElementById('chatSend').disabled = true;
+  chatLoading=true;
+  document.getElementById('chatSend').disabled=true;
   updateProgress();
   renderChatMsgs();
-  trackEvent('onboarding_message',{count:msgCount});
 
-  try {
-    const res = await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        messages: onboardingMsgs.slice(-20),
-        system: ONBOARDING_SYSTEM,
-      })
-    });
-    if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e.error||`Error ${res.status}`); }
-    const data = await res.json();
-    let reply = data.reply || 'Something went wrong!';
+  try{
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:onboardMsgs.slice(-20),system:ONBOARD_SYS})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
+    const data=await res.json();
+    let reply=data.reply||'Something went wrong!';
 
-    const blueprintReady = reply.includes('BLUEPRINT_READY');
-    reply = reply.replace('BLUEPRINT_READY','').trim();
+    const blueprintReady=reply.includes('BLUEPRINT_READY');
+    // Extract JSON
+    const jsonMatch=reply.match(/```json([\s\S]*?)```/);
+    if(jsonMatch){
+      try{
+        const parsed=JSON.parse(jsonMatch[1].trim());
+        weekData={...weekData,...parsed};
+        saveData();
+      }catch(e){ console.warn('JSON parse failed',e); }
+      reply=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();
+    }
 
-    onboardingMsgs.push({role:'assistant', content:reply});
-    chatLoading = false;
-    document.getElementById('chatSend').disabled = false;
+    onboardMsgs.push({role:'assistant',content:reply});
+    chatLoading=false;
+    document.getElementById('chatSend').disabled=false;
 
     if(blueprintReady){
-      // Complete progress bar
       document.getElementById('progFill').style.width='100%';
-      document.getElementById('progLabel').textContent='Blueprint complete!';
+      document.getElementById('progLbl').textContent='Blueprint complete! ✓';
       renderChatMsgs();
-      await new Promise(r=>setTimeout(r,1200));
-      showLoader();
+      await new Promise(r=>setTimeout(r,1000));
+      showLoader(()=>{ renderDashboard(); });
     } else {
       renderChatMsgs();
     }
-  } catch(e){
-    onboardingMsgs.push({role:'assistant',content:`**Hmm, something went wrong.** ${e.message}\n\nTry sending your message again.`});
-    chatLoading=false;
-    document.getElementById('chatSend').disabled=false;
-    renderChatMsgs();
-    showErr(e.message);
+  }catch(e){
+    onboardMsgs.push({role:'assistant',content:`**Something went wrong.** ${e.message}\n\nTry again!`});
+    chatLoading=false; document.getElementById('chatSend').disabled=false;
+    renderChatMsgs(); showErr(e.message);
   }
 }
 
 function renderChatMsgs(){
-  const wrap = document.getElementById('chatMsgs');
-  wrap.innerHTML = '';
-  onboardingMsgs.forEach(m=>{
-    const row=document.createElement('div');
-    row.className=`mrow ${m.role}`;
-    row.innerHTML = m.role==='assistant'
-      ? `<div class="mav">🏗️</div><div class="mbub">${md(m.content)}</div>`
-      : `<div class="mbub">${md(m.content)}</div>`;
-    wrap.appendChild(row);
-  });
-  if(chatLoading){
-    const t=document.createElement('div');
-    t.className='trow';
-    t.innerHTML=`<div class="mav">🏗️</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
-    wrap.appendChild(t);
-  }
+  const wrap=document.getElementById('chatMsgs');
+  wrap.innerHTML='';
+  onboardMsgs.forEach(m=>{ const r=buildMsgEl(m); wrap.appendChild(r); });
+  if(chatLoading) wrap.appendChild(buildTyping());
   wrap.scrollTop=wrap.scrollHeight;
 }
 
 /* ══════════════════════════════════════
-   DASHBOARD SUMMARY GENERATION
+   DASHBOARD RENDER
 ══════════════════════════════════════ */
-async function generateDashboardSummary(contextPrompt){
-  // Show loading in app
-  appChats['dashboard'] = [];
-  renderAppMsgs();
+function renderDashboard(){
+  // Week label
+  const wc = weekData.weekCommencing ? new Date(weekData.weekCommencing) : new Date();
+  const opts={month:'short',day:'numeric'};
+  const end=new Date(wc); end.setDate(end.getDate()+6);
+  const label=`w/c ${wc.toLocaleDateString('en-GB',opts)}`;
+  document.getElementById('tbWeek').textContent=label;
 
-  try {
-    const res = await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        messages:[{role:'user', content:contextPrompt}],
-        system: DASHBOARD_SYSTEM,
-      })
-    });
-    if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e.error||`Error ${res.status}`); }
-    const data = await res.json();
-    const reply = data.reply||'Welcome to your dashboard! What would you like to work on?';
-    appChats['dashboard'] = [{role:'assistant', content:reply}];
-    updateStreak(reply);
-  } catch(e){
-    appChats['dashboard'] = [{role:'assistant', content:`**Welcome to your dashboard!** 🏗️\n\nYour blueprint is ready. What would you like to focus on first?`}];
+  // Goals strip
+  renderGoals();
+  // Calendar
+  renderCalendar();
+  // Recommendations
+  renderRecommendations();
+  // Streak
+  renderStreak();
+}
+
+/* ── GOALS ── */
+function renderGoals(){
+  const strip=document.getElementById('goalsStrip');
+  strip.innerHTML='';
+  const goals=weekData.goals||[];
+
+  goals.slice(0,4).forEach((g,i)=>{
+    const allDone=g.done>=g.target;
+    const partial=g.done>0&&!allDone;
+    const card=document.createElement('div');
+    card.className=`goal-card${allDone?' complete':partial?' partial':''}`;
+    card.onclick=()=>logGoal(i);
+
+    // Build dots
+    let dots='';
+    for(let d=0;d<g.target;d++){
+      const cls=d<g.done?(allDone?'done-all':'done'):'';
+      dots+=`<div class="goal-dot ${cls}"></div>`;
+    }
+
+    card.innerHTML=`
+      <div class="goal-card-tick">✓</div>
+      <div class="goal-emoji">${g.emoji||'🎯'}</div>
+      <div class="goal-name">${g.name}</div>
+      <div class="goal-progress">${g.done}/${g.target}</div>
+      <div class="goal-dots">${dots}</div>`;
+    strip.appendChild(card);
+  });
+
+  // Streak card (5th slot)
+  const sc=document.createElement('div');
+  sc.className='streak-card';
+  sc.innerHTML=`<div class="streak-card-fire">🔥</div><div class="streak-card-num" id="streakCardNum">${weekData.streak||0}</div><div class="streak-card-lbl">Week Streak</div>`;
+  strip.appendChild(sc);
+}
+
+function logGoal(idx){
+  const g=weekData.goals[idx];
+  if(!g) return;
+  if(g.done<g.target){
+    g.done++;
+    // Check if all goals now complete
+    checkWeekStreak();
+    saveData();
+    renderGoals();
+    // Pop animation
+    const cards=document.querySelectorAll('.goal-card');
+    if(cards[idx]){
+      cards[idx].style.transform='scale(1.08)';
+      setTimeout(()=>cards[idx].style.transform='',200);
+    }
+    trackEvent('goal_logged',{goal:g.name,done:g.done,target:g.target});
   }
-  renderAppMsgs();
+}
+
+function checkWeekStreak(){
+  const goals=weekData.goals||[];
+  if(!goals.length) return;
+  const missed=goals.filter(g=>g.done<g.target).length;
+  // Only update streak when week ends (Sunday) — for now just reflect current state
+  if(missed===0){
+    // All complete — could increment on week end, show green
+  }
+  renderStreak();
+}
+
+function renderStreak(){
+  const s=weekData.streak||0;
+  document.getElementById('skNum').textContent=s;
+  document.getElementById('skSub').textContent=
+    weekData.streakStatus==='frozen'?'❄️ Frozen — push back!':
+    weekData.streakStatus==='reset'?'🔄 Reset — rebuild!':
+    s===0?'Complete your goals to build':'weeks in a row 🔥';
+  document.getElementById('skFill').style.width=Math.min(s*20,100)+'%';
+  const scn=document.getElementById('streakCardNum');
+  if(scn) scn.textContent=s;
+}
+
+/* ── CALENDAR ── */
+function renderCalendar(){
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const short=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  // Figure out dates
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing):getThisMonday();
+  const today=new Date(); today.setHours(0,0,0,0);
+
+  days.forEach((day,i)=>{
+    const date=new Date(wc); date.setDate(wc.getDate()+i);
+    const isToday=date.getTime()===today.getTime();
+    const dayEvents=(weekData.events||[]).filter(e=>e.day===day||e.day===day.substring(0,3));
+    const allDay=dayEvents.filter(e=>e.allDay||!e.time);
+    const timed=dayEvents.filter(e=>!e.allDay&&e.time).sort((a,b)=>a.time.localeCompare(b.time));
+
+    const col=document.createElement('div');
+    col.className=`cal-day${isToday?' today':''}`;
+    col.innerHTML=`
+      <div class="cal-day-name">${short[i]}</div>
+      <div class="cal-day-num">${date.getDate()}</div>
+      <div class="cal-allday">
+        ${allDay.length?allDay.map(e=>`<div class="cal-event allday">${e.title}</div>`).join(''):''}
+      </div>
+      ${timed.length?`<div class="cal-timed">${timed.map(e=>`<div class="cal-event timed"><span class="cal-event-time">${e.time}</span>${e.title}</div>`).join('')}</div>`:''}
+      ${!allDay.length&&!timed.length?`<div class="cal-empty">Free</div>`:''}`;
+    grid.appendChild(col);
+  });
+}
+
+function getThisMonday(){
+  const d=new Date();
+  const day=d.getDay();
+  const diff=d.getDate()-day+(day===0?-6:1);
+  d.setDate(diff); d.setHours(0,0,0,0);
+  return d;
+}
+
+/* ── RECOMMENDATIONS ── */
+function renderRecommendations(){
+  const grid=document.getElementById('recGrid');
+  grid.innerHTML='';
+  const recs=weekData.recommendations||[];
+  recs.slice(0,3).forEach(r=>{
+    const card=document.createElement('a');
+    card.className='rec-card';
+    card.href=r.url; card.target='_blank'; card.rel='noopener';
+    card.onclick=()=>trackEvent('rec_click',{title:r.title});
+    card.innerHTML=`
+      <div class="rec-card-top">
+        <div class="rec-card-ic">${r.icon||'🔗'}</div>
+        <div><div class="rec-card-tag">${r.tag||'RECOMMENDED'}</div><div class="rec-card-title">${r.title}</div></div>
+      </div>
+      <div class="rec-card-desc">${r.desc}</div>
+      <div class="rec-card-cta">${r.cta||'Learn more'} <span>→</span></div>`;
+    grid.appendChild(card);
+  });
 }
 
 /* ══════════════════════════════════════
-   APP TABS & MESSAGES
+   TAB SWITCHING
 ══════════════════════════════════════ */
-function switchTab(tabId, el){
+function switchTab(tabId,el){
   activeTab=tabId;
   document.querySelectorAll('.nav').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  const t=TABS[tabId];
+  const TABS={
+    dashboard:{title:'Weekly Dashboard',sub:'Your week at a glance'},
+    budget:{title:'Budget Blueprint',sub:'Clarity on your finances'},
+    running:{title:'Running Blueprint',sub:'Build your running habit'},
+    workout:{title:'Workout Blueprint',sub:'Train smart, recover well'},
+    diet:{title:'Meal Blueprint',sub:'Fuel your best self'},
+    hobby:{title:'Hobby Blueprint',sub:'Grow a skill you love'},
+    media:{title:'Film & Books Blueprint',sub:'Curated for your growth'},
+    social:{title:'Social Blueprint',sub:'Make memories intentionally'},
+  };
+  const t=TABS[tabId]||{title:tabId,sub:''};
   document.getElementById('tbTitle').textContent=t.title;
   document.getElementById('tbSub').textContent=t.sub;
-  document.getElementById('appTa').placeholder=t.ph;
-  if(!appChats[tabId]) appChats[tabId]=[{role:'assistant',content:BLUEPRINT_OPENERS[tabId]||'How can I help?'}];
-  renderAppMsgs();
+
+  if(tabId==='dashboard'){
+    document.getElementById('dashView').style.display='block';
+    document.getElementById('bpView').style.display='none';
+    renderDashboard();
+  } else {
+    document.getElementById('dashView').style.display='none';
+    document.getElementById('bpView').style.display='flex';
+    const BP_OPENERS={
+      budget:"Let's get your finances clear 💰\n\n**What's your monthly take-home income** after tax? And what are your biggest fixed costs each month?",
+      running:"Let's build your running plan 🏃\n\n**What's your running goal?** Sessions per week, total distance, or both?",
+      workout:"Time to build your routine 💪\n\n**What are your main fitness goals?** And how many days a week can you train?",
+      diet:"Let's sort your nutrition 🥗\n\n**Walk me through a typical day of eating.** Any restrictions or targets?",
+      hobby:"Love that you're building something new 🎯\n\n**What's the hobby?** And what's your current level?",
+      media:"Let's build your reading and watching list 📚\n\n**What have you finished recently?** Growth, entertainment, or a mix?",
+      social:"Let's make your social time count 🍽️\n\n**What kind of outings** are you thinking about?",
+    };
+    if(!bpChats[tabId]) bpChats[tabId]=[{role:'assistant',content:BP_OPENERS[tabId]||'How can I help?'}];
+    renderBpMsgs();
+  }
   trackEvent('tab_switch',{tab:tabId});
 }
 
-function renderAppMsgs(){
-  const wrap=document.getElementById('msgsApp');
-  const msgs=appChats[activeTab]||[];
+/* ══════════════════════════════════════
+   BLUEPRINT CHAT
+══════════════════════════════════════ */
+function renderBpMsgs(){
+  const wrap=document.getElementById('bpMsgs');
+  const msgs=bpChats[activeTab]||[];
   wrap.innerHTML='';
-  msgs.forEach(m=>{
-    const row=document.createElement('div');
-    row.className=`mrow ${m.role}`;
-    row.innerHTML=m.role==='assistant'
-      ?`<div class="mav">🏗️</div><div class="mbub">${md(m.content)}</div>`
-      :`<div class="mbub">${md(m.content)}</div>`;
-    wrap.appendChild(row);
-  });
-  // Affiliate card for blueprint tabs
-  if(activeTab!=='dashboard'){
-    const ac=msgs.filter(m=>m.role==='assistant').length;
-    if(ac>=2){
-      const aff=getAff(activeTab,msgs.length);
-      if(aff){
-        const w=document.createElement('div');
-        w.className='aff-wrap';
-        w.innerHTML=`<a class="aff" href="${aff.url}" target="_blank" rel="noopener"
-          onclick="trackEvent('affiliate_click',{tab:'${activeTab}',item:'${aff.title}'})">
-          <div class="aff-ic">${aff.ic}</div>
-          <div><div class="aff-tag">${aff.tag} · Suggested</div>
-          <div class="aff-title">${aff.title}</div>
-          <div class="aff-desc">${aff.desc}</div></div>
-          <div class="aff-arr">→</div></a>`;
-        wrap.appendChild(w);
-      }
+  msgs.forEach(m=>wrap.appendChild(buildMsgEl(m)));
+  const ac=msgs.filter(m=>m.role==='assistant').length;
+  if(ac>=2){
+    const AFF={
+      budget:[{ic:'💳',tag:'FINANCE',title:'Monzo',desc:'See exactly where your money goes.',url:'https://monzo.com',cta:'Open account'}],
+      running:[{ic:'👟',tag:'GEAR',title:'Nike Running',desc:'Gear built for the miles ahead.',url:'https://www.nike.com/gb/running',cta:'Shop now'}],
+      workout:[{ic:'🏋️',tag:'KIT',title:'Gymshark',desc:'High-performance training kit.',url:'https://www.gymshark.com',cta:'Shop now'}],
+      diet:[{ic:'🥣',tag:'NUTRITION',title:'Huel',desc:'Complete balanced nutrition.',url:'https://huel.com/en-gb',cta:'Get started'}],
+      hobby:[{ic:'📖',tag:'LEARNING',title:'Skillshare',desc:'Thousands of creative classes.',url:'https://www.skillshare.com',cta:'Try free'}],
+      media:[{ic:'📚',tag:'BOOKS',title:'Audible',desc:'Listen to any book, anywhere.',url:'https://www.audible.co.uk',cta:'Try free'}],
+      social:[{ic:'🍽️',tag:'DINING',title:'OpenTable',desc:'Book the best restaurants instantly.',url:'https://www.opentable.co.uk',cta:'Book now'}],
+    };
+    const list=AFF[activeTab]||[];
+    if(list.length){
+      const a=list[0];
+      const w=document.createElement('div');
+      w.className='aff-wrap';
+      w.innerHTML=`<a class="aff" href="${a.url}" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'${activeTab}'})">
+        <div class="aff-ic">${a.ic}</div>
+        <div><div class="aff-tag">${a.tag} · Suggested</div><div class="aff-title">${a.title}</div><div class="aff-desc">${a.desc}</div></div>
+        <div class="aff-arr">→</div></a>`;
+      wrap.appendChild(w);
     }
   }
-  if(appLoading){
-    const t=document.createElement('div');
-    t.className='trow';
-    t.innerHTML=`<div class="mav">🏗️</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
-    wrap.appendChild(t);
-  }
+  if(bpLoading) wrap.appendChild(buildTyping());
   wrap.scrollTop=wrap.scrollHeight;
 }
 
-async function sendApp(){
-  const ta=document.getElementById('appTa');
+async function sendBp(){
+  const ta=document.getElementById('bpTa');
   const text=ta.value.trim();
-  if(!text||appLoading) return;
-
-  if(!appChats[activeTab]) appChats[activeTab]=[{role:'assistant',content:BLUEPRINT_OPENERS[activeTab]||''}];
-  appChats[activeTab].push({role:'user',content:text});
+  if(!text||bpLoading) return;
+  if(!bpChats[activeTab]) bpChats[activeTab]=[];
+  bpChats[activeTab].push({role:'user',content:text});
   ta.value=''; ta.style.height='auto';
-  appLoading=true;
-  document.getElementById('appSend').disabled=true;
-  renderAppMsgs();
-  trackEvent('message_sent',{tab:activeTab});
-
-  const system = activeTab==='dashboard' ? DASHBOARD_SYSTEM
-    : `You are Archie the Architect, a warm AI life coach helping the user with their "${TABS[activeTab].title}". Stay focused on this topic. Use light markdown. Ask questions first, generate plans after gathering enough information.`;
-
-  try {
-    const res=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        messages:appChats[activeTab].slice(-20).map(m=>({role:m.role,content:m.content})),
-        system,
-      })
-    });
+  bpLoading=true; document.getElementById('bpSend').disabled=true;
+  renderBpMsgs();
+  try{
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:bpChats[activeTab].slice(-20),system:BP_SYS(activeTab)})});
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
     const data=await res.json();
-    const reply=data.reply||'Something went wrong!';
-    appChats[activeTab].push({role:'assistant',content:reply});
-    if(activeTab==='dashboard') updateStreak(reply);
-    trackEvent('message_received',{tab:activeTab});
-  } catch(e){
-    appChats[activeTab].push({role:'assistant',content:`**Something went wrong** — ${e.message}\n\nTry sending your message again.`});
-    showErr(e.message);
-  }
-
-  appLoading=false;
-  document.getElementById('appSend').disabled=false;
-  renderAppMsgs();
-}
-
-function getAff(tab,n){
-  const list=AFFILIATES[tab]||[];
-  if(!list.length) return null;
-  return list[Math.floor(n/3)%list.length];
+    bpChats[activeTab].push({role:'assistant',content:data.reply||'Something went wrong!'});
+    saveData();
+  }catch(e){ bpChats[activeTab].push({role:'assistant',content:`**Error** — ${e.message}`}); showErr(e.message); }
+  bpLoading=false; document.getElementById('bpSend').disabled=false;
+  renderBpMsgs();
 }
 
 /* ══════════════════════════════════════
-   STREAK
+   PLAN MODAL
 ══════════════════════════════════════ */
-function updateStreak(text){
-  const lc=text.toLowerCase();
-  const nm=text.match(/master streak[^0-9]*(\d+)\s*day/i)||text.match(/streak is now (\d+)/i);
-  if(lc.match(/streak.{0,30}reset/))    streak={days:0,status:'reset'};
-  else if(lc.match(/streak.{0,20}fro/)) streak={...streak,status:'frozen'};
-  else if(nm)                            streak={days:parseInt(nm[1]),status:'active'};
+function openPlanModal(){
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing):getThisMonday();
+  const opts={weekday:'long',month:'long',day:'numeric'};
+  document.getElementById('modalWeekLabel').textContent=`Week commencing ${wc.toLocaleDateString('en-GB',opts)}`;
+  showModalChoose();
+  document.getElementById('planModal').classList.add('open');
+}
+function closePlanModal(){ document.getElementById('planModal').classList.remove('open'); modalMsgs=[]; }
+function showModalChoose(){
+  document.getElementById('modalChoose').style.display='block';
+  document.getElementById('modalNextWeekConfirm').style.display='none';
+  document.getElementById('modalChat').style.display='none';
+}
+function showNextWeekConfirm(){
+  document.getElementById('modalChoose').style.display='none';
+  document.getElementById('modalNextWeekConfirm').style.display='block';
+}
+function startNextWeek(){
+  // Calculate next week's Monday
+  const wc=weekData.weekCommencing?new Date(weekData.weekCommencing):getThisMonday();
+  const next=new Date(wc); next.setDate(next.getDate()+7);
+  const yyyy=next.getFullYear(),mm=String(next.getMonth()+1).padStart(2,'0'),dd=String(next.getDate()).padStart(2,'0');
+  // Update streak based on this week's completion before resetting
+  finaliseWeekStreak();
+  // Reset week
+  weekData={weekCommencing:`${yyyy}-${mm}-${dd}`,events:[],goals:[],recommendations:[],streak:weekData.streak,streakStatus:weekData.streakStatus};
+  saveData();
+  closePlanModal();
+  // Restart onboarding flow but stay in app
+  startModalChat(`Hey! Let's build your week of ${next.toLocaleDateString('en-GB',{month:'long',day:'numeric'})}.\n\n**What's in your diary next week?** Walk me through your commitments Monday to Sunday.`,false);
+}
+function startEditWeek(){
+  document.getElementById('modalChoose').style.display='none';
+  startModalChat("Sure! What would you like to change — your events, your goals, or both?",true);
+}
+function startModalChat(opener,isEdit){
+  isEditMode=isEdit;
+  modalMsgs=[{role:'assistant',content:opener}];
+  document.getElementById('modalChat').style.display='flex';
+  document.getElementById('modalChoose').style.display='none';
+  renderModalMsgs();
+}
+function renderModalMsgs(){
+  const wrap=document.getElementById('modalChatMsgs');
+  wrap.innerHTML='';
+  modalMsgs.forEach(m=>{ const r=buildMsgEl(m); r.style.marginBottom='12px'; wrap.appendChild(r); });
+  if(modalLoading) wrap.appendChild(buildTyping());
+  wrap.scrollTop=wrap.scrollHeight;
+}
+async function sendModalChat(){
+  const ta=document.getElementById('modalTa');
+  const text=ta.value.trim();
+  if(!text||modalLoading) return;
+  modalMsgs.push({role:'user',content:text});
+  ta.value=''; ta.style.height='auto';
+  modalLoading=true; document.getElementById('modalSend').disabled=true;
+  renderModalMsgs();
+  try{
+    const sys=isEditMode?EDIT_SYS:ONBOARD_SYS;
+    const res=await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:modalMsgs.slice(-20),system:sys})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
+    const data=await res.json();
+    let reply=data.reply||'Something went wrong!';
 
-  document.getElementById('skNum').textContent=streak.days;
-  document.getElementById('skSub').textContent=
-    streak.status==='frozen'?'❄️ Frozen — push back!':
-    streak.status==='reset'?'🔄 Reset — rebuild!':
-    streak.days===0?'Week 1 — let\'s go!':'days in a row 🔥';
-  document.getElementById('skFill').style.width=Math.min(streak.days*10,100)+'%';
+    const ready=reply.includes('BLUEPRINT_READY');
+    const jsonMatch=reply.match(/```json([\s\S]*?)```/);
+    if(jsonMatch){
+      try{
+        const parsed=JSON.parse(jsonMatch[1].trim());
+        weekData={...weekData,...parsed,streak:weekData.streak,streakStatus:weekData.streakStatus};
+        saveData();
+      }catch(e){}
+      reply=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();
+    }
+    modalMsgs.push({role:'assistant',content:reply});
+    modalLoading=false; document.getElementById('modalSend').disabled=false;
+    if(ready){
+      renderModalMsgs();
+      await new Promise(r=>setTimeout(r,800));
+      closePlanModal();
+      renderDashboard();
+      switchTab('dashboard',document.querySelector('[data-tab="dashboard"]'));
+    } else {
+      renderModalMsgs();
+    }
+  }catch(e){
+    modalMsgs.push({role:'assistant',content:`**Error** — ${e.message}`});
+    modalLoading=false; document.getElementById('modalSend').disabled=false;
+    renderModalMsgs(); showErr(e.message);
+  }
+}
+
+function finaliseWeekStreak(){
+  const goals=weekData.goals||[];
+  if(!goals.length) return;
+  const missed=goals.filter(g=>g.done<g.target).length;
+  if(missed===0) weekData.streak=(weekData.streak||0)+1;
+  else if(missed>=2){ weekData.streak=0; weekData.streakStatus='reset'; }
+  else weekData.streakStatus='active'; // 1 miss = free pass
+}
+
+/* ══════════════════════════════════════
+   MSG HELPERS
+══════════════════════════════════════ */
+function buildMsgEl(m){
+  const row=document.createElement('div');
+  row.className=`mrow ${m.role}`;
+  row.innerHTML=m.role==='assistant'
+    ?`<div class="mav">🏗️</div><div class="mbub">${md(m.content)}</div>`
+    :`<div class="mbub">${md(m.content)}</div>`;
+  return row;
+}
+function buildTyping(){
+  const r=document.createElement('div');
+  r.className='trow';
+  r.innerHTML=`<div class="mav">🏗️</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  return r;
 }
 
 /* ══════════════════════════════════════
@@ -940,16 +1207,27 @@ function md(t){
 /* ══════════════════════════════════════
    UTILS
 ══════════════════════════════════════ */
-function handleChatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
-function handleAppKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendApp();}}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 function showErr(msg){
   const t=document.getElementById('errToast');
-  t.textContent=msg;t.style.display='block';
+  t.textContent=msg; t.style.display='block';
   setTimeout(()=>t.style.display='none',5000);
 }
 
-window.addEventListener('DOMContentLoaded',()=>{ trackEvent('page_view'); });
+/* ══════════════════════════════════════
+   BOOT — check if returning user
+══════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded',()=>{
+  loadData();
+  trackEvent('page_view');
+  // If we have week data already, skip straight to app
+  if(weekData.events&&weekData.events.length>0){
+    document.getElementById('screen-landing').style.display='none';
+    document.getElementById('screen-app').classList.add('active');
+    renderDashboard();
+    checkConsent();
+  }
+});
 </script>
 </body>
 </html>
