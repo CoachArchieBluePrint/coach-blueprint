@@ -698,8 +698,7 @@ async function doGateSignup(){
   userProfile={id:data.user.id,name,message_count:0,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}};
   // Save week with Monday snap
   weekData.weekCommencing=snapToMonday(weekData.weekCommencing||getThisMonday());
-  const {error:weekErr}=await saveWeekToSupabase();
-  if(weekErr)console.error('Week save error:',weekErr);
+  await saveWeekToSupabase();
   document.getElementById('screen-gate').classList.remove('active');
   document.getElementById('screen-gate').style.display='none';
   // Reload allWeeks so dashboard has data
@@ -781,8 +780,8 @@ function updateWeekNavBtns(){
 async function saveWeekToSupabase(){
   if(!currentUser)return;
   const wc=snapToMonday(weekData.weekCommencing||getThisMonday());
-  const result=await sb.from('user_weeks').upsert({user_id:currentUser.id,week_commencing:wc,events:weekData.events||[],goals:weekData.goals||[],recommendations:weekData.recommendations||[],streak:weekData.streak||0,streak_status:weekData.streakStatus||'active',updated_at:new Date().toISOString()},{onConflict:'user_id,week_commencing'});
-  if(result.error)console.error('Week upsert error:',result.error.message);
+  const {error:upsertErr}=await sb.from('user_weeks').upsert({user_id:currentUser.id,week_commencing:wc,events:weekData.events||[],goals:weekData.goals||[],recommendations:weekData.recommendations||[],streak:weekData.streak||0,streak_status:weekData.streakStatus||'active',updated_at:new Date().toISOString()},{onConflict:'user_id,week_commencing'});
+  if(upsertErr)console.error('Week upsert error:',upsertErr.message);
   // Refresh allWeeks cache
   const {data:weeks}=await sb.from('user_weeks').select('*').eq('user_id',currentUser.id).order('week_commencing',{ascending:false});
   allWeeks=weeks||[];
