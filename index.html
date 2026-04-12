@@ -472,7 +472,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <button class="nav" data-tab="nutrition" onclick="switchTab('nutrition',this)"><span class="nav-ic">🥗</span> Nutrition</button>
     <button class="nav" data-tab="workout" onclick="switchTab('workout',this)"><span class="nav-ic">💪</span> Workout</button>
     <div class="sb-bottom">
-      <div class="msg-limit"><span class="msg-limit-lbl">Messages today</span><span class="msg-limit-num" id="msgLimitNum">10 left</span></div>
+      
       <button class="archie-btn" onclick="openPlanModal()">
         <span style="font-size:18px">🏗️</span>
         <div style="text-align:left"><div style="font-size:13px;font-weight:600">Plan with Archie</div><div style="font-size:10px;opacity:.75">Edit or build next week</div></div>
@@ -561,7 +561,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* ══ CONFIG ══ */
 const SUPABASE_URL='https://zwpzcbofwcyvzseprobn.supabase.co';
 const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3cHpjYm9md2N5dnpzZXByb2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjExNzUsImV4cCI6MjA5MTIzNzE3NX0.Gjs3vN9R-Q9ycXhwuQ-dati25HNyICPDWUNZ7LvSxhA';
-const DAILY_MSG_LIMIT=10;
+const DAILY_MSG_LIMIT=9999;
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
 
 /* ══ DATE HELPERS ══ */
