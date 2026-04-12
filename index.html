@@ -905,16 +905,33 @@ async function saveFeaturesToSupabase(){
 
 /* ══ LOADER ══ */
 function showLoader(cb){
-  document.getElementById('screen-chat').classList.add('out');
-  document.getElementById('screen-chat').style.pointerEvents='none';
+  // Hide all screens cleanly first
+  const chat=document.getElementById('screen-chat');
+  if(chat){chat.classList.add('out');chat.style.pointerEvents='none';}
+  const landing=document.getElementById('screen-landing');
+  if(landing){landing.style.display='none';}
+  const gate=document.getElementById('screen-gate');
+  if(gate){gate.style.display='none';}
+  const auth=document.getElementById('screen-auth');
+  if(auth){auth.style.display='none';auth.classList.remove('active');}
   setTimeout(()=>{
-    document.getElementById('screen-chat').style.display='none';
-    const sl=document.getElementById('screen-loading');sl.classList.add('active');
+    if(chat){chat.style.display='none';chat.classList.remove('active');}
+    const sl=document.getElementById('screen-loading');
+    sl.style.display='flex';sl.classList.add('active');
+    // Reset steps
+    ['ls1','ls2','ls3','ls4'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.remove('act','done');
+      el.querySelector('.lstep-ic').textContent='○';
+    });
     const steps=['ls1','ls2','ls3','ls4'],delays=[400,1300,2300,3300];
-    steps.forEach((id,i)=>{setTimeout(()=>{if(i>0){const p=document.getElementById(steps[i-1]);p.classList.remove('act');p.classList.add('done');p.querySelector('.lstep-ic').textContent='✓';}document.getElementById(id).classList.add('act');},delays[i]);});
+    steps.forEach((id,i)=>{setTimeout(()=>{
+      if(i>0){const p=document.getElementById(steps[i-1]);p.classList.remove('act');p.classList.add('done');p.querySelector('.lstep-ic').textContent='✓';}
+      document.getElementById(id).classList.add('act');
+    },delays[i]);});
     setTimeout(()=>{const l=document.getElementById('ls4');l.classList.remove('act');l.classList.add('done');l.querySelector('.lstep-ic').textContent='✓';},4300);
     setTimeout(cb,4800);
-  },500);
+  },300);
 }
 
 /* ══ SHOW APP ══ */
