@@ -501,6 +501,18 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="cal-header"><div class="cal-title">This Week</div></div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="ads-banner" id="adsBanner"><span>Advertisement</span></div>
+      <a href="https://monzo.me/adamharper90?h=xJta6l&account_type=personal" target="_blank" rel="noopener"
+        style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;
+        background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);
+        padding:14px 18px;text-decoration:none;transition:border-color .2s,transform .2s;"
+        onmouseover="this.style.borderColor='rgba(26,106,255,0.4)';this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.borderColor='';this.style.transform=''">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text)">🍺 Buy me a beer</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">This is a free, self-funded side project. If you find it useful, a beer goes a long way!</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:var(--blue);flex-shrink:0;">Send £ →</div>
+      </a>
       <div class="rec-section"><div class="rec-title">Recommended for You</div><div class="rec-grid" id="recGrid"></div></div>
     </div>
     <div id="view-travel" class="feat-view"></div>
@@ -551,6 +563,16 @@ const SUPABASE_URL='https://zwpzcbofwcyvzseprobn.supabase.co';
 const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3cHpjYm9md2N5dnpzZXByb2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjExNzUsImV4cCI6MjA5MTIzNzE3NX0.Gjs3vN9R-Q9ycXhwuQ-dati25HNyICPDWUNZ7LvSxhA';
 const DAILY_MSG_LIMIT=10;
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
+
+/* ══ DATE HELPERS ══ */
+function snapToMonday(dateStr){
+  // Always returns the Monday of the week containing dateStr
+  const d=dateStr?new Date(dateStr+'T00:00:00'):new Date();
+  const day=d.getDay(); // 0=Sun,1=Mon...6=Sat
+  const diff=day===0?-6:1-day; // days to subtract to get to Monday
+  d.setDate(d.getDate()+diff);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 
 /* ══ STATE ══ */
 let currentUser=null,userProfile=null;
@@ -670,11 +692,20 @@ async function doGateSignup(){
   const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
   if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='See my dashboard →';return;}
   currentUser=data.user;
-  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}});
+  // Insert profile — use upsert so it never fails on duplicate
+  const {error:profileErr}=await sb.from('user_profiles').upsert({id:data.user.id,name,message_count:0,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}},{onConflict:'id'});
+  if(profileErr)console.error('Profile save error:',profileErr.message);
   userProfile={id:data.user.id,name,message_count:0,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}};
-  await saveWeekToSupabase();
+  // Save week with Monday snap
+  weekData.weekCommencing=snapToMonday(weekData.weekCommencing||getThisMonday());
+  const {error:weekErr}=await saveWeekToSupabase();
+  if(weekErr)console.error('Week save error:',weekErr);
   document.getElementById('screen-gate').classList.remove('active');
   document.getElementById('screen-gate').style.display='none';
+  // Reload allWeeks so dashboard has data
+  const {data:weeks}=await sb.from('user_weeks').select('*').eq('user_id',data.user.id).order('week_commencing',{ascending:false});
+  allWeeks=weeks||[];currentWeekIdx=0;
+  if(allWeeks.length>0)loadWeekFromRow(allWeeks[0]);
   showLoader(()=>showApp(name));
   trackEvent('signup_complete');
 }
@@ -749,8 +780,9 @@ function updateWeekNavBtns(){
 /* ══ SUPABASE ══ */
 async function saveWeekToSupabase(){
   if(!currentUser)return;
-  const wc=weekData.weekCommencing||getThisMonday();
-  await sb.from('user_weeks').upsert({user_id:currentUser.id,week_commencing:wc,events:weekData.events||[],goals:weekData.goals||[],recommendations:weekData.recommendations||[],streak:weekData.streak||0,streak_status:weekData.streakStatus||'active',updated_at:new Date().toISOString()},{onConflict:'user_id,week_commencing'});
+  const wc=snapToMonday(weekData.weekCommencing||getThisMonday());
+  const result=await sb.from('user_weeks').upsert({user_id:currentUser.id,week_commencing:wc,events:weekData.events||[],goals:weekData.goals||[],recommendations:weekData.recommendations||[],streak:weekData.streak||0,streak_status:weekData.streakStatus||'active',updated_at:new Date().toISOString()},{onConflict:'user_id,week_commencing'});
+  if(result.error)console.error('Week upsert error:',result.error.message);
   // Refresh allWeeks cache
   const {data:weeks}=await sb.from('user_weeks').select('*').eq('user_id',currentUser.id).order('week_commencing',{ascending:false});
   allWeeks=weeks||[];
@@ -832,7 +864,7 @@ async function sendChat(){
     let reply=res;
     const ready=reply.includes('BLUEPRINT_READY');
     const jm=reply.match(/```json([\s\S]*?)```/);
-    if(jm){try{const p=JSON.parse(jm[1].trim());weekData={...weekData,...p};}catch(e){}reply=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();}
+    if(jm){try{const p=JSON.parse(jm[1].trim());if(p.weekCommencing)p.weekCommencing=snapToMonday(p.weekCommencing);weekData={...weekData,...p};}catch(e){}reply=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();}
     onboardMsgs.push({role:'assistant',content:reply});
     chatLoading=false;document.getElementById('chatSend').disabled=false;
     if(ready){
@@ -1214,7 +1246,7 @@ async function sendModalChat(){
     incMsgCount();
     let r=reply;const ready=r.includes('BLUEPRINT_READY');
     const jm=r.match(/```json([\s\S]*?)```/);
-    if(jm){try{const p=JSON.parse(jm[1].trim());weekData={...weekData,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};}catch(e){}r=r.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();}
+    if(jm){try{const p=JSON.parse(jm[1].trim());if(p.weekCommencing)p.weekCommencing=snapToMonday(p.weekCommencing);weekData={...weekData,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};}catch(e){}r=r.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();}
     modalMsgs.push({role:'assistant',content:r});modalLoading=false;document.getElementById('modalSend').disabled=false;
     if(ready){
       renderModalMsgs();
