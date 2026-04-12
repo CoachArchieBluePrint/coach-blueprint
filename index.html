@@ -733,14 +733,15 @@ async function doForgot(){
 
 async function loadUserAndContinue(user,nameOverride=null){
   currentUser=user;
-  const {data:profile}=await sb.from('user_profiles').select('*').eq('id',user.id).single();
-  userProfile=profile;
+  // Load profile - handle missing row gracefully
+  const {data:profile,error:profileErr}=await sb.from('user_profiles').select('*').eq('id',user.id).maybeSingle();
+  userProfile=profile||null;
   tweakCounts=profile?.tweak_counts||{travel:0,running:0,nutrition:0,workout:0};
   const name=nameOverride||profile?.name||user.email.split('@')[0];
-  // Load week
-  const {data:weekRow}=await sb.from('user_weeks').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1).single();
-  // Load feature data
-  const {data:featRow}=await sb.from('user_features').select('*').eq('user_id',user.id).single().catch(()=>({data:null}));
+  // Load week - handle missing row gracefully
+  const {data:weekRow}=await sb.from('user_weeks').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+  // Load feature data - handle missing row gracefully
+  const {data:featRow}=await sb.from('user_features').select('*').eq('user_id',user.id).maybeSingle();
   if(featRow){featureData={travel:featRow.travel||null,running:featRow.running||null,nutrition:featRow.nutrition||null,workout:featRow.workout||null};}
   document.getElementById('screen-auth').classList.remove('active');
   document.getElementById('screen-auth').style.display='none';
@@ -876,11 +877,11 @@ async function doGateLogin(){
   const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
   if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Sign in →';return;}
   currentUser = data.user;
-  const {data:profile} = await sb.from('user_profiles').select('*').eq('id',data.user.id).single();
-  userProfile = profile;
+  const {data:profile} = await sb.from('user_profiles').select('*').eq('id',data.user.id).maybeSingle();
+  userProfile = profile||null;
   tweakCounts = profile?.tweak_counts||{travel:0,running:0,nutrition:0,workout:0};
   // Load their existing week, ignore the onboarding one
-  const {data:weekRow} = await sb.from('user_weeks').select('*').eq('user_id',data.user.id).order('created_at',{ascending:false}).limit(1).single();
+  const {data:weekRow} = await sb.from('user_weeks').select('*').eq('user_id',data.user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
   if(weekRow){weekData={weekCommencing:weekRow.week_commencing,events:weekRow.events||[],goals:weekRow.goals||[],recommendations:weekRow.recommendations||[],streak:weekRow.streak||0,streakStatus:weekRow.streak_status||'active'};}
   document.getElementById('screen-gate').style.display='none';
   const name = profile?.name||data.user.email.split('@')[0];
