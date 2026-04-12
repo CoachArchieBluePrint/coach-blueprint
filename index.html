@@ -752,13 +752,22 @@ async function loadUserAndContinue(user,nameOverride=null){
 /* ══ TRIAL CHECK ══ */
 function isTrialActive(){
   if(userProfile?.is_premium) return true;
-  if(!userProfile?.trial_end) return false;
-  return new Date()<new Date(userProfile.trial_end);
+  if(!userProfile?.created_at && !userProfile?.trial_end) return false;
+  // Use trial_end if set, otherwise fall back to 7 days from created_at
+  const end = userProfile.trial_end
+    ? new Date(userProfile.trial_end)
+    : new Date(new Date(userProfile.created_at).getTime() + 7*24*60*60*1000);
+  return new Date() < end;
 }
 function trialDaysLeft(){
-  if(!userProfile?.trial_end) return 0;
-  const diff=new Date(userProfile.trial_end)-new Date();
-  return Math.max(0,Math.ceil(diff/(1000*60*60*24)));
+  const end = userProfile?.trial_end
+    ? new Date(userProfile.trial_end)
+    : userProfile?.created_at
+      ? new Date(new Date(userProfile.created_at).getTime() + 7*24*60*60*1000)
+      : null;
+  if(!end) return 0;
+  const diff = end - new Date();
+  return Math.max(0, Math.ceil(diff/(1000*60*60*24)));
 }
 
 /* ══ ONBOARDING ══ */
@@ -936,6 +945,16 @@ function showApp(name){
   const ads=document.getElementById('adsBanner');
   if(ads)ads.style.display=isPremium?'none':'flex';
   renderDashboard();
+  // Show paywall banner on dashboard if trial expired and not premium
+  const existingBanner=document.getElementById('expiredBanner');
+  if(existingBanner)existingBanner.remove();
+  if(!isPremium&&!trial){
+    const banner=document.createElement('div');
+    banner.id='expiredBanner';
+    banner.style.cssText='position:fixed;bottom:0;left:var(--sidebar);right:0;z-index:400;background:linear-gradient(135deg,rgba(244,196,48,0.12),rgba(255,140,66,0.08));border-top:1px solid rgba(244,196,48,0.3);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;';
+    banner.innerHTML=`<div><div style="font-size:13px;font-weight:600;color:var(--gold)">⏰ Your free week has ended</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Upgrade to keep building your weeks and access all features.</div></div><button onclick="openUpgradeModal()" style="background:var(--grad-premium);color:#000;border:none;border-radius:var(--r);padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">Upgrade — £4.99/mo</button>`;
+    document.getElementById('screen-app').appendChild(banner);
+  }
   trackEvent('app_loaded',{is_premium:isPremium,trial_active:trial});
 }
 
@@ -969,10 +988,28 @@ function renderGoals(){
 }
 
 async function logGoal(idx){
-  const g=weekData.goals[idx];if(!g||g.done>=g.target)return;
-  g.done++;
-  const allComplete=(weekData.goals||[]).every(g=>g.done>=g.target);
-  if(allComplete){weekData.streak=(weekData.streak||0)+1;weekData.streakStatus='active';showToast('🔥 All goals complete! Streak updated!','ok');}
+  if(!isTrialActive()&&!userProfile?.is_premium){openUpgradeModal();return;}
+  const g=weekData.goals[idx];if(!g)return;
+  const wasAllComplete=(weekData.goals||[]).every(g=>g.done>=g.target);
+  if(g.done>=g.target){
+    // UNCLICK — decrement
+    g.done--;
+    // If was all complete before unclick, roll back streak
+    if(wasAllComplete&&weekData.streak>0){
+      weekData.streak--;
+      weekData.streakStatus='active';
+      showToast('Goal unchecked — streak updated','ok');
+    }
+  } else {
+    // CLICK — increment
+    g.done++;
+    const nowAllComplete=(weekData.goals||[]).every(g=>g.done>=g.target);
+    if(nowAllComplete&&!wasAllComplete){
+      weekData.streak=(weekData.streak||0)+1;
+      weekData.streakStatus='active';
+      showToast('🔥 All goals complete! Streak updated!','ok');
+    }
+  }
   renderGoals();renderStreak();await saveGoalsToSupabase();
   const cards=document.querySelectorAll('.goal-card');
   if(cards[idx]){cards[idx].style.transform='scale(1.1)';setTimeout(()=>cards[idx].style.transform='',200);}
@@ -1031,7 +1068,7 @@ function switchTab(tabId,el){
     document.getElementById('tbSub').textContent='Ready';
     renderDashboard();
   } else {
-    // Check access
+    // Check access — after first week, premium required for all feature tabs
     if(!isTrialActive()&&!userProfile?.is_premium){openUpgradeModal();return;}
     document.getElementById('view-'+tabId).classList.add('active');
     const titles={travel:'🌍 Travel',running:'🏃 Running',nutrition:'🥗 Nutrition',workout:'💪 Workout'};
