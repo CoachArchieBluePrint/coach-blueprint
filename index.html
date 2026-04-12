@@ -1007,35 +1007,42 @@ function renderFeatureSelector(tab,container){
   const sel=SELECTORS[tab];
   selSelections={};
   sel.steps.forEach(s=>{selSelections[s.key]=s.input?'':[];});
-  let html=`<div class="sel-flow"><div style="margin-bottom:24px"><div style="font-family:var(--font-h);font-size:28px;font-weight:800;letter-spacing:.02em;margin-bottom:6px">Build Your Plan</div><div style="font-size:13px;color:var(--muted)">Answer a few quick questions and Archie will generate your personalised plan.</div></div>`;
+  let html='<div class="sel-flow"><div style="margin-bottom:24px"><div style="font-family:var(--font-h);font-size:28px;font-weight:800;letter-spacing:.02em;margin-bottom:6px">Build Your Plan</div><div style="font-size:13px;color:var(--muted)">Answer a few quick questions and Archie will generate your personalised plan.</div></div>';
   sel.steps.forEach((step,idx)=>{
-    html+=`<div class="sel-step"><div class="sel-step-label">${step.label}</div><div class="sel-step-q">${step.q}</div>`;
+    html+='<div class="sel-step"><div class="sel-step-label">'+step.label+'</div><div class="sel-step-q">'+step.q+'</div>';
     if(step.input){
-      html+=`<input type="text" class="sel-input" placeholder="${step.placeholder||''}" oninput="selSelections['${step.key}']=this.value"/>`;
+      html+='<input type="text" class="sel-input" data-key="'+step.key+'" placeholder="'+(step.placeholder||'')+'" oninput="selSelections[this.dataset.key]=this.value"/>';
     } else {
-      html+=`<div class="sel-chips">`;
-      step.chips.forEach(c=>{html+=`<div class="chip" onclick="selToggle(this,'${tab}','${step.key}',${step.multi},'${c.replace(/'/g,"\\'")}'">${c}</div>`;});
-      html+=`</div>`;
-      if(step.optional)html+=`<div class="sel-note">Optional — skip if none apply.</div>`;
-      else html+=`<div class="sel-note">Select ${step.multi===1?'1 option':`up to ${step.multi}`}.</div>`;
+      html+='<div class="sel-chips" data-key="'+step.key+'" data-max="'+step.multi+'">';
+      step.chips.forEach(c=>{
+        html+='<div class="chip" data-val="'+c.replace(/"/g,'&quot;')+'">'+c+'</div>';
+      });
+      html+='</div>';
+      if(step.optional)html+='<div class="sel-note">Optional — skip if none apply.</div>';
+      else html+='<div class="sel-note">Select '+(step.multi===1?'1 option':'up to '+step.multi)+'.</div>';
     }
-    html+=`</div>`;
+    html+='</div>';
   });
-  html+=`<button class="sel-gen-btn" onclick="generateFeature('${tab}')">✨ Generate My Plan</button></div>`;
+  html+='<button class="sel-gen-btn" data-tab="'+tab+'" onclick="generateFeature(this.dataset.tab)">✨ Generate My Plan</button></div>';
   container.innerHTML=html;
+  // Safe event delegation for chips
+  container.querySelectorAll('.sel-chips').forEach(group=>{
+    group.addEventListener('click',e=>{
+      const chip=e.target.closest('.chip');if(!chip)return;
+      const key=group.dataset.key,max=parseInt(group.dataset.max),val=chip.dataset.val;
+      if(!selSelections[key])selSelections[key]=[];
+      if(max===1){
+        group.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+        chip.classList.add('sel');selSelections[key]=[val];
+      } else {
+        if(chip.classList.contains('sel')){chip.classList.remove('sel');selSelections[key]=selSelections[key].filter(v=>v!==val);}
+        else{if(selSelections[key].length>=max){showToast('Max '+max+' selections');return;}chip.classList.add('sel');selSelections[key].push(val);}
+      }
+    });
+  });
 }
 
-function selToggle(el,tab,key,max,val){
-  if(!selSelections[key])selSelections[key]=[];
-  if(max===1){
-    el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
-    el.classList.add('sel');
-    selSelections[key]=[val];
-  } else {
-    if(el.classList.contains('sel')){el.classList.remove('sel');selSelections[key]=selSelections[key].filter(v=>v!==val);}
-    else{if(selSelections[key].length>=max){showToast(`Max ${max} selections`);return;}el.classList.add('sel');selSelections[key].push(val);}
-  }
-}
+function selToggle(){}// no longer used — handled by event delegation above
 
 async function generateFeature(tab){
   if(!canSendMsg()){showToast('Daily message limit reached. Come back tomorrow!');return;}
@@ -1166,7 +1173,10 @@ function openPlanModal(forNextWeek=false){
 }
 function closePlanModal(){document.getElementById('planModal').classList.remove('open');modalMsgs=[];nextWeekMode=false;}
 function showModalChoose(){document.getElementById('modalChoose').style.display='block';document.getElementById('modalConfirm').style.display='none';document.getElementById('modalChatWrap').style.display='none';}
-function showModalConfirm(){document.getElementById('modalChoose').style.display='none';document.getElementById('modalConfirm').style.display='block';document.getElementById('modalChatWrap').style.display='none';}
+function showModalConfirm(){
+  // Skip warning — go straight to next week planning
+  startNextWeek();
+}
 function startEditInModal(){
   document.getElementById('modalChoose').style.display='none';isEditMode=true;
   modalMsgs=[{role:'assistant',content:"What would you like to change — your events, goals, or both?"}];
