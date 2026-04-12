@@ -8,13 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48BXRKYQBQ"></script>
 <script>
   window.dataLayer=window.dataLayer||[];
   function gtag(){dataLayer.push(arguments);}
   gtag('js',new Date());
-  function trackEvent(n,p){if(localStorage.getItem('archie_consent')==='granted')gtag('event',n,p||{});}
-  if(localStorage.getItem('archie_consent')==='granted')gtag('config','G-XXXXXXXXXX',{anonymize_ip:true});
+  gtag('config','G-48BXRKYQBQ');
+  function trackEvent(n,p){gtag('event',n,p||{});}
 </script>
 <style>
 :root{
@@ -339,7 +339,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 <!-- CONSENT -->
 <div id="consent" style="display:none">
-  <p>We use analytics to improve Archie. Data is never sold. <a href="#">Learn more</a></p>
+  <p>We use analytics to improve Archie. Data is never sold. <a href="/privacy.html" target="_blank">Privacy Policy</a></p>
   <div class="c-btns">
     <button class="c-dec" onclick="setConsent('denied')">Decline</button>
     <button class="c-acc" onclick="setConsent('granted')">Accept</button>
@@ -364,6 +364,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <button class="land-cta" onclick="goToOnboarding()">Start my plan <span class="arr">→</span></button>
     <button class="land-signin" onclick="goToLogin()">Sign in</button>
   </div>
+  <p style="font-size:11px;color:var(--muted2);margin-top:16px;"><a href="/privacy.html" target="_blank" style="color:var(--muted2);">Privacy Policy</a> · <a href="/privacy.html" target="_blank" style="color:var(--muted2);">Terms</a></p>
 </div>
 
 <!-- LOGIN -->
