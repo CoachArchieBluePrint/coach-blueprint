@@ -756,22 +756,16 @@ async function loadUserAndContinue(user,nameOverride=null){
 
 /* ══ TRIAL CHECK ══ */
 function isTrialActive(){
+  // Premium always has access
   if(userProfile?.is_premium) return true;
-  if(!userProfile?.created_at && !userProfile?.trial_end) return false;
-  // Use trial_end if set, otherwise fall back to 7 days from created_at
-  const end = userProfile.trial_end
-    ? new Date(userProfile.trial_end)
-    : new Date(new Date(userProfile.created_at).getTime() + 7*24*60*60*1000);
-  return new Date() < end;
+  // No trial_end set = trial is active (fail open — never lock out a user by mistake)
+  if(!userProfile?.trial_end) return true;
+  // Otherwise check if trial_end is in the future
+  return new Date() < new Date(userProfile.trial_end);
 }
 function trialDaysLeft(){
-  const end = userProfile?.trial_end
-    ? new Date(userProfile.trial_end)
-    : userProfile?.created_at
-      ? new Date(new Date(userProfile.created_at).getTime() + 7*24*60*60*1000)
-      : null;
-  if(!end) return 0;
-  const diff = end - new Date();
+  if(!userProfile?.trial_end) return 7;
+  const diff = new Date(userProfile.trial_end) - new Date();
   return Math.max(0, Math.ceil(diff/(1000*60*60*24)));
 }
 
@@ -861,8 +855,9 @@ async function doGateSignup(){
   const {data,error} = await sb.auth.signUp({email,password:pass,options:{data:{name}}});
   if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='See my dashboard →';return;}
   currentUser = data.user;
-  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,is_premium:false,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}});
-  userProfile = {id:data.user.id,name,message_count:0,is_premium:false,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}};
+  const trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+7);
+  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,is_premium:false,trial_end:trialEnd.toISOString(),tweak_counts:{travel:0,running:0,nutrition:0,workout:0}});
+  userProfile = {id:data.user.id,name,message_count:0,is_premium:false,trial_end:trialEnd.toISOString(),tweak_counts:{travel:0,running:0,nutrition:0,workout:0}};
   tweakCounts = {travel:0,running:0,nutrition:0,workout:0};
   await saveWeekToSupabase();
   document.getElementById('screen-gate').style.display='none';
@@ -950,16 +945,6 @@ function showApp(name){
   const ads=document.getElementById('adsBanner');
   if(ads)ads.style.display=isPremium?'none':'flex';
   renderDashboard();
-  // Show paywall banner on dashboard if trial expired and not premium
-  const existingBanner=document.getElementById('expiredBanner');
-  if(existingBanner)existingBanner.remove();
-  if(!isPremium&&!trial){
-    const banner=document.createElement('div');
-    banner.id='expiredBanner';
-    banner.style.cssText='position:fixed;bottom:0;left:var(--sidebar);right:0;z-index:400;background:linear-gradient(135deg,rgba(244,196,48,0.12),rgba(255,140,66,0.08));border-top:1px solid rgba(244,196,48,0.3);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;';
-    banner.innerHTML=`<div><div style="font-size:13px;font-weight:600;color:var(--gold)">⏰ Your free week has ended</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Upgrade to keep building your weeks and access all features.</div></div><button onclick="openUpgradeModal()" style="background:var(--grad-premium);color:#000;border:none;border-radius:var(--r);padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">Upgrade — £4.99/mo</button>`;
-    document.getElementById('screen-app').appendChild(banner);
-  }
   trackEvent('app_loaded',{is_premium:isPremium,trial_active:trial});
 }
 
@@ -967,6 +952,15 @@ function showApp(name){
 function renderDashboard(){
   const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date(getThisMonday()+'T00:00:00');
   document.getElementById('tbWeek').textContent=`w/c ${wc.toLocaleDateString('en-GB',{month:'short',day:'numeric'})}`;
+  // Expiry notice
+  const existing=document.getElementById('expiredNotice');if(existing)existing.remove();
+  if(!userProfile?.is_premium&&!isTrialActive()){
+    const notice=document.createElement('div');
+    notice.id='expiredNotice';
+    notice.style.cssText='background:#0f1a0a;border:1px solid rgba(244,196,48,0.3);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;';
+    notice.innerHTML='<div><div style="font-size:13px;font-weight:600;color:#f4c430">⏰ Your free week has ended</div><div style="font-size:12px;color:#6b7fa3;margin-top:3px">Upgrade to build next week and keep all your plans active.</div></div><button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#f4c430,#ff8c42);color:#000;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;">Upgrade — £4.99/mo</button>';
+    document.getElementById('view-dashboard').insertBefore(notice,document.getElementById('view-dashboard').firstChild);
+  }
   renderGoals();renderCalendar();renderRecommendations();renderStreak();
 }
 
