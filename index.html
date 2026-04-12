@@ -649,9 +649,14 @@ const ONBOARD_SYS=`You are Archie the Architect, a friendly AI life coach. Have 
 {"weekCommencing":"YYYY-MM-DD","events":[{"day":"Monday","title":"Team standup","time":"09:00","allDay":false}],"goals":[{"name":"Run","emoji":"🏃","target":3,"done":0}],"recommendations":[{"icon":"🏃","tag":"FITNESS","title":"Nike Running","desc":"Gear for your runs","url":"https://www.nike.com/gb/running","cta":"Shop now"},{"icon":"📚","tag":"READING","title":"Audible","desc":"Listen on the go","url":"https://www.audible.co.uk","cta":"Try free"},{"icon":"💪","tag":"WELLNESS","title":"MyFitnessPal","desc":"Track nutrition free","url":"https://www.myfitnesspal.com","cta":"Get started"}]}
 \`\`\`
 BLUEPRINT_READY
-Rules: weekCommencing = most recent Monday from today ${TODAY}. Max 4 goals. 3 recommendations relevant to their goals. Be warm and casual, one question at a time.`;
+Rules:
+- weekCommencing = most recent Monday from today ${TODAY}
+- CRITICAL: Each event must be a SEPARATE object in the array. Never combine two events into one title using brackets, slashes, commas or "+" symbols. If the user mentions "work from home and gym on Monday", that is TWO events: {"day":"Monday","title":"Work from home","allDay":true} and {"day":"Monday","title":"Gym","allDay":true}
+- Event titles must be properly capitalised (e.g. "Work from home" not "work from home")
+- Max 4 goals. 3 recommendations relevant to their goals
+- Be warm and casual, one question at a time`;
 
-const EDIT_SYS=`You are Archie helping update the user's week. Ask what to change. Output updated JSON with BLUEPRINT_READY when done. Today is ${TODAY}.`;
+const EDIT_SYS=`You are Archie helping update the user's week. Ask what to change. Output updated JSON with BLUEPRINT_READY when done. Today is ${TODAY}. CRITICAL: Each event must be a SEPARATE object — never combine two activities into one title. Titles must be properly capitalised.`;
 
 const TRAVEL_SYS=`You are Archie the Architect generating a travel itinerary. Given the user's selections, output 2 different destination itineraries. Format with clear sections using ## for destination names, ### for days. Include affiliate links naturally. Keep tone inspiring and practical. Use markdown tables where helpful for daily structure.`;
 const RUNNING_SYS=`You are Archie the Architect generating a personalised weekly running schedule. Given the user's inputs, output a single repeatable training week with clear day-by-day structure, specific paces (easy/tempo/interval/long run), and brief session notes. Use tables for the weekly overview. Be specific with paces based on their current time.`;
