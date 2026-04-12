@@ -1243,20 +1243,35 @@ async function sendModalChat(){
     const sys=isEditMode?EDIT_SYS:NEXT_WEEK_SYS;
     const reply=await callAPI(modalMsgs.slice(-20),sys);
     incMsgCount();
-    let r=reply;const ready=r.includes('BLUEPRINT_READY');
+    let r=reply;
+    const ready=r.includes('BLUEPRINT_READY');
     const jm=r.match(/```json([\s\S]*?)```/);
-    if(jm){try{const p=JSON.parse(jm[1].trim());if(p.weekCommencing)p.weekCommencing=snapToMonday(p.weekCommencing);weekData={...weekData,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};}catch(e){}r=r.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();}
-    modalMsgs.push({role:'assistant',content:r});modalLoading=false;document.getElementById('modalSend').disabled=false;
+    if(jm){
+      try{
+        const p=JSON.parse(jm[1].trim());
+        if(p.weekCommencing)p.weekCommencing=snapToMonday(p.weekCommencing);
+        weekData={...weekData,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};
+      }catch(e){console.error('JSON parse error',e);}
+      // Strip JSON and BLUEPRINT_READY from reply shown to user
+      r=r.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();
+    }
     if(ready){
-      renderModalMsgs();
+      // Save and update dashboard silently — don't show raw JSON to user
       await saveWeekToSupabase();
-      await new Promise(r=>setTimeout(r,700));
       closePlanModal();
-      renderDashboard();updateWeekNavBtns();
+      showToast(isEditMode?'Week updated! ✓':'Next week built! ✓','ok');
+      renderDashboard();
+      updateWeekNavBtns();
       switchTab('dashboard',document.querySelector('[data-tab="dashboard"]'));
-    } else renderModalMsgs();
+    } else {
+      // Not ready yet — show Archie's response and keep chatting
+      modalMsgs.push({role:'assistant',content:r});
+      modalLoading=false;
+      document.getElementById('modalSend').disabled=false;
+      renderModalMsgs();
+    }
   }catch(e){
-    modalMsgs.push({role:'assistant',content:`**Error** — ${e.message}`});
+    modalMsgs.push({role:'assistant',content:'Something went wrong — please try again.'});
     modalLoading=false;document.getElementById('modalSend').disabled=false;
     renderModalMsgs();showToast(e.message);
   }
@@ -1338,12 +1353,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
   trackEvent('page_view');
   checkConsent();
   renderMsgLimit();
-  // Check for existing session
-  const {data:{session}}=await sb.auth.getSession();
-  if(session?.user){
-    document.getElementById('screen-landing').style.display='none';
-    await loadUserData(session.user);
-  }
+  // Always sign out any existing session and show landing page
+  await sb.auth.signOut();
 });
 </script>
 </body>
