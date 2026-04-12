@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://js.stripe.com/v3/"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer=window.dataLayer||[];
@@ -25,7 +24,6 @@
   --text:#e8edf5;--muted:#6b7fa3;--muted2:#3d4f6e;
   --grad:linear-gradient(135deg,#1a6aff,#00d4ff);
   --grad-btn:linear-gradient(135deg,#1a6aff,#0047d4);
-  --grad-premium:linear-gradient(135deg,#f4c430,#ff8c42);
   --r:12px;--rl:18px;--sidebar:260px;
   --font-h:'Barlow Condensed',sans-serif;--font-b:'Outfit',sans-serif;
 }
@@ -40,9 +38,9 @@ input[type=text],input[type=email],input[type=password]{background:var(--surface
 input[type=text]:focus,input[type=email]:focus,input[type=password]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,106,255,0.1);}
 input::placeholder{color:var(--muted2);}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(26,106,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(26,106,255,0.04) 1px,transparent 1px);background-size:40px 40px;}
+  background-image:linear-gradient(rgba(26,106,255,0.04)1px,transparent 1px),linear-gradient(90deg,rgba(26,106,255,0.04)1px,transparent 1px);background-size:40px 40px;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(26,106,255,0.08) 0%,transparent 70%);}
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(26,106,255,0.08)0%,transparent 70%);}
 
 /* TOAST */
 #toast{position:fixed;top:16px;right:16px;z-index:9999;border-radius:var(--r);padding:12px 18px;font-size:13px;max-width:340px;line-height:1.5;display:none;box-shadow:0 4px 24px rgba(0,0,0,0.4);}
@@ -55,7 +53,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 #consent p a{color:var(--blue);}
 .c-btns{display:flex;gap:8px;}
 .c-acc{background:var(--grad-btn);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:none;}
-.c-dec{background:transparent;border:1px solid var(--border2) !important;color:var(--muted);padding:8px 14px;border-radius:8px;font-size:13px;}
+.c-dec{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:8px 14px;border-radius:8px;font-size:13px;}
 
 /* LANDING */
 #screen-landing{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;transition:opacity .5s,transform .5s;}
@@ -70,24 +68,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .land-sub{font-size:clamp(15px,2.2vw,19px);color:var(--muted);max-width:500px;margin:0 auto 28px;font-weight:300;line-height:1.6;}
 .land-feats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:36px;}
 .land-feat{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;padding:6px 13px;font-size:12px;color:var(--muted);}
-.land-cta{display:inline-flex;align-items:center;gap:12px;background:var(--grad-btn);color:#fff;padding:16px 38px;border-radius:var(--r);font-size:17px;font-weight:600;box-shadow:0 4px 32px rgba(26,106,255,0.5);transition:transform .2s,box-shadow .2s;border:none;}
+.land-btns{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.land-cta{display:inline-flex;align-items:center;gap:12px;background:var(--grad-btn);color:#fff;padding:16px 38px;border-radius:var(--r);font-size:17px;font-weight:600;box-shadow:0 4px 32px rgba(26,106,255,0.5);transition:transform .2s,box-shadow .2s;border:none;width:280px;justify-content:center;}
 .land-cta:hover{transform:translateY(-3px);box-shadow:0 8px 44px rgba(26,106,255,0.65);}
-.land-cta:hover .arr{transform:translateX(5px);}
+.land-signin{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:1.5px solid var(--border2);color:var(--muted);padding:13px 38px;border-radius:var(--r);font-size:15px;font-weight:500;width:280px;transition:all .2s;}
+.land-signin:hover{border-color:var(--blue);color:var(--text);}
 .arr{transition:transform .2s;}
-.land-note{font-size:12px;color:var(--muted2);margin-top:12px;}
+.land-cta:hover .arr{transform:translateX(5px);}
 
-/* AUTH */
-#screen-auth{position:fixed;inset:0;z-index:101;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
-#screen-auth.active{display:flex;}
+/* LOGIN SCREEN */
+#screen-login{position:fixed;inset:0;z-index:101;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
+#screen-login.active{display:flex;}
 .auth-box{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--rl);overflow:hidden;animation:mIn .35s ease;}
 .auth-head{padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--border);}
 .auth-logo{font-size:32px;margin-bottom:12px;}
 .auth-title{font-family:var(--font-h);font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .auth-sub{font-size:13px;color:var(--muted);margin-top:4px;}
 .auth-body{padding:24px 28px;}
-.auth-tabs{display:flex;background:var(--surface2);border-radius:var(--r);padding:3px;margin-bottom:22px;}
-.auth-tab{flex:1;padding:8px;border-radius:calc(var(--r) - 2px);font-size:13px;font-weight:500;color:var(--muted);background:transparent;border:none;transition:all .2s;}
-.auth-tab.on{background:var(--surface3);color:var(--text);font-weight:600;}
 .auth-field{margin-bottom:14px;}
 .auth-label{font-size:11.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600;margin-bottom:6px;display:block;}
 .auth-btn{width:100%;background:var(--grad-btn);color:#fff;padding:13px;border-radius:var(--r);font-size:15px;font-weight:600;border:none;box-shadow:0 4px 20px rgba(26,106,255,0.35);transition:transform .15s;margin-top:6px;}
@@ -95,11 +92,16 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .auth-btn:disabled{opacity:.4;cursor:default;transform:none;}
 .auth-err{font-size:12.5px;color:var(--pink);margin-top:8px;display:none;}
 .auth-forgot{font-size:12px;color:var(--blue);text-align:right;margin-top:6px;cursor:pointer;}
+.auth-back{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;cursor:pointer;}
+.auth-back:hover{color:var(--text);}
 
-/* CHAT (onboarding) */
+/* SIGNUP GATE */
+#screen-gate{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,13,26,0.95);backdrop-filter:blur(8px);}
+#screen-gate.active{display:flex;}
+
+/* ONBOARDING CHAT */
 #screen-chat{position:fixed;inset:0;z-index:99;display:none;flex-direction:column;align-items:center;background:var(--bg);}
 #screen-chat.active{display:flex;}
-#screen-chat.out{opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .5s,transform .5s;}
 .chat-hd{width:100%;max-width:720px;padding:18px 24px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .chat-hd-mark{width:34px;height:34px;border-radius:9px;background:var(--grad-btn);display:flex;align-items:center;justify-content:center;font-size:16px;}
 .chat-hd-name{font-family:var(--font-h);font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -122,6 +124,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .mrow.assistant .mbub{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rl) var(--rl) var(--rl) 4px;}
 .mrow.user .mbub{background:linear-gradient(135deg,#0c2a6b,#0a3d5c);border:1px solid rgba(26,106,255,0.22);border-radius:var(--rl) var(--rl) 4px var(--rl);}
 .mbub strong,.mbub b{color:var(--cyan);font-weight:600;}
+.mbub h2{font-family:var(--font-h);font-size:18px;font-weight:700;color:var(--cyan);margin:12px 0 6px;}
 .mbub h3{font-family:var(--font-h);font-size:15px;font-weight:700;color:var(--text);margin:10px 0 5px;}
 .mbub ul,.mbub ol{padding-left:17px;margin:5px 0;}
 .mbub li{margin-bottom:3px;}
@@ -151,7 +154,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .loader-title{font-family:var(--font-h);font-size:30px;font-weight:800;letter-spacing:.04em;margin-bottom:8px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .loader-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
 .blueprint{width:260px;height:148px;border-radius:var(--r);background:linear-gradient(135deg,rgba(26,106,255,0.08),rgba(0,212,255,0.04));border:1px solid var(--border2);position:relative;overflow:hidden;margin-bottom:28px;}
-.bp-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(26,106,255,0.15) 1px,transparent 1px),linear-gradient(90deg,rgba(26,106,255,0.15) 1px,transparent 1px);background-size:20px 20px;}
+.bp-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(26,106,255,0.15)1px,transparent 1px),linear-gradient(90deg,rgba(26,106,255,0.15)1px,transparent 1px);background-size:20px 20px;}
 .bp-block{position:absolute;background:rgba(26,106,255,0.25);border:1px solid rgba(26,106,255,0.5);border-radius:3px;}
 .bp-b1{width:55px;height:28px;top:18px;left:18px;animation:bpR .4s ease .2s both;}
 .bp-b2{width:74px;height:18px;top:18px;left:82px;animation:bpR .4s ease .5s both;}
@@ -184,26 +187,25 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .sb-user{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
 .sb-user-av{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
 .sb-user-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-user-plan{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:600;}
-.sb-user-plan.free{background:rgba(107,127,163,0.2);color:var(--muted);}
-.sb-user-plan.premium{background:rgba(244,196,48,0.15);color:var(--gold);}
 .sb-sec{padding:14px 16px 4px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600;}
 .nav{width:100%;display:flex;align-items:center;gap:10px;padding:8px 16px;background:transparent;border:none;border-left:2px solid transparent;color:var(--muted);font-size:13px;font-weight:400;text-align:left;transition:all .15s;}
 .nav:hover{color:var(--text);background:rgba(26,106,255,0.06);}
 .nav.on{color:var(--text);background:rgba(26,106,255,0.1);border-left-color:var(--blue);font-weight:600;}
 .nav-ic{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
-.trial-badge{margin-left:auto;font-size:9px;background:rgba(0,229,160,0.15);color:var(--green);border-radius:100px;padding:2px 6px;font-weight:700;}
 .sb-bottom{margin-top:auto;padding:10px 14px 16px;display:flex;flex-direction:column;gap:8px;}
 .archie-btn{background:var(--grad-btn);color:#fff;border-radius:var(--r);padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(26,106,255,0.3);transition:transform .15s;border:none;width:100%;}
 .archie-btn:hover{transform:translateY(-2px);}
-.upgrade-btn{background:var(--grad-premium);color:#000;border-radius:var(--r);padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;box-shadow:0 4px 20px rgba(244,196,48,0.25);transition:transform .15s;border:none;width:100%;}
-.upgrade-btn:hover{transform:translateY(-2px);}
 .sb-streak{background:linear-gradient(135deg,rgba(26,106,255,0.1),rgba(0,212,255,0.05));border:1px solid var(--border2);border-radius:var(--r);padding:12px;}
 .sk-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .sk-num{font-family:var(--font-h);font-size:36px;font-weight:900;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .sk-sub{font-size:11px;color:var(--muted);margin-top:2px;}
 .sk-bar{height:3px;background:var(--surface3);border-radius:3px;margin-top:8px;overflow:hidden;}
 .sk-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .5s ease;}
+.msg-limit{padding:6px 14px;background:rgba(26,106,255,0.06);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;}
+.msg-limit-lbl{font-size:11px;color:var(--muted);}
+.msg-limit-num{font-size:12px;font-weight:600;color:var(--text);}
+.msg-limit-num.low{color:var(--orange);}
+.msg-limit-num.empty{color:var(--pink);}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
@@ -211,7 +213,10 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .tb-title{font-family:var(--font-h);font-size:19px;font-weight:700;letter-spacing:.03em;flex:1;}
 .tb-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
 .tb-week{font-size:11.5px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:3px 11px;}
-.tb-trial{font-size:11px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);border-radius:100px;padding:3px 11px;font-weight:600;}
+.week-nav{display:flex;align-items:center;gap:6px;}
+.week-nav-btn{width:28px;height:28px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.week-nav-btn:hover:not(:disabled){border-color:var(--blue);color:var(--text);}
+.week-nav-btn:disabled{opacity:.25;cursor:default;}
 
 /* DASHBOARD */
 .dash-scroll{flex:1;overflow-y:auto;padding:18px 20px 24px;}
@@ -225,7 +230,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .goal-prog{font-size:12px;font-weight:600;color:var(--text);}
 .goal-card.complete .goal-prog{color:var(--green);}
 .goal-dots{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;}
-.goal-dot{width:7px;height:7px;border-radius:50%;background:var(--surface3);border:1px solid var(--muted2);transition:all .2s;}
+.goal-dot{width:7px;height:7px;border-radius:50%;background:var(--surface3);border:1px solid var(--muted2);transition:all .2s;cursor:pointer;}
 .goal-dot.done{background:var(--blue);border-color:var(--blue);}
 .goal-dot.done-all{background:var(--green);border-color:var(--green);}
 .goal-tick{position:absolute;top:5px;right:7px;font-size:12px;opacity:0;transition:opacity .3s;}
@@ -241,14 +246,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .cal-day-name{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;}
 .cal-day-num{font-family:var(--font-h);font-size:17px;font-weight:700;line-height:1;margin-bottom:3px;}
 .cal-day.today .cal-day-num{color:var(--blue);}
-.cal-allday{display:flex;flex-direction:column;gap:2px;}
-.cal-timed{display:flex;flex-direction:column;gap:2px;border-top:1px solid var(--border);padding-top:4px;margin-top:2px;}
-.cal-event{font-size:10px;border-radius:4px;padding:2px 6px;line-height:1.35;word-break:break-word;}
+.cal-event{font-size:10px;border-radius:4px;padding:2px 6px;line-height:1.35;word-break:break-word;margin-bottom:2px;}
 .cal-event.allday{background:rgba(26,106,255,0.15);color:var(--cyan);border:1px solid rgba(26,106,255,0.2);}
 .cal-event.timed{background:rgba(0,212,255,0.07);color:var(--text);border:1px solid rgba(0,212,255,0.12);}
 .cal-event-time{font-size:9px;color:var(--muted);display:block;margin-bottom:1px;}
+.cal-timed-wrap{border-top:1px solid var(--border);padding-top:4px;margin-top:2px;display:flex;flex-direction:column;gap:2px;}
 .cal-empty{font-size:10.5px;color:var(--muted2);font-style:italic;padding:3px 0;}
-.ads-banner{margin:18px 0 0;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 16px;display:flex;align-items:center;justify-content:center;min-height:80px;color:var(--muted2);font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
+.ads-banner{margin:18px 0 0;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:8px 16px;display:flex;align-items:center;justify-content:center;min-height:60px;color:var(--muted2);font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;}
 .rec-section{margin-top:18px;}
 .rec-title{font-family:var(--font-h);font-size:17px;font-weight:700;letter-spacing:.04em;margin-bottom:10px;}
 .rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -261,11 +265,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .rec-card-desc{font-size:11.5px;color:var(--muted);line-height:1.5;}
 .rec-card-cta{font-size:11.5px;color:var(--blue);font-weight:600;display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
 
-/* FEATURE TABS (Travel, Running, Nutrition, Workout) */
+/* FEATURE TABS */
 .feat-view{flex:1;overflow-y:auto;display:none;flex-direction:column;}
 .feat-view.active{display:flex;}
-
-/* SELECTOR FLOW */
 .sel-flow{padding:28px 24px;max-width:700px;width:100%;margin:0 auto;}
 .sel-step{margin-bottom:32px;animation:mIn .3s ease;}
 .sel-step-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:8px;}
@@ -280,8 +282,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .sel-gen-btn{background:var(--grad-btn);color:#fff;padding:13px 32px;border-radius:var(--r);font-size:15px;font-weight:600;border:none;box-shadow:0 4px 20px rgba(26,106,255,0.35);transition:transform .15s;display:flex;align-items:center;gap:10px;margin-top:8px;}
 .sel-gen-btn:hover{transform:translateY(-2px);}
 .sel-gen-btn:disabled{opacity:.4;cursor:default;transform:none;}
-
-/* OUTPUT PANEL */
 .output-panel{padding:0 24px 24px;max-width:900px;width:100%;margin:0 auto;}
 .output-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;}
 .output-title{font-family:var(--font-h);font-size:24px;font-weight:800;letter-spacing:.03em;}
@@ -299,8 +299,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .output-content th{background:var(--surface3);padding:9px 12px;text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;}
 .output-content td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;}
 .output-content tr:last-child td{border-bottom:none;}
-
-/* AFFILIATE CARDS IN OUTPUT */
 .aff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0;}
 .aff-card{background:linear-gradient(135deg,rgba(26,106,255,0.07),rgba(0,212,255,0.04));border:1px solid rgba(26,106,255,0.2);border-radius:var(--r);padding:14px;text-decoration:none;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,transform .2s;}
 .aff-card:hover{border-color:rgba(26,106,255,0.4);transform:translateY(-2px);}
@@ -309,16 +307,10 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .aff-card-title{font-size:13px;font-weight:600;color:var(--text);}
 .aff-card-desc{font-size:11.5px;color:var(--muted);line-height:1.4;}
 .aff-card-cta{font-size:12px;color:var(--blue);font-weight:600;margin-top:auto;}
-
-/* TWEAK SECTION */
 .tweak-section{border-top:1px solid var(--border);padding-top:20px;margin-top:24px;}
 .tweak-title{font-family:var(--font-h);font-size:16px;font-weight:700;margin-bottom:4px;}
 .tweak-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
 .tweak-msgs{display:flex;flex-direction:column;gap:12px;margin-bottom:14px;max-height:300px;overflow-y:auto;}
-.tweak-counter{font-size:11px;color:var(--muted);margin-bottom:10px;}
-.tweak-counter span{color:var(--text);font-weight:600;}
-
-/* LOADING SPINNER */
 .generating{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:16px;}
 .gen-spin{width:48px;height:48px;border-radius:50%;border:3px solid var(--surface3);border-top-color:var(--blue);animation:spin 1s linear infinite;}
 .gen-lbl{font-size:13px;color:var(--muted);}
@@ -336,35 +328,18 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .modal-warn{background:rgba(255,140,66,0.08);border:1px solid rgba(255,140,66,0.25);border-radius:var(--r);padding:11px 13px;font-size:13px;color:var(--orange);margin-bottom:16px;line-height:1.5;}
 .modal-btns{display:flex;gap:10px;}
 .modal-btn-p{flex:1;background:var(--grad-btn);color:#fff;padding:11px;border-radius:var(--r);font-size:13.5px;font-weight:600;border:none;}
-.modal-btn-s{flex:1;background:transparent;border:1px solid var(--border2) !important;color:var(--muted);padding:11px;border-radius:var(--r);font-size:13.5px;}
+.modal-btn-s{flex:1;background:transparent;border:1px solid var(--border2);color:var(--muted);padding:11px;border-radius:var(--r);font-size:13.5px;}
 .modal-btn-s:hover{color:var(--text);}
 .modal-chat-msgs{padding:10px 22px;overflow-y:auto;flex:1;max-height:300px;}
 .modal-inp{padding:10px 22px 18px;border-top:1px solid var(--border);flex-shrink:0;}
-
-/* UPGRADE MODAL */
-.upgrade-modal-box{background:var(--surface);border:1px solid rgba(244,196,48,0.3);border-radius:var(--rl);width:100%;max-width:440px;overflow:hidden;animation:mIn .3s ease;}
-.upgrade-head{padding:24px 24px 18px;text-align:center;background:linear-gradient(135deg,rgba(244,196,48,0.08),rgba(255,140,66,0.05));border-bottom:1px solid rgba(244,196,48,0.15);}
-.upgrade-crown{font-size:40px;margin-bottom:10px;}
-.upgrade-title{font-family:var(--font-h);font-size:28px;font-weight:800;letter-spacing:.04em;background:var(--grad-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.upgrade-sub{font-size:13px;color:var(--muted);margin-top:4px;}
-.upgrade-price{font-family:var(--font-h);font-size:42px;font-weight:900;background:var(--grad-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.upgrade-price span{font-size:16px;}
-.upgrade-features{list-style:none;padding:0;margin:16px 0;}
-.upgrade-features li{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text);padding:7px 0;border-bottom:1px solid var(--border);}
-.upgrade-features li:last-child{border-bottom:none;}
-.upgrade-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
-.upgrade-btn-go{width:100%;background:var(--grad-premium);color:#000;padding:14px;border-radius:var(--r);font-size:15px;font-weight:700;border:none;margin-top:8px;box-shadow:0 4px 20px rgba(244,196,48,0.3);transition:transform .15s;}
-.upgrade-btn-go:hover{transform:translateY(-2px);}
-.upgrade-btn-cancel{width:100%;background:transparent;border:none;color:var(--muted);font-size:13px;margin-top:10px;padding:6px;}
 </style>
 </head>
 <body>
-
 <div id="toast"></div>
 
 <!-- CONSENT -->
 <div id="consent" style="display:none">
-  <p>We use analytics to improve your experience. Data is never sold. <a href="#">Learn more</a></p>
+  <p>We use analytics to improve Archie. Data is never sold. <a href="#">Learn more</a></p>
   <div class="c-btns">
     <button class="c-dec" onclick="setConsent('denied')">Decline</button>
     <button class="c-acc" onclick="setConsent('granted')">Accept</button>
@@ -376,7 +351,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="land-badge"><span class="land-badge-dot"></span>Your Personal AI Life Coach</div>
   <div class="land-logo">🏗️</div>
   <h1 class="land-title">Architect<br/><span class="g">Your Life</span></h1>
-  <p class="land-sub">Design your week, hit your goals, and get personalised plans for running, nutrition, workouts and travel — all in one place.</p>
+  <p class="land-sub">Design your week, hit your goals, and get personalised plans for running, nutrition, workouts and travel.</p>
   <div class="land-feats">
     <div class="land-feat"><span>📅</span> Weekly Dashboard</div>
     <div class="land-feat"><span>🌍</span> Travel Plans</div>
@@ -385,44 +360,33 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="land-feat"><span>💪</span> Workout Plans</div>
     <div class="land-feat"><span>🔥</span> Streak Tracking</div>
   </div>
-  <button class="land-cta" onclick="goToOnboarding()">Get started free <span class="arr">→</span></button>
-  <p class="land-note">No account needed to start · See your plan first</p>
+  <div class="land-btns">
+    <button class="land-cta" onclick="goToOnboarding()">Start my plan <span class="arr">→</span></button>
+    <button class="land-signin" onclick="goToLogin()">Sign in</button>
+  </div>
 </div>
 
-<!-- AUTH -->
-<div id="screen-auth">
+<!-- LOGIN -->
+<div id="screen-login">
   <div class="auth-box">
     <div class="auth-head">
       <div class="auth-logo">🏗️</div>
-      <div class="auth-title">Archie</div>
-      <div class="auth-sub">Sign in to start building your week</div>
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to see your dashboard</div>
     </div>
     <div class="auth-body">
-      <div class="auth-tabs">
-        <button class="auth-tab on" id="tabLogin" onclick="showAuthTab('login')">Sign in</button>
-        <button class="auth-tab" id="tabSignup" onclick="showAuthTab('signup')">Create account</button>
-      </div>
-      <div id="authLogin">
-        <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/></div>
-        <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="loginPass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-        <div class="auth-forgot" onclick="doForgot()">Forgot password?</div>
-        <div class="auth-err" id="loginErr"></div>
-        <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign in →</button>
-      </div>
-      <div id="authSignup" style="display:none">
-        <div class="auth-field"><label class="auth-label">First name</label><input type="text" id="signupName" placeholder="e.g. Alex" autocomplete="given-name"/></div>
-        <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email"/></div>
-        <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="signupPass" placeholder="At least 8 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()"/></div>
-        <div class="auth-err" id="signupErr"></div>
-        <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create account →</button>
-      </div>
+      <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="loginPass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="auth-forgot" onclick="doForgot()">Forgot password?</div>
+      <div class="auth-err" id="loginErr"></div>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign in →</button>
+      <div class="auth-back" onclick="goToLanding()">← Back to home</div>
     </div>
   </div>
 </div>
 
-
-<!-- SIGNUP GATE (shown after plan is built, before dashboard) -->
-<div id="screen-gate" style="display:none;position:fixed;inset:0;z-index:150;align-items:center;justify-content:center;padding:24px;background:rgba(5,13,26,0.95);backdrop-filter:blur(8px);">
+<!-- SIGNUP GATE -->
+<div id="screen-gate">
   <div class="auth-box" style="max-width:460px">
     <div class="auth-head" style="background:linear-gradient(135deg,rgba(26,106,255,0.1),rgba(0,212,255,0.05));border-bottom:1px solid var(--border2)">
       <div style="font-size:36px;margin-bottom:10px">🏗️</div>
@@ -430,29 +394,21 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="auth-sub" style="color:var(--cyan);font-size:13px;margin-top:6px">Create your free account to see your personalised dashboard</div>
     </div>
     <div class="auth-body">
-      <div style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.2);border-radius:var(--r);padding:11px 14px;font-size:13px;color:var(--green);margin-bottom:18px;line-height:1.5">
-        ✓ Your week plan is built &nbsp;·&nbsp; ✓ Your goals are set &nbsp;·&nbsp; ✓ Ready to view
+      <div style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.2);border-radius:var(--r);padding:11px 14px;font-size:13px;color:var(--green);margin-bottom:18px;line-height:1.5;">
+        ✓ Your week is mapped &nbsp;·&nbsp; ✓ Goals are set &nbsp;·&nbsp; ✓ Ready to view
       </div>
-      <div class="auth-tabs">
-        <button class="auth-tab on" id="gateTabSignup" onclick="showGateTab('signup')">Create account</button>
-        <button class="auth-tab" id="gateTabLogin" onclick="showGateTab('login')">Sign in</button>
-      </div>
-      <!-- SIGNUP -->
-      <div id="gateSignup">
-        <div class="auth-field"><label class="auth-label">First name</label><input type="text" id="gateSignupName" placeholder="e.g. Alex" autocomplete="given-name"/></div>
-        <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="gateSignupEmail" placeholder="you@example.com" autocomplete="email"/></div>
-        <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="gateSignupPass" placeholder="At least 8 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')doGateSignup()"/></div>
-        <div class="auth-err" id="gateSignupErr"></div>
-        <button class="auth-btn" id="gateSignupBtn" onclick="doGateSignup()">See my dashboard →</button>
-      </div>
-      <!-- LOGIN -->
-      <div id="gateLogin" style="display:none">
-        <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="gateLoginEmail" placeholder="you@example.com" autocomplete="email"/></div>
-        <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="gateLoginPass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doGateLogin()"/></div>
+      <div class="auth-field"><label class="auth-label">First name</label><input type="text" id="gateSignupName" placeholder="e.g. Alex" autocomplete="given-name"/></div>
+      <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="gateSignupEmail" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="gateSignupPass" placeholder="At least 8 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')doGateSignup()"/></div>
+      <div class="auth-err" id="gateSignupErr"></div>
+      <button class="auth-btn" id="gateSignupBtn" onclick="doGateSignup()">See my dashboard →</button>
+      <div class="auth-back" onclick="showGateLogin()" id="gateLoginLink">Already have an account? Sign in</div>
+      <div id="gateLoginWrap" style="display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
+        <div class="auth-field"><label class="auth-label">Email</label><input type="email" id="gateLoginEmail" placeholder="you@example.com"/></div>
+        <div class="auth-field"><label class="auth-label">Password</label><input type="password" id="gateLoginPass" placeholder="Your password" onkeydown="if(event.key==='Enter')doGateLogin()"/></div>
         <div class="auth-err" id="gateLoginErr"></div>
         <button class="auth-btn" id="gateLoginBtn" onclick="doGateLogin()">Sign in →</button>
       </div>
-      <div style="font-size:11px;color:var(--muted2);text-align:center;margin-top:12px">Free account · No credit card required</div>
     </div>
   </div>
 </div>
@@ -505,22 +461,21 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="sb-user">
       <div class="sb-user-av" id="sbUserAv">A</div>
       <div class="sb-user-name" id="sbUserName">Loading…</div>
-      <div class="sb-user-plan free" id="sbUserPlan">Free</div>
     </div>
     <button class="nav on" data-tab="dashboard" onclick="switchTab('dashboard',this)" style="margin-top:6px;">
       <span class="nav-ic">📅</span> Dashboard
     </button>
     <div class="sb-sec">Features</div>
-    <button class="nav" data-tab="travel" onclick="switchTab('travel',this)"><span class="nav-ic">🌍</span> Travel<span class="trial-badge" id="trial-travel">Trial</span></button>
-    <button class="nav" data-tab="running" onclick="switchTab('running',this)"><span class="nav-ic">🏃</span> Running<span class="trial-badge" id="trial-running">Trial</span></button>
-    <button class="nav" data-tab="nutrition" onclick="switchTab('nutrition',this)"><span class="nav-ic">🥗</span> Nutrition<span class="trial-badge" id="trial-nutrition">Trial</span></button>
-    <button class="nav" data-tab="workout" onclick="switchTab('workout',this)"><span class="nav-ic">💪</span> Workout<span class="trial-badge" id="trial-workout">Trial</span></button>
+    <button class="nav" data-tab="travel" onclick="switchTab('travel',this)"><span class="nav-ic">🌍</span> Travel</button>
+    <button class="nav" data-tab="running" onclick="switchTab('running',this)"><span class="nav-ic">🏃</span> Running</button>
+    <button class="nav" data-tab="nutrition" onclick="switchTab('nutrition',this)"><span class="nav-ic">🥗</span> Nutrition</button>
+    <button class="nav" data-tab="workout" onclick="switchTab('workout',this)"><span class="nav-ic">💪</span> Workout</button>
     <div class="sb-bottom">
+      <div class="msg-limit"><span class="msg-limit-lbl">Messages today</span><span class="msg-limit-num" id="msgLimitNum">10 left</span></div>
       <button class="archie-btn" onclick="openPlanModal()">
         <span style="font-size:18px">🏗️</span>
         <div style="text-align:left"><div style="font-size:13px;font-weight:600">Plan with Archie</div><div style="font-size:10px;opacity:.75">Edit or build next week</div></div>
       </button>
-      <button class="upgrade-btn" id="upgradeBtn" onclick="openUpgradeModal()"><span>👑</span><span>Upgrade to Premium</span></button>
       <div class="sb-streak">
         <div class="sk-lbl">Week Streak 🔥</div>
         <div class="sk-num" id="skNum">0</div>
@@ -534,11 +489,12 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="topbar">
       <div class="tb-title" id="tbTitle">Dashboard</div>
       <div class="tb-status"><span class="sdot"></span><span id="tbSub">Ready</span></div>
-      <div class="tb-trial" id="tbTrial" style="display:none">🎁 Free Trial Active</div>
-      <div class="tb-week" id="tbWeek"></div>
+      <div class="week-nav">
+        <button class="week-nav-btn" id="weekPrev" onclick="navigateWeek(-1)" title="Previous week">←</button>
+        <div class="tb-week" id="tbWeek"></div>
+        <button class="week-nav-btn" id="weekNext" onclick="navigateWeek(1)" title="Next week">→</button>
+      </div>
     </div>
-
-    <!-- DASHBOARD -->
     <div id="view-dashboard" class="dash-scroll">
       <div class="goals-strip" id="goalsStrip"></div>
       <div class="cal-header"><div class="cal-title">This Week</div></div>
@@ -546,17 +502,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="ads-banner" id="adsBanner"><span>Advertisement</span></div>
       <div class="rec-section"><div class="rec-title">Recommended for You</div><div class="rec-grid" id="recGrid"></div></div>
     </div>
-
-    <!-- TRAVEL -->
     <div id="view-travel" class="feat-view"></div>
-
-    <!-- RUNNING -->
     <div id="view-running" class="feat-view"></div>
-
-    <!-- NUTRITION -->
     <div id="view-nutrition" class="feat-view"></div>
-
-    <!-- WORKOUT -->
     <div id="view-workout" class="feat-view"></div>
   </div>
 </div>
@@ -577,7 +525,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
     <div id="modalConfirm" style="display:none">
       <div class="modal-body">
-        <div class="modal-warn">⚠️ Building next week will erase your current week. This cannot be undone.</div>
+        <div class="modal-warn">⚠️ Building next week will replace your current week's data.</div>
         <div class="modal-btns">
           <button class="modal-btn-s" onclick="showModalChoose()">← Go back</button>
           <button class="modal-btn-p" onclick="startNextWeek()">Yes, build next week →</button>
@@ -596,51 +544,44 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 </div>
 
-<!-- UPGRADE MODAL -->
-<div class="modal-bg" id="upgradeModal">
-  <div class="upgrade-modal-box">
-    <div class="upgrade-head">
-      <div class="upgrade-crown">👑</div>
-      <div class="upgrade-title">Go Premium</div>
-      <div class="upgrade-sub">Unlock everything after your free trial</div>
-      <div style="margin-top:12px"><span class="upgrade-price"><span>£</span>4.99<span>/mo</span></span></div>
-    </div>
-    <div class="modal-body">
-      <ul class="upgrade-features">
-        <li>Full weekly dashboard — always</li>
-        <li>Regenerate Travel, Running, Nutrition & Workout plans</li>
-        <li>Unlimited Archie tweak messages</li>
-        <li>Edit & replan your week anytime</li>
-        <li>Week history — browse past weeks</li>
-        <li>Ad-free experience</li>
-      </ul>
-      <button class="upgrade-btn-go" id="stripeBtn" onclick="startCheckout()">Upgrade for £4.99/month →</button>
-      <button class="upgrade-btn-cancel" onclick="closeUpgradeModal()">Maybe later</button>
-    </div>
-  </div>
-</div>
-
 <script>
 /* ══ CONFIG ══ */
 const SUPABASE_URL='https://zwpzcbofwcyvzseprobn.supabase.co';
 const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3cHpjYm9md2N5dnpzZXByb2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjExNzUsImV4cCI6MjA5MTIzNzE3NX0.Gjs3vN9R-Q9ycXhwuQ-dati25HNyICPDWUNZ7LvSxhA';
-const STRIPE_PK='pk_test_51TK2VqIrlarv0y2INmyuwL4dqiX9C415P9JslD8f9vkqt8l6940yN0JfbEVpOvvI4riP2kyiG3ZV12NHZkhLh8nn00t6GyrLto';
-const STRIPE_PRICE='price_1TK2ZyIrlarv0y2IdR84wKkx';
-const TRIAL_DAYS=7;
-const MAX_TWEAKS=5;
-
+const DAILY_MSG_LIMIT=10;
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-const stripe=Stripe(STRIPE_PK);
 
 /* ══ STATE ══ */
 let currentUser=null,userProfile=null;
+let allWeeks=[]; // all saved weeks for this user, sorted newest first
+let currentWeekIdx=0; // index into allWeeks currently displayed
 let weekData={weekCommencing:'',events:[],goals:[],recommendations:[],streak:0,streakStatus:'active'};
 let featureData={travel:null,running:null,nutrition:null,workout:null};
 let tweakMsgs={travel:[],running:[],nutrition:[],workout:[]};
-let tweakCounts={travel:0,running:0,nutrition:0,workout:0};
 let onboardMsgs=[],modalMsgs=[];
 let chatLoading=false,modalLoading=false;
 let activeTab='dashboard',isEditMode=false;
+
+/* ══ DAILY MESSAGE COUNT ══ */
+function getMsgCount(){
+  const key='archie_msgs_'+new Date().toDateString();
+  return parseInt(localStorage.getItem(key)||'0');
+}
+function incMsgCount(){
+  const key='archie_msgs_'+new Date().toDateString();
+  const n=getMsgCount()+1;
+  localStorage.setItem(key,String(n));
+  renderMsgLimit();
+  return n;
+}
+function canSendMsg(){return getMsgCount()<DAILY_MSG_LIMIT;}
+function renderMsgLimit(){
+  const left=Math.max(0,DAILY_MSG_LIMIT-getMsgCount());
+  const el=document.getElementById('msgLimitNum');
+  if(!el)return;
+  el.textContent=left===0?'None left':`${left} left`;
+  el.className='msg-limit-num'+(left===0?' empty':left<=3?' low':'');
+}
 
 /* ══ SYSTEM PROMPTS ══ */
 const TODAY=new Date().toISOString().split('T')[0];
@@ -651,18 +592,18 @@ const ONBOARD_SYS=`You are Archie the Architect, a friendly AI life coach. Have 
 BLUEPRINT_READY
 Rules:
 - weekCommencing = most recent Monday from today ${TODAY}
-- CRITICAL: Each event must be a SEPARATE object in the array. Never combine two events into one title using brackets, slashes, commas or "+" symbols. If the user mentions "work from home and gym on Monday", that is TWO events: {"day":"Monday","title":"Work from home","allDay":true} and {"day":"Monday","title":"Gym","allDay":true}
-- Event titles must be properly capitalised (e.g. "Work from home" not "work from home")
-- Max 4 goals. 3 recommendations relevant to their goals
+- CRITICAL: Each event must be a SEPARATE object. Never combine two events into one title. "Work from home and gym" = TWO events: {"day":"Monday","title":"Work from home","allDay":true} and {"day":"Monday","title":"Gym","allDay":true}
+- Event titles must be properly capitalised
+- Max 4 goals. Exactly 3 recommendations relevant to their goals
 - Be warm and casual, one question at a time`;
 
-const EDIT_SYS=`You are Archie helping update the user's week. Ask what to change. Output updated JSON with BLUEPRINT_READY when done. Today is ${TODAY}. CRITICAL: Each event must be a SEPARATE object — never combine two activities into one title. Titles must be properly capitalised.`;
-
-const TRAVEL_SYS=`You are Archie the Architect generating a travel itinerary. Given the user's selections, output 2 different destination itineraries. Format with clear sections using ## for destination names, ### for days. Include affiliate links naturally. Keep tone inspiring and practical. Use markdown tables where helpful for daily structure.`;
-const RUNNING_SYS=`You are Archie the Architect generating a personalised weekly running schedule. Given the user's inputs, output a single repeatable training week with clear day-by-day structure, specific paces (easy/tempo/interval/long run), and brief session notes. Use tables for the weekly overview. Be specific with paces based on their current time.`;
-const NUTRITION_SYS=`You are Archie the Architect generating a 7-day meal plan and shopping list. Based on the user's selections, create a practical weekly plan with a consolidated shopping list grouped by category. Keep meals simple and realistic. Use tables for the weekly overview.`;
-const WORKOUT_SYS=`You are Archie the Architect generating a weekly workout plan. Based on the user's inputs, create a structured A/B (or A/B/C) split plan. Show the weekly schedule clearly, then detail each workout with exercises, sets, reps, and brief guidance. Keep it consistent and repeatable. 4-6 exercises per session max.`;
-const TWEAK_SYS=(tab)=>`You are Archie the Architect helping the user refine their ${tab} plan. The user has already received their plan. Help them tweak it with specific, actionable advice. Be concise and direct.`;
+const EDIT_SYS=`You are Archie helping update the user's week. Ask what to change. Output updated JSON with BLUEPRINT_READY when done. Today is ${TODAY}. Each event must be a SEPARATE object — never combine activities. Titles properly capitalised.`;
+const NEXT_WEEK_SYS=`You are Archie helping the user plan next week. Ask about their commitments and goals for next week. Output JSON with BLUEPRINT_READY when done. Today is ${TODAY}. Each event must be a SEPARATE object. Titles properly capitalised.`;
+const TRAVEL_SYS=`You are Archie generating travel itineraries. Output 2 different destination itineraries. Use ## for destination names, ### for days. Keep tone inspiring and practical. Use markdown tables for daily structure.`;
+const RUNNING_SYS=`You are Archie generating a personalised weekly running schedule. Output a single repeatable training week with day-by-day structure, specific paces (easy/tempo/interval/long run), and brief session notes. Use tables for the weekly overview.`;
+const NUTRITION_SYS=`You are Archie generating a 7-day meal plan and shopping list. Create a practical weekly plan with a shopping list grouped by category. Keep meals simple and realistic. Use tables for the weekly overview.`;
+const WORKOUT_SYS=`You are Archie generating a weekly workout plan. Create a structured A/B (or A/B/C) split. Show the weekly schedule, then detail each workout with 4-6 exercises, sets, reps, and brief guidance.`;
+const TWEAK_SYS=(tab)=>`You are Archie helping refine the user's ${tab} plan. Be concise and actionable.`;
 
 /* ══ CONSENT ══ */
 function checkConsent(){if(!localStorage.getItem('archie_consent'))document.getElementById('consent').style.display='flex';}
@@ -671,47 +612,26 @@ function setConsent(v){localStorage.setItem('archie_consent',v);document.getElem
 /* ══ TOAST ══ */
 function showToast(msg,type='err'){const t=document.getElementById('toast');t.textContent=msg;t.className=type;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4500);}
 
-/* ══ LANDING ══ */
+/* ══ NAVIGATION ══ */
 function goToOnboarding(){
   trackEvent('cta_click');
   const l=document.getElementById('screen-landing');
   l.classList.add('out');
-  setTimeout(()=>{
-    l.style.display='none';
-    document.getElementById('screen-chat').classList.add('active');
-    startOnboarding('there');
-  },500);
+  setTimeout(()=>{l.style.display='none';document.getElementById('screen-chat').classList.add('active');startOnboarding();},500);
+}
+function goToLogin(){
+  const l=document.getElementById('screen-landing');
+  l.classList.add('out');
+  setTimeout(()=>{l.style.display='none';document.getElementById('screen-login').classList.add('active');},500);
+}
+function goToLanding(){
+  document.getElementById('screen-login').classList.remove('active');
+  document.getElementById('screen-login').style.display='none';
+  const l=document.getElementById('screen-landing');
+  l.style.display='flex';l.classList.remove('out');
 }
 
-function goToAuth(){trackEvent('cta_click');const l=document.getElementById('screen-landing');l.classList.add('out');setTimeout(()=>{l.style.display='none';document.getElementById('screen-auth').classList.add('active');},500);}
-
-/* ══ AUTH TABS ══ */
-function showAuthTab(tab){
-  document.getElementById('authLogin').style.display=tab==='login'?'block':'none';
-  document.getElementById('authSignup').style.display=tab==='signup'?'block':'none';
-  document.getElementById('tabLogin').classList.toggle('on',tab==='login');
-  document.getElementById('tabSignup').classList.toggle('on',tab==='signup');
-}
-
-/* ══ AUTH ══ */
-async function doSignup(){
-  const name=document.getElementById('signupName').value.trim();
-  const email=document.getElementById('signupEmail').value.trim();
-  const pass=document.getElementById('signupPass').value;
-  const err=document.getElementById('signupErr');
-  err.style.display='none';
-  if(!name){err.textContent='Please enter your name.';err.style.display='block';return;}
-  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
-  if(pass.length<8){err.textContent='Password must be 8+ characters.';err.style.display='block';return;}
-  const btn=document.getElementById('signupBtn');btn.disabled=true;btn.textContent='Creating account…';
-  const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
-  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Create account →';return;}
-  const trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+TRIAL_DAYS);
-  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,is_premium:false,trial_end:trialEnd.toISOString(),tweak_counts:{travel:0,running:0,nutrition:0,workout:0}});
-  showToast('Account created! Welcome to Archie 🏗️','ok');
-  await loadUserAndContinue(data.user,name);
-}
-
+/* ══ LOGIN ══ */
 async function doLogin(){
   const email=document.getElementById('loginEmail').value.trim();
   const pass=document.getElementById('loginPass').value;
@@ -721,9 +641,9 @@ async function doLogin(){
   const btn=document.getElementById('loginBtn');btn.disabled=true;btn.textContent='Signing in…';
   const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
   if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Sign in →';return;}
-  await loadUserAndContinue(data.user);
+  document.getElementById('screen-login').classList.remove('active');
+  await loadUserData(data.user);
 }
-
 async function doForgot(){
   const email=document.getElementById('loginEmail').value.trim();
   if(!email){showToast('Enter your email first.');return;}
@@ -731,54 +651,170 @@ async function doForgot(){
   showToast('Reset email sent!','ok');
 }
 
-async function loadUserAndContinue(user,nameOverride=null){
+/* ══ GATE SIGNUP ══ */
+function showGateLogin(){
+  document.getElementById('gateLoginWrap').style.display='block';
+  document.getElementById('gateLoginLink').style.display='none';
+}
+async function doGateSignup(){
+  const name=document.getElementById('gateSignupName').value.trim();
+  const email=document.getElementById('gateSignupEmail').value.trim();
+  const pass=document.getElementById('gateSignupPass').value;
+  const err=document.getElementById('gateSignupErr');
+  err.style.display='none';
+  if(!name){err.textContent='Please enter your name.';err.style.display='block';return;}
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  if(pass.length<8){err.textContent='Password must be 8+ characters.';err.style.display='block';return;}
+  const btn=document.getElementById('gateSignupBtn');btn.disabled=true;btn.textContent='Creating account…';
+  const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='See my dashboard →';return;}
+  currentUser=data.user;
+  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}});
+  userProfile={id:data.user.id,name,message_count:0,tweak_counts:{travel:0,running:0,nutrition:0,workout:0}};
+  await saveWeekToSupabase();
+  document.getElementById('screen-gate').classList.remove('active');
+  document.getElementById('screen-gate').style.display='none';
+  showLoader(()=>showApp(name));
+  trackEvent('signup_complete');
+}
+async function doGateLogin(){
+  const email=document.getElementById('gateLoginEmail').value.trim();
+  const pass=document.getElementById('gateLoginPass').value;
+  const err=document.getElementById('gateLoginErr');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  const btn=document.getElementById('gateLoginBtn');btn.disabled=true;btn.textContent='Signing in…';
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Sign in →';return;}
+  document.getElementById('screen-gate').classList.remove('active');
+  document.getElementById('screen-gate').style.display='none';
+  await loadUserData(data.user);
+}
+
+/* ══ LOAD USER DATA ══ */
+async function loadUserData(user){
   currentUser=user;
-  // Load profile - handle missing row gracefully
-  const {data:profile,error:profileErr}=await sb.from('user_profiles').select('*').eq('id',user.id).maybeSingle();
+  const {data:profile}=await sb.from('user_profiles').select('*').eq('id',user.id).maybeSingle();
   userProfile=profile||null;
-  tweakCounts=profile?.tweak_counts||{travel:0,running:0,nutrition:0,workout:0};
-  const name=nameOverride||profile?.name||user.email.split('@')[0];
-  // Load week - handle missing row gracefully
-  const {data:weekRow}=await sb.from('user_weeks').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
-  // Load feature data - handle missing row gracefully
+  const name=profile?.name||user.email.split('@')[0];
+  // Load ALL weeks for this user
+  const {data:weeks}=await sb.from('user_weeks').select('*').eq('user_id',user.id).order('week_commencing',{ascending:false});
+  allWeeks=weeks||[];
+  // Load feature data
   const {data:featRow}=await sb.from('user_features').select('*').eq('user_id',user.id).maybeSingle();
   if(featRow){featureData={travel:featRow.travel||null,running:featRow.running||null,nutrition:featRow.nutrition||null,workout:featRow.workout||null};}
-  document.getElementById('screen-auth').classList.remove('active');
-  document.getElementById('screen-auth').style.display='none';
-  if(weekRow&&weekRow.events&&weekRow.events.length>0){
-    weekData={weekCommencing:weekRow.week_commencing,events:weekRow.events||[],goals:weekRow.goals||[],recommendations:weekRow.recommendations||[],streak:weekRow.streak||0,streakStatus:weekRow.streak_status||'active'};
-    showApp(name);
+  if(allWeeks.length>0){
+    currentWeekIdx=0;
+    loadWeekFromRow(allWeeks[0]);
+    showLoader(()=>showApp(name));
   } else {
+    document.getElementById('screen-login').classList.remove('active');
+    document.getElementById('screen-login').style.display='none';
     document.getElementById('screen-chat').classList.add('active');
     startOnboarding(name);
   }
   checkConsent();
 }
 
-/* ══ TRIAL CHECK ══ */
-function isTrialActive(){
-  // Premium always has access
-  if(userProfile?.is_premium) return true;
-  // No trial_end set = trial is active (fail open — never lock out a user by mistake)
-  if(!userProfile?.trial_end) return true;
-  // Otherwise check if trial_end is in the future
-  return new Date() < new Date(userProfile.trial_end);
+function loadWeekFromRow(row){
+  weekData={weekCommencing:row.week_commencing,events:row.events||[],goals:row.goals||[],recommendations:row.recommendations||[],streak:row.streak||0,streakStatus:row.streak_status||'active'};
 }
-function trialDaysLeft(){
-  if(!userProfile?.trial_end) return 7;
-  const diff = new Date(userProfile.trial_end) - new Date();
-  return Math.max(0, Math.ceil(diff/(1000*60*60*24)));
+
+/* ══ WEEK NAVIGATION ══ */
+function navigateWeek(dir){
+  const newIdx=currentWeekIdx+dir;
+  if(dir===1&&newIdx>=allWeeks.length){
+    // Going forward past most recent = build next week
+    openPlanModal(true);
+    return;
+  }
+  if(newIdx<0||newIdx>=allWeeks.length)return;
+  currentWeekIdx=newIdx;
+  loadWeekFromRow(allWeeks[currentWeekIdx]);
+  renderDashboard();
+  updateWeekNavBtns();
+}
+
+function updateWeekNavBtns(){
+  const prev=document.getElementById('weekPrev');
+  const next=document.getElementById('weekNext');
+  if(prev)prev.disabled=(currentWeekIdx>=allWeeks.length-1);
+  if(next){
+    // Always enable next — at end it triggers next week build
+    next.disabled=false;
+    next.title=currentWeekIdx===0?'Build next week':'Next week';
+  }
+}
+
+/* ══ SUPABASE ══ */
+async function saveWeekToSupabase(){
+  if(!currentUser)return;
+  const wc=weekData.weekCommencing||getThisMonday();
+  await sb.from('user_weeks').upsert({user_id:currentUser.id,week_commencing:wc,events:weekData.events||[],goals:weekData.goals||[],recommendations:weekData.recommendations||[],streak:weekData.streak||0,streak_status:weekData.streakStatus||'active',updated_at:new Date().toISOString()},{onConflict:'user_id,week_commencing'});
+  // Refresh allWeeks cache
+  const {data:weeks}=await sb.from('user_weeks').select('*').eq('user_id',currentUser.id).order('week_commencing',{ascending:false});
+  allWeeks=weeks||[];
+  currentWeekIdx=0;
+}
+async function saveGoalsToSupabase(){
+  if(!currentUser||!weekData.weekCommencing)return;
+  await sb.from('user_weeks').update({goals:weekData.goals,streak:weekData.streak,streak_status:weekData.streakStatus,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id).eq('week_commencing',weekData.weekCommencing);
+  // Update allWeeks cache
+  const idx=allWeeks.findIndex(w=>w.week_commencing===weekData.weekCommencing);
+  if(idx>=0){allWeeks[idx]={...allWeeks[idx],goals:weekData.goals,streak:weekData.streak};}
+}
+async function saveFeaturesToSupabase(){
+  if(!currentUser)return;
+  await sb.from('user_features').upsert({user_id:currentUser.id,...featureData,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+}
+
+/* ══ LOADER ══ */
+function showLoader(cb){
+  ['screen-chat','screen-login','screen-gate','screen-landing'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.style.display='none';el.classList.remove('active');}
+  });
+  const sl=document.getElementById('screen-loading');
+  sl.style.display='flex';sl.classList.add('active');
+  ['ls1','ls2','ls3','ls4'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('act','done');
+    el.querySelector('.lstep-ic').textContent='○';
+  });
+  const steps=['ls1','ls2','ls3','ls4'],delays=[400,1300,2300,3300];
+  steps.forEach((id,i)=>{setTimeout(()=>{
+    if(i>0){const p=document.getElementById(steps[i-1]);p.classList.remove('act');p.classList.add('done');p.querySelector('.lstep-ic').textContent='✓';}
+    document.getElementById(id).classList.add('act');
+  },delays[i]);});
+  setTimeout(()=>{const l=document.getElementById('ls4');l.classList.remove('act');l.classList.add('done');l.querySelector('.lstep-ic').textContent='✓';},4300);
+  setTimeout(cb,4800);
+}
+
+/* ══ SHOW APP ══ */
+function showApp(name){
+  document.getElementById('screen-loading').style.display='none';
+  document.getElementById('screen-loading').classList.remove('active');
+  document.getElementById('screen-app').style.display='flex';
+  document.getElementById('screen-app').classList.add('active');
+  document.getElementById('sbUserAv').textContent=(name||'A')[0].toUpperCase();
+  document.getElementById('sbUserName').textContent=name||'User';
+  document.getElementById('tbTitle').textContent=`Welcome back, ${name} 👋`;
+  renderMsgLimit();
+  renderDashboard();
+  updateWeekNavBtns();
+  trackEvent('app_loaded');
 }
 
 /* ══ ONBOARDING ══ */
-function startOnboarding(name){
-  const opener=`Hey ${name}! I'm **Archie** 🏗️ — your AI life coach.\n\nI'm going to build you a personalised weekly dashboard. Let's start with your week — **what's already in your diary?** Walk me through any commitments from Monday to Sunday.`;
+function startOnboarding(name='there'){
+  const opener=`Hey ${name}! I'm **Archie** 🏗️ — your AI life coach.\n\nI'm going to build you a personalised weekly dashboard. Let's start — **what's already in your diary this week?** Walk me through any commitments Monday to Sunday.`;
   onboardMsgs=[{role:'assistant',content:opener}];
   renderChatMsgs();
 }
 
 let onboardProgCount=0;
 async function sendChat(){
+  if(!canSendMsg()){showToast('Daily message limit reached. Come back tomorrow!');return;}
   const ta=document.getElementById('chatTa');
   const text=ta.value.trim();
   if(!text||chatLoading)return;
@@ -792,6 +828,7 @@ async function sendChat(){
   renderChatMsgs();
   try{
     const res=await callAPI(onboardMsgs.slice(-20),ONBOARD_SYS);
+    incMsgCount();
     let reply=res;
     const ready=reply.includes('BLUEPRINT_READY');
     const jm=reply.match(/```json([\s\S]*?)```/);
@@ -803,11 +840,14 @@ async function sendChat(){
       document.getElementById('progLbl').textContent='Blueprint complete! ✓';
       renderChatMsgs();
       await new Promise(r=>setTimeout(r,900));
-      showSignupGate();
+      // Show signup gate
+      document.getElementById('screen-chat').classList.remove('active');
+      document.getElementById('screen-chat').style.display='none';
+      const gate=document.getElementById('screen-gate');
+      gate.style.display='flex';gate.classList.add('active');
     } else {renderChatMsgs();}
   }catch(e){onboardMsgs.push({role:'assistant',content:`**Error** — ${e.message}`});chatLoading=false;document.getElementById('chatSend').disabled=false;renderChatMsgs();showToast(e.message);}
 }
-
 function renderChatMsgs(){
   const w=document.getElementById('chatMsgs');w.innerHTML='';
   onboardMsgs.forEach(m=>w.appendChild(buildMsgEl(m)));
@@ -815,173 +855,12 @@ function renderChatMsgs(){
   w.scrollTop=w.scrollHeight;
 }
 
-/* ══ SIGNUP GATE ══ */
-function showSignupGate(){
-  const gate = document.getElementById('screen-gate');
-  gate.style.display = 'flex';
-  // Pre-fill name if Archie collected it during chat
-  const nameFromChat = extractNameFromChat();
-  if(nameFromChat) document.getElementById('gateSignupName').value = nameFromChat;
-}
-
-function extractNameFromChat(){
-  // Try to find name from first assistant message greeting
-  for(const m of onboardMsgs){
-    if(m.role==='assistant'){
-      const match = m.content.match(/Hey ([A-Z][a-z]+)!/);
-      if(match) return match[1];
-    }
-  }
-  return '';
-}
-
-function showGateTab(tab){
-  document.getElementById('gateSignup').style.display = tab==='signup'?'block':'none';
-  document.getElementById('gateLogin').style.display = tab==='login'?'block':'none';
-  document.getElementById('gateTabSignup').classList.toggle('on', tab==='signup');
-  document.getElementById('gateTabLogin').classList.toggle('on', tab==='login');
-}
-
-async function doGateSignup(){
-  const name = document.getElementById('gateSignupName').value.trim();
-  const email = document.getElementById('gateSignupEmail').value.trim();
-  const pass = document.getElementById('gateSignupPass').value;
-  const err = document.getElementById('gateSignupErr');
-  err.style.display='none';
-  if(!name){err.textContent='Please enter your name.';err.style.display='block';return;}
-  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
-  if(pass.length<8){err.textContent='Password must be 8+ characters.';err.style.display='block';return;}
-  const btn = document.getElementById('gateSignupBtn');
-  btn.disabled=true; btn.textContent='Creating your account…';
-  const {data,error} = await sb.auth.signUp({email,password:pass,options:{data:{name}}});
-  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='See my dashboard →';return;}
-  currentUser = data.user;
-  const trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+7);
-  await sb.from('user_profiles').insert({id:data.user.id,name,message_count:0,is_premium:false,trial_end:trialEnd.toISOString(),tweak_counts:{travel:0,running:0,nutrition:0,workout:0}});
-  userProfile = {id:data.user.id,name,message_count:0,is_premium:false,trial_end:trialEnd.toISOString(),tweak_counts:{travel:0,running:0,nutrition:0,workout:0}};
-  tweakCounts = {travel:0,running:0,nutrition:0,workout:0};
-  await saveWeekToSupabase();
-  document.getElementById('screen-gate').style.display='none';
-  showLoader(()=>showApp(name));
-  trackEvent('signup_complete');
-}
-
-async function doGateLogin(){
-  const email = document.getElementById('gateLoginEmail').value.trim();
-  const pass = document.getElementById('gateLoginPass').value;
-  const err = document.getElementById('gateLoginErr');
-  err.style.display='none';
-  if(!email||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
-  const btn = document.getElementById('gateLoginBtn');
-  btn.disabled=true; btn.textContent='Signing in…';
-  const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
-  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Sign in →';return;}
-  currentUser = data.user;
-  const {data:profile} = await sb.from('user_profiles').select('*').eq('id',data.user.id).maybeSingle();
-  userProfile = profile||null;
-  tweakCounts = profile?.tweak_counts||{travel:0,running:0,nutrition:0,workout:0};
-  // Load their existing week, ignore the onboarding one
-  const {data:weekRow} = await sb.from('user_weeks').select('*').eq('user_id',data.user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
-  if(weekRow){weekData={weekCommencing:weekRow.week_commencing,events:weekRow.events||[],goals:weekRow.goals||[],recommendations:weekRow.recommendations||[],streak:weekRow.streak||0,streakStatus:weekRow.streak_status||'active'};}
-  document.getElementById('screen-gate').style.display='none';
-  const name = profile?.name||data.user.email.split('@')[0];
-  showLoader(()=>showApp(name));
-  trackEvent('login_complete');
-}
-
-/* ══ SUPABASE ══ */
-async function saveWeekToSupabase(){
-  if(!currentUser)return;
-  await sb.from('user_weeks').upsert({user_id:currentUser.id,week_commencing:weekData.weekCommencing||getThisMonday(),events:weekData.events||[],goals:weekData.goals||[],recommendations:weekData.recommendations||[],streak:weekData.streak||0,streak_status:weekData.streakStatus||'active',updated_at:new Date().toISOString()},{onConflict:'user_id,week_commencing'});
-}
-async function saveGoalsToSupabase(){
-  if(!currentUser||!weekData.weekCommencing)return;
-  await sb.from('user_weeks').update({goals:weekData.goals,streak:weekData.streak,streak_status:weekData.streakStatus,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id).eq('week_commencing',weekData.weekCommencing);
-}
-async function saveFeaturesToSupabase(){
-  if(!currentUser)return;
-  await sb.from('user_features').upsert({user_id:currentUser.id,...featureData,tweak_counts:tweakCounts,updated_at:new Date().toISOString()},{onConflict:'user_id'});
-  await sb.from('user_profiles').update({tweak_counts:tweakCounts}).eq('id',currentUser.id);
-}
-
-/* ══ LOADER ══ */
-function showLoader(cb){
-  // Hide all screens cleanly first
-  const chat=document.getElementById('screen-chat');
-  if(chat){chat.classList.add('out');chat.style.pointerEvents='none';}
-  const landing=document.getElementById('screen-landing');
-  if(landing){landing.style.display='none';}
-  const gate=document.getElementById('screen-gate');
-  if(gate){gate.style.display='none';}
-  const auth=document.getElementById('screen-auth');
-  if(auth){auth.style.display='none';auth.classList.remove('active');}
-  setTimeout(()=>{
-    if(chat){chat.style.display='none';chat.classList.remove('active');}
-    const sl=document.getElementById('screen-loading');
-    sl.style.display='flex';sl.classList.add('active');
-    // Reset steps
-    ['ls1','ls2','ls3','ls4'].forEach(id=>{
-      const el=document.getElementById(id);
-      el.classList.remove('act','done');
-      el.querySelector('.lstep-ic').textContent='○';
-    });
-    const steps=['ls1','ls2','ls3','ls4'],delays=[400,1300,2300,3300];
-    steps.forEach((id,i)=>{setTimeout(()=>{
-      if(i>0){const p=document.getElementById(steps[i-1]);p.classList.remove('act');p.classList.add('done');p.querySelector('.lstep-ic').textContent='✓';}
-      document.getElementById(id).classList.add('act');
-    },delays[i]);});
-    setTimeout(()=>{const l=document.getElementById('ls4');l.classList.remove('act');l.classList.add('done');l.querySelector('.lstep-ic').textContent='✓';},4300);
-    setTimeout(cb,4800);
-  },300);
-}
-
-/* ══ SHOW APP ══ */
-function showApp(name){
-  document.getElementById('screen-app').classList.add('active');
-  document.getElementById('screen-loading').style.display='none';
-  document.getElementById('tbTitle').textContent=`Welcome back, ${name} 👋`;
-  document.getElementById('sbUserAv').textContent=(name||'A')[0].toUpperCase();
-  document.getElementById('sbUserName').textContent=name||'User';
-  const isPremium=userProfile?.is_premium||false;
-  const trial=isTrialActive();
-  const planEl=document.getElementById('sbUserPlan');
-  planEl.textContent=isPremium?'Premium':trial?'Trial':'Free';
-  planEl.className='sb-user-plan '+(isPremium?'premium':'free');
-  document.getElementById('upgradeBtn').style.display=isPremium?'none':'flex';
-  // Trial badges
-  const tabs=['travel','running','nutrition','workout'];
-  tabs.forEach(t=>{
-    const b=document.getElementById('trial-'+t);
-    if(b)b.style.display=(trial&&!isPremium)?'inline':'none';
-  });
-  // Trial topbar
-  if(trial&&!isPremium){
-    const tb=document.getElementById('tbTrial');tb.style.display='flex';
-    tb.textContent=`🎁 ${trialDaysLeft()} days free trial`;
-  }
-  // Ads
-  const ads=document.getElementById('adsBanner');
-  if(ads)ads.style.display=isPremium?'none':'flex';
-  renderDashboard();
-  trackEvent('app_loaded',{is_premium:isPremium,trial_active:trial});
-}
-
 /* ══ DASHBOARD ══ */
 function renderDashboard(){
   const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date(getThisMonday()+'T00:00:00');
   document.getElementById('tbWeek').textContent=`w/c ${wc.toLocaleDateString('en-GB',{month:'short',day:'numeric'})}`;
-  // Expiry notice
-  const existing=document.getElementById('expiredNotice');if(existing)existing.remove();
-  if(!userProfile?.is_premium&&!isTrialActive()){
-    const notice=document.createElement('div');
-    notice.id='expiredNotice';
-    notice.style.cssText='background:#0f1a0a;border:1px solid rgba(244,196,48,0.3);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;';
-    notice.innerHTML='<div><div style="font-size:13px;font-weight:600;color:#f4c430">⏰ Your free week has ended</div><div style="font-size:12px;color:#6b7fa3;margin-top:3px">Upgrade to build next week and keep all your plans active.</div></div><button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#f4c430,#ff8c42);color:#000;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;">Upgrade — £4.99/mo</button>';
-    document.getElementById('view-dashboard').insertBefore(notice,document.getElementById('view-dashboard').firstChild);
-  }
   renderGoals();renderCalendar();renderRecommendations();renderStreak();
 }
-
 function getThisMonday(){
   const d=new Date(),day=d.getDay(),diff=d.getDate()-day+(day===0?-6:1);
   const m=new Date(d);m.setDate(diff);
@@ -995,7 +874,11 @@ function renderGoals(){
     const card=document.createElement('div');
     card.className=`goal-card${allDone?' complete':partial?' partial':''}`;
     card.onclick=()=>logGoal(i);
-    let dots='';for(let d=0;d<Math.min(g.target,8);d++){const cls=d<g.done?(allDone?'done-all':'done'):'';dots+=`<div class="goal-dot ${cls}"></div>`;}
+    let dots='';
+    for(let d=0;d<Math.min(g.target,8);d++){
+      const cls=d<g.done?(allDone?'done-all':'done'):'';
+      dots+=`<div class="goal-dot ${cls}"></div>`;
+    }
     card.innerHTML=`<div class="goal-tick">✓</div><div class="goal-emoji">${g.emoji||'🎯'}</div><div class="goal-name">${g.name}</div><div class="goal-prog">${g.done}/${g.target}</div><div class="goal-dots">${dots}</div>`;
     strip.appendChild(card);
   });
@@ -1005,27 +888,17 @@ function renderGoals(){
 }
 
 async function logGoal(idx){
-  if(!isTrialActive()&&!userProfile?.is_premium){openUpgradeModal();return;}
   const g=weekData.goals[idx];if(!g)return;
   const wasAllComplete=(weekData.goals||[]).every(g=>g.done>=g.target);
   if(g.done>=g.target){
-    // UNCLICK — decrement
+    // UNCLICK
     g.done--;
-    // If was all complete before unclick, roll back streak
-    if(wasAllComplete&&weekData.streak>0){
-      weekData.streak--;
-      weekData.streakStatus='active';
-      showToast('Goal unchecked — streak updated','ok');
-    }
+    if(wasAllComplete&&weekData.streak>0){weekData.streak--;showToast('Goal unchecked — streak updated','ok');}
   } else {
-    // CLICK — increment
+    // CLICK
     g.done++;
     const nowAllComplete=(weekData.goals||[]).every(g=>g.done>=g.target);
-    if(nowAllComplete&&!wasAllComplete){
-      weekData.streak=(weekData.streak||0)+1;
-      weekData.streakStatus='active';
-      showToast('🔥 All goals complete! Streak updated!','ok');
-    }
+    if(nowAllComplete&&!wasAllComplete){weekData.streak=(weekData.streak||0)+1;weekData.streakStatus='active';showToast('🔥 All goals complete! Streak updated!','ok');}
   }
   renderGoals();renderStreak();await saveGoalsToSupabase();
   const cards=document.querySelectorAll('.goal-card');
@@ -1052,10 +925,15 @@ function renderCalendar(){
     const allDay=dayEvts.filter(e=>e.allDay||!e.time);
     const timed=dayEvts.filter(e=>!e.allDay&&e.time).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
     const col=document.createElement('div');col.className=`cal-day${isToday?' today':''}`;
-    col.innerHTML=`<div class="cal-day-name">${short[i]}</div><div class="cal-day-num">${date.getDate()}</div>
-      <div class="cal-allday">${allDay.map(e=>`<div class="cal-event allday">${e.title}</div>`).join('')}</div>
-      ${timed.length?`<div class="cal-timed">${timed.map(e=>`<div class="cal-event timed"><span class="cal-event-time">${e.time}</span>${e.title}</div>`).join('')}</div>`:''}
-      ${!allDay.length&&!timed.length?`<div class="cal-empty">Free</div>`:''}`;
+    let html=`<div class="cal-day-name">${short[i]}</div><div class="cal-day-num">${date.getDate()}</div>`;
+    allDay.forEach(e=>{html+=`<div class="cal-event allday">${e.title}</div>`;});
+    if(timed.length){
+      html+=`<div class="cal-timed-wrap">`;
+      timed.forEach(e=>{html+=`<div class="cal-event timed"><span class="cal-event-time">${e.time}</span>${e.title}</div>`;});
+      html+=`</div>`;
+    }
+    if(!allDay.length&&!timed.length)html+=`<div class="cal-empty">Free</div>`;
+    col.innerHTML=html;
     grid.appendChild(col);
   });
 }
@@ -1075,128 +953,92 @@ function switchTab(tabId,el){
   activeTab=tabId;
   document.querySelectorAll('.nav').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  // Hide all views
   document.getElementById('view-dashboard').style.display='none';
-  ['travel','running','nutrition','workout'].forEach(t=>{document.getElementById('view-'+t).classList.remove('active');});
+  ['travel','running','nutrition','workout'].forEach(t=>document.getElementById('view-'+t).classList.remove('active'));
+  const titles={dashboard:'Dashboard',travel:'🌍 Travel',running:'🏃 Running',nutrition:'🥗 Nutrition',workout:'💪 Workout'};
   const name=userProfile?.name||currentUser?.email?.split('@')[0]||'there';
+  document.getElementById('tbTitle').textContent=tabId==='dashboard'?`Welcome back, ${name} 👋`:titles[tabId];
+  document.getElementById('tbSub').textContent=tabId==='dashboard'?'Ready':'Your personalised plan';
+  // Hide week nav on feature tabs
+  document.querySelector('.week-nav').style.display=tabId==='dashboard'?'flex':'none';
   if(tabId==='dashboard'){
     document.getElementById('view-dashboard').style.display='block';
-    document.getElementById('tbTitle').textContent=`Welcome back, ${name} 👋`;
-    document.getElementById('tbSub').textContent='Ready';
-    renderDashboard();
+    renderDashboard();updateWeekNavBtns();
   } else {
-    // Check access — after first week, premium required for all feature tabs
-    if(!isTrialActive()&&!userProfile?.is_premium){openUpgradeModal();return;}
     document.getElementById('view-'+tabId).classList.add('active');
-    const titles={travel:'🌍 Travel',running:'🏃 Running',nutrition:'🥗 Nutrition',workout:'💪 Workout'};
-    document.getElementById('tbTitle').textContent=titles[tabId];
-    document.getElementById('tbSub').textContent='Your personalised plan';
     renderFeatureView(tabId);
   }
   trackEvent('tab_switch',{tab:tabId});
 }
 
 /* ══ FEATURE VIEWS ══ */
+const SELECTORS={
+  travel:{steps:[
+    {label:'Step 1 of 3',q:'What kind of traveller are you?',key:'styles',multi:3,chips:['Outdoors','Winter Sports','Sightseeing','Walking','Food','Nightlife','Culture','Relaxation','Adventure','Beaches']},
+    {label:'Step 2 of 3',q:'How long is your trip?',key:'duration',multi:1,chips:['Weekend','3–4 days','1 week','2+ weeks','City break']},
+    {label:'Step 3 of 3',q:"What's your flight budget?",key:'budget',multi:1,chips:['Low budget','Medium budget','High budget']},
+  ]},
+  running:{steps:[
+    {label:'Step 1 of 4',q:'What distance are you targeting?',key:'distance',multi:1,chips:['5K','10K','Half Marathon','Marathon']},
+    {label:'Step 2 of 4',q:'What types of runs do you want?',key:'runTypes',multi:3,chips:['Easy Runs','Intervals','Fartlek','Tempo Runs','Long Runs']},
+    {label:'Step 3 of 4',q:'How many runs per week?',key:'frequency',multi:1,chips:['2 runs','3 runs','4 runs','5+ runs']},
+    {label:'Step 4 of 4',q:"What's your current time for your chosen distance?",key:'currentTime',input:true,placeholder:'e.g. 25:30 for 5K'},
+  ]},
+  nutrition:{steps:[
+    {label:'Step 1 of 3',q:'Which meals do you want included?',key:'meals',multi:1,chips:['Breakfast only','Lunch only','Dinner only','Breakfast + Lunch','Lunch + Dinner','Full day']},
+    {label:'Step 2 of 3',q:'What is your main nutrition goal?',key:'goal',multi:1,chips:['High Protein','High Carbs','Balanced Diet','Increase Fruit & Veg','Improve Gut Health']},
+    {label:'Step 3 of 3',q:"What's most important for your meals?",key:'constraint',multi:1,chips:['Budget Friendly','Quick to Cook','Few Ingredients','Meal Prep Friendly','Low Effort']},
+  ]},
+  workout:{steps:[
+    {label:'Step 1 of 3',q:'What muscle groups do you want to focus on?',key:'muscles',multi:2,chips:['Full Body','Upper Body','Lower Body','Push (Chest, Shoulders, Triceps)','Pull (Back, Biceps)','Legs & Glutes']},
+    {label:'Step 2 of 3',q:'How many times per week do you want to train?',key:'frequency',multi:1,chips:['2 workouts','3 workouts','4 workouts','5+ workouts']},
+    {label:'Step 3 of 3',q:'Any limitations or preferences?',key:'constraints',multi:3,optional:true,chips:['No Bench Press','No Barbell Movements','Dumbbells Only','No Machines / Cables','Bodyweight Only','Beginner Friendly']},
+  ]}
+};
+let selSelections={};
+
 function renderFeatureView(tab){
   const container=document.getElementById('view-'+tab);
-  if(featureData[tab]){
-    renderFeatureOutput(tab,container);
-  } else {
-    renderFeatureSelector(tab,container);
-  }
+  if(featureData[tab]){renderFeatureOutput(tab,container);}
+  else{renderFeatureSelector(tab,container);}
 }
 
-/* SELECTORS */
-const SELECTORS={
-  travel:{
-    steps:[
-      {label:'Step 1 of 3',q:'What kind of traveller are you?',key:'styles',multi:3,chips:['Outdoors','Winter Sports','Sightseeing','Walking','Food','Nightlife','Culture','Relaxation','Adventure','Beaches']},
-      {label:'Step 2 of 3',q:'How long is your trip?',key:'duration',multi:1,chips:['Weekend','3–4 days','1 week','2+ weeks','City break']},
-      {label:'Step 3 of 3',q:'What\'s your flight budget?',key:'budget',multi:1,chips:['Low budget','Medium budget','High budget']},
-    ]
-  },
-  running:{
-    steps:[
-      {label:'Step 1 of 4',q:'What distance are you targeting?',key:'distance',multi:1,chips:['5K','10K','Half Marathon','Marathon']},
-      {label:'Step 2 of 4',q:'What types of runs do you want to include?',key:'runTypes',multi:3,chips:['Easy Runs','Intervals','Fartlek','Tempo Runs','Long Runs']},
-      {label:'Step 3 of 4',q:'How many times per week do you want to run?',key:'frequency',multi:1,chips:['2 runs','3 runs','4 runs','5+ runs']},
-      {label:'Step 4 of 4',q:'What\'s your current time for your chosen distance?',key:'currentTime',input:true,placeholder:'e.g. 25:30 for 5K'},
-    ]
-  },
-  nutrition:{
-    steps:[
-      {label:'Step 1 of 3',q:'Which meals do you want included?',key:'meals',multi:1,chips:['Breakfast only','Lunch only','Dinner only','Breakfast + Lunch','Lunch + Dinner','Full day']},
-      {label:'Step 2 of 3',q:'What is your main nutrition goal?',key:'goal',multi:1,chips:['High Protein','High Carbs','Balanced Diet','Increase Fruit & Veg','Improve Gut Health']},
-      {label:'Step 3 of 3',q:'What\'s most important for your meals?',key:'constraint',multi:1,chips:['Budget Friendly','Quick to Cook','Few Ingredients','Meal Prep Friendly','Low Effort']},
-    ]
-  },
-  workout:{
-    steps:[
-      {label:'Step 1 of 3',q:'What muscle groups do you want to focus on?',key:'muscles',multi:2,chips:['Full Body','Upper Body','Lower Body','Push (Chest, Shoulders, Triceps)','Pull (Back, Biceps)','Legs & Glutes']},
-      {label:'Step 2 of 3',q:'How many times per week do you want to train?',key:'frequency',multi:1,chips:['2 workouts','3 workouts','4 workouts','5+ workouts']},
-      {label:'Step 3 of 3',q:'Any limitations or preferences?',key:'constraints',multi:3,chips:['No Bench Press','No Barbell Movements','Dumbbells Only','No Machines / Cables','Bodyweight Only','Beginner Friendly'],optional:true},
-    ]
-  }
-};
-
-let selSelections={};
 function renderFeatureSelector(tab,container){
   const sel=SELECTORS[tab];
   selSelections={};
-  sel.steps.forEach((step,idx)=>{selSelections[step.key]=step.input?'':[];});
-  let html=`<div class="sel-flow">`;
-  html+=`<div style="margin-bottom:24px"><div style="font-family:var(--font-h);font-size:28px;font-weight:800;letter-spacing:.02em;margin-bottom:6px">Build Your Plan</div><div style="font-size:13px;color:var(--muted)">Answer a few quick questions and Archie will generate your personalised plan.</div></div>`;
+  sel.steps.forEach(s=>{selSelections[s.key]=s.input?'':[];});
+  let html=`<div class="sel-flow"><div style="margin-bottom:24px"><div style="font-family:var(--font-h);font-size:28px;font-weight:800;letter-spacing:.02em;margin-bottom:6px">Build Your Plan</div><div style="font-size:13px;color:var(--muted)">Answer a few quick questions and Archie will generate your personalised plan.</div></div>`;
   sel.steps.forEach((step,idx)=>{
-    html+=`<div class="sel-step" id="selStep_${tab}_${idx}">`;
-    html+=`<div class="sel-step-label">${step.label}</div>`;
-    html+=`<div class="sel-step-q">${step.q}</div>`;
+    html+=`<div class="sel-step"><div class="sel-step-label">${step.label}</div><div class="sel-step-q">${step.q}</div>`;
     if(step.input){
-      html+=`<input type="text" class="sel-input" id="selInput_${tab}_${idx}" placeholder="${step.placeholder||''}" oninput="selSetInput('${tab}','${step.key}',this.value)"/>`;
-      if(step.optional)html+=`<div class="sel-note">This field is required for accurate pace calculations.</div>`;
+      html+=`<input type="text" class="sel-input" placeholder="${step.placeholder||''}" oninput="selSelections['${step.key}']=this.value"/>`;
     } else {
       html+=`<div class="sel-chips">`;
-      step.chips.forEach(c=>{
-        html+=`<div class="chip" onclick="selToggle(this,'${tab}','${step.key}',${step.multi},'${c}')">${c}</div>`;
-      });
+      step.chips.forEach(c=>{html+=`<div class="chip" onclick="selToggle(this,'${tab}','${step.key}',${step.multi},'${c.replace(/'/g,"\\'")}'">${c}</div>`;});
       html+=`</div>`;
       if(step.optional)html+=`<div class="sel-note">Optional — skip if none apply.</div>`;
       else html+=`<div class="sel-note">Select ${step.multi===1?'1 option':`up to ${step.multi}`}.</div>`;
     }
     html+=`</div>`;
   });
-  html+=`<button class="sel-gen-btn" id="genBtn_${tab}" onclick="generateFeature('${tab}')">✨ Generate My Plan <span id="genSpinner_${tab}" style="display:none">…</span></button>`;
-  html+=`</div>`;
+  html+=`<button class="sel-gen-btn" onclick="generateFeature('${tab}')">✨ Generate My Plan</button></div>`;
   container.innerHTML=html;
 }
 
 function selToggle(el,tab,key,max,val){
   if(!selSelections[key])selSelections[key]=[];
   if(max===1){
-    // Single select
-    document.querySelectorAll(`#view-${tab} .chip`).forEach(c=>{
-      // only deselect chips in same step
-    });
-    // Find siblings
-    const siblings=el.parentElement.querySelectorAll('.chip');
-    siblings.forEach(c=>c.classList.remove('sel'));
+    el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
     el.classList.add('sel');
     selSelections[key]=[val];
   } else {
-    if(el.classList.contains('sel')){
-      el.classList.remove('sel');
-      selSelections[key]=selSelections[key].filter(v=>v!==val);
-    } else {
-      if(selSelections[key].length>=max){showToast(`Max ${max} selections`);return;}
-      el.classList.add('sel');
-      selSelections[key].push(val);
-    }
+    if(el.classList.contains('sel')){el.classList.remove('sel');selSelections[key]=selSelections[key].filter(v=>v!==val);}
+    else{if(selSelections[key].length>=max){showToast(`Max ${max} selections`);return;}el.classList.add('sel');selSelections[key].push(val);}
   }
 }
 
-function selSetInput(tab,key,val){selSelections[key]=val;}
-
 async function generateFeature(tab){
-  // Validate
+  if(!canSendMsg()){showToast('Daily message limit reached. Come back tomorrow!');return;}
   const sel=SELECTORS[tab];
   for(const step of sel.steps){
     if(step.optional)continue;
@@ -1204,18 +1046,14 @@ async function generateFeature(tab){
     if(step.input&&!val){showToast('Please fill in all fields.');return;}
     if(!step.input&&(!val||val.length===0)){showToast('Please answer all questions.');return;}
   }
-  // Check access
-  if(!isTrialActive()&&!userProfile?.is_premium){openUpgradeModal();return;}
-  // Show generating
   const container=document.getElementById('view-'+tab);
   container.innerHTML=`<div class="generating"><div class="gen-spin"></div><div class="gen-lbl">Archie is building your ${tab} plan…</div></div>`;
-  // Build prompt
   const prompt=buildFeaturePrompt(tab,selSelections);
   const sys={travel:TRAVEL_SYS,running:RUNNING_SYS,nutrition:NUTRITION_SYS,workout:WORKOUT_SYS}[tab];
   try{
     const reply=await callAPI([{role:'user',content:prompt}],sys);
+    incMsgCount();
     featureData[tab]={output:reply,selections:selSelections,generatedAt:new Date().toISOString()};
-    tweakMsgs[tab]=[];
     await saveFeaturesToSupabase();
     renderFeatureOutput(tab,container);
     showToast('Plan generated! 🎉','ok');
@@ -1227,127 +1065,58 @@ async function generateFeature(tab){
 }
 
 function buildFeaturePrompt(tab,sels){
-  if(tab==='travel')return `Generate 2 destination itineraries for a traveller who likes: ${sels.styles?.join(', ')}. Trip duration: ${sels.duration?.[0]}. Flight budget: ${sels.budget?.[0]}. Include Hostelworld (https://www.hostelworld.com), Skyscanner (https://www.skyscanner.net), and GetYourGuide (https://www.getyourguide.com) booking links naturally within each itinerary.`;
-  if(tab==='running')return `Generate a single repeatable weekly running schedule. Target distance: ${sels.distance?.[0]}. Run types to include: ${sels.runTypes?.join(', ')}. Runs per week: ${sels.frequency?.[0]}. Current time for ${sels.distance?.[0]}: ${sels.currentTime}. Calculate appropriate training paces (easy, tempo, interval, long run) based on their current time.`;
-  if(tab==='nutrition')return `Generate a 7-day meal plan and shopping list. Meals to include: ${sels.meals?.[0]}. Nutrition goal: ${sels.goal?.[0]}. Cooking preference: ${sels.constraint?.[0]}. Include a consolidated shopping list grouped by category (protein, carbs, veg, dairy, pantry). Keep meals simple and realistic.`;
-  if(tab==='workout')return `Generate a weekly workout plan. Muscle focus: ${sels.muscles?.join(', ')}. Training frequency: ${sels.frequency?.[0]}. Constraints: ${sels.constraints?.length?sels.constraints.join(', '):'None'}. Create an A/B split (or A/B/C for higher frequency). Show the weekly schedule, then detail each workout with 4-6 exercises, sets, reps, and brief guidance.`;
+  if(tab==='travel')return `Generate 2 destination itineraries for a traveller who likes: ${sels.styles?.join(', ')}. Trip duration: ${sels.duration?.[0]}. Flight budget: ${sels.budget?.[0]}. Include Hostelworld (https://www.hostelworld.com), Skyscanner (https://www.skyscanner.net), and GetYourGuide (https://www.getyourguide.com) booking links naturally.`;
+  if(tab==='running')return `Generate a single repeatable weekly running schedule. Target: ${sels.distance?.[0]}. Run types: ${sels.runTypes?.join(', ')}. Frequency: ${sels.frequency?.[0]}. Current time: ${sels.currentTime}. Calculate training paces based on current time.`;
+  if(tab==='nutrition')return `Generate a 7-day meal plan and shopping list. Meals: ${sels.meals?.[0]}. Goal: ${sels.goal?.[0]}. Preference: ${sels.constraint?.[0]}. Include shopping list grouped by category. Keep meals simple.`;
+  if(tab==='workout')return `Generate a weekly workout plan. Muscle focus: ${sels.muscles?.join(', ')}. Frequency: ${sels.frequency?.[0]}. Constraints: ${sels.constraints?.length?sels.constraints.join(', '):'None'}. Create A/B split. 4-6 exercises per session, sets and reps included.`;
   return '';
 }
+
+const AFF_CARDS={
+  travel:`<div class="aff-grid">
+    <a class="aff-card" href="https://www.skyscanner.net" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'skyscanner'})"><div class="aff-card-ic">✈️</div><div class="aff-card-tag">FLIGHTS</div><div class="aff-card-title">Skyscanner</div><div class="aff-card-desc">Compare flights and find the best price for your trip.</div><div class="aff-card-cta">Search flights →</div></a>
+    <a class="aff-card" href="https://www.hostelworld.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'hostelworld'})"><div class="aff-card-ic">🏨</div><div class="aff-card-tag">ACCOMMODATION</div><div class="aff-card-title">Hostelworld</div><div class="aff-card-desc">Book hostels and budget stays worldwide.</div><div class="aff-card-cta">Find a stay →</div></a>
+    <a class="aff-card" href="https://www.getyourguide.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'getyourguide'})"><div class="aff-card-ic">🎟️</div><div class="aff-card-tag">ACTIVITIES</div><div class="aff-card-title">GetYourGuide</div><div class="aff-card-desc">Book tours, experiences and activities.</div><div class="aff-card-cta">Explore →</div></a>
+  </div>`,
+  running:`<div class="aff-grid">
+    <a class="aff-card" href="https://www.nike.com/gb/running" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'nike'})"><div class="aff-card-ic">👟</div><div class="aff-card-tag">FOOTWEAR</div><div class="aff-card-title">Nike Running</div><div class="aff-card-desc">Performance running shoes for every distance.</div><div class="aff-card-cta">Shop now →</div></a>
+    <a class="aff-card" href="https://www.garmin.com/en-GB/c/sports-fitness/running/" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'garmin'})"><div class="aff-card-ic">⌚</div><div class="aff-card-tag">GPS WATCH</div><div class="aff-card-title">Garmin</div><div class="aff-card-desc">Track every run with precision pace and GPS data.</div><div class="aff-card-cta">View watches →</div></a>
+    <a class="aff-card" href="https://www.myprotein.com/c/sports-nutrition/endurance" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'myprotein'})"><div class="aff-card-ic">⚡</div><div class="aff-card-tag">FUEL</div><div class="aff-card-title">MyProtein</div><div class="aff-card-desc">Gels, electrolytes and endurance nutrition.</div><div class="aff-card-cta">Shop fuel →</div></a>
+  </div>`,
+  nutrition:`<div class="aff-grid">
+    <a class="aff-card" href="https://huel.com/en-gb" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'huel'})"><div class="aff-card-ic">🥤</div><div class="aff-card-tag">COMPLETE NUTRITION</div><div class="aff-card-title">Huel</div><div class="aff-card-desc">Nutritionally complete meals — quick and balanced.</div><div class="aff-card-cta">Get started →</div></a>
+    <a class="aff-card" href="https://www.myfitnesspal.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'myfitnesspal'})"><div class="aff-card-ic">📊</div><div class="aff-card-tag">TRACKING</div><div class="aff-card-title">MyFitnessPal</div><div class="aff-card-desc">Track calories and macros to hit your goals.</div><div class="aff-card-cta">Track free →</div></a>
+    <a class="aff-card" href="https://www.gousto.co.uk" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'gousto'})"><div class="aff-card-ic">📦</div><div class="aff-card-tag">MEAL KITS</div><div class="aff-card-title">Gousto</div><div class="aff-card-desc">Fresh recipe kits delivered to your door.</div><div class="aff-card-cta">Try Gousto →</div></a>
+  </div>`,
+  workout:`<div class="aff-grid">
+    <a class="aff-card" href="https://www.gymshark.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'gymshark'})"><div class="aff-card-ic">🦈</div><div class="aff-card-tag">GYM KIT</div><div class="aff-card-title">Gymshark</div><div class="aff-card-desc">High-performance training kit.</div><div class="aff-card-cta">Shop now →</div></a>
+    <a class="aff-card" href="https://www.myprotein.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'myprotein'})"><div class="aff-card-ic">💊</div><div class="aff-card-tag">SUPPLEMENTS</div><div class="aff-card-title">MyProtein</div><div class="aff-card-desc">Protein, creatine and supplements for training.</div><div class="aff-card-cta">Shop →</div></a>
+    <a class="aff-card" href="https://www.bulk.com/uk" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'bulk'})"><div class="aff-card-ic">💪</div><div class="aff-card-tag">NUTRITION</div><div class="aff-card-title">Bulk</div><div class="aff-card-desc">Premium sports nutrition at honest prices.</div><div class="aff-card-cta">Shop Bulk →</div></a>
+  </div>`
+};
 
 function renderFeatureOutput(tab,container){
   const data=featureData[tab];
   if(!data){renderFeatureSelector(tab,container);return;}
-  const isPremium=userProfile?.is_premium||false;
-  const tweakUsed=tweakCounts[tab]||0;
-  const tweakLeft=isPremium?999:Math.max(0,MAX_TWEAKS-tweakUsed);
-  const canRegen=isPremium||isTrialActive();
-
-  // Affiliate cards per tab
-  const AFF_CARDS={
-    travel:`<div class="aff-grid">
-      <a class="aff-card" href="https://www.skyscanner.net" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'travel',partner:'skyscanner'})">
-        <div class="aff-card-ic">✈️</div><div class="aff-card-tag">FLIGHTS</div>
-        <div class="aff-card-title">Skyscanner</div>
-        <div class="aff-card-desc">Compare flights and find the best price for your trip.</div>
-        <div class="aff-card-cta">Search flights →</div>
-      </a>
-      <a class="aff-card" href="https://www.hostelworld.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'travel',partner:'hostelworld'})">
-        <div class="aff-card-ic">🏨</div><div class="aff-card-tag">ACCOMMODATION</div>
-        <div class="aff-card-title">Hostelworld</div>
-        <div class="aff-card-desc">Book hostels and budget stays worldwide.</div>
-        <div class="aff-card-cta">Find a stay →</div>
-      </a>
-      <a class="aff-card" href="https://www.getyourguide.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'travel',partner:'getyourguide'})">
-        <div class="aff-card-ic">🎟️</div><div class="aff-card-tag">ACTIVITIES</div>
-        <div class="aff-card-title">GetYourGuide</div>
-        <div class="aff-card-desc">Book tours, experiences and activities at your destination.</div>
-        <div class="aff-card-cta">Explore activities →</div>
-      </a>
-    </div>`,
-    running:`<div class="aff-grid">
-      <a class="aff-card" href="https://www.nike.com/gb/running" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'running',partner:'nike'})">
-        <div class="aff-card-ic">👟</div><div class="aff-card-tag">FOOTWEAR</div>
-        <div class="aff-card-title">Nike Running</div>
-        <div class="aff-card-desc">Performance running shoes built for every distance and pace.</div>
-        <div class="aff-card-cta">Shop now →</div>
-      </a>
-      <a class="aff-card" href="https://www.garmin.com/en-GB/c/sports-fitness/running/" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'running',partner:'garmin'})">
-        <div class="aff-card-ic">⌚</div><div class="aff-card-tag">GPS WATCH</div>
-        <div class="aff-card-title">Garmin</div>
-        <div class="aff-card-desc">Track every run with precision pace, HR and GPS data.</div>
-        <div class="aff-card-cta">View watches →</div>
-      </a>
-      <a class="aff-card" href="https://www.myprotein.com/c/sports-nutrition/endurance" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'running',partner:'myprotein'})">
-        <div class="aff-card-ic">⚡</div><div class="aff-card-tag">FUEL</div>
-        <div class="aff-card-title">MyProtein</div>
-        <div class="aff-card-desc">Gels, electrolytes and endurance nutrition for runners.</div>
-        <div class="aff-card-cta">Shop fuel →</div>
-      </a>
-    </div>`,
-    nutrition:`<div class="aff-grid">
-      <a class="aff-card" href="https://huel.com/en-gb" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'nutrition',partner:'huel'})">
-        <div class="aff-card-ic">🥤</div><div class="aff-card-tag">COMPLETE NUTRITION</div>
-        <div class="aff-card-title">Huel</div>
-        <div class="aff-card-desc">Nutritionally complete meals — quick, balanced and affordable.</div>
-        <div class="aff-card-cta">Get started →</div>
-      </a>
-      <a class="aff-card" href="https://www.myfitnesspal.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'nutrition',partner:'myfitnesspal'})">
-        <div class="aff-card-ic">📊</div><div class="aff-card-tag">TRACKING</div>
-        <div class="aff-card-title">MyFitnessPal</div>
-        <div class="aff-card-desc">Track calories and macros to stay on top of your nutrition goals.</div>
-        <div class="aff-card-cta">Track free →</div>
-      </a>
-      <a class="aff-card" href="https://www.gousto.co.uk" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'nutrition',partner:'gousto'})">
-        <div class="aff-card-ic">📦</div><div class="aff-card-tag">MEAL KITS</div>
-        <div class="aff-card-title">Gousto</div>
-        <div class="aff-card-desc">Fresh recipe kits delivered — takes the planning out of eating well.</div>
-        <div class="aff-card-cta">Try Gousto →</div>
-      </a>
-    </div>`,
-    workout:`<div class="aff-grid">
-      <a class="aff-card" href="https://www.gymshark.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'workout',partner:'gymshark'})">
-        <div class="aff-card-ic">🦈</div><div class="aff-card-tag">GYM KIT</div>
-        <div class="aff-card-title">Gymshark</div>
-        <div class="aff-card-desc">High-performance training kit designed to move with you.</div>
-        <div class="aff-card-cta">Shop now →</div>
-      </a>
-      <a class="aff-card" href="https://www.myprotein.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'workout',partner:'myprotein'})">
-        <div class="aff-card-ic">💊</div><div class="aff-card-tag">SUPPLEMENTS</div>
-        <div class="aff-card-title">MyProtein</div>
-        <div class="aff-card-desc">Protein, creatine and supplements to support your training.</div>
-        <div class="aff-card-cta">Shop supplements →</div>
-      </a>
-      <a class="aff-card" href="https://www.bulk.com/uk" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{tab:'workout',partner:'bulk'})">
-        <div class="aff-card-ic">💪</div><div class="aff-card-tag">NUTRITION</div>
-        <div class="aff-card-title">Bulk</div>
-        <div class="aff-card-desc">Premium sports nutrition at honest prices — fuel every session.</div>
-        <div class="aff-card-cta">Shop Bulk →</div>
-      </a>
-    </div>`,
-  };
-  const affHtml=AFF_CARDS[tab]||'';
-
+  const msgs=tweakMsgs[tab]||[];
   container.innerHTML=`
     <div class="output-panel">
       <div class="output-header">
         <div class="output-title">${{travel:'🌍 Your Travel Plans',running:'🏃 Your Running Plan',nutrition:'🥗 Your Meal Plan',workout:'💪 Your Workout Plan'}[tab]}</div>
-        ${canRegen?`<button class="regen-btn" onclick="confirmRegen('${tab}')">🔄 Regenerate</button>`:`<button class="regen-btn" onclick="openUpgradeModal()">🔒 Upgrade to regenerate</button>`}
+        <button class="regen-btn" onclick="confirmRegen('${tab}')">🔄 Regenerate</button>
       </div>
-      ${affHtml}
+      ${AFF_CARDS[tab]||''}
       <div class="output-content">${md(data.output)}</div>
-      <div class="ads-banner" style="margin:24px 0 0;min-height:60px;padding:8px 16px;font-size:10px;opacity:.7;" id="featAds_${tab}"><span>Advertisement</span></div>
+      <div class="ads-banner" style="margin:24px 0 0;min-height:60px"><span>Advertisement</span></div>
       <div class="tweak-section">
         <div class="tweak-title">💬 Ask Archie to Tweak</div>
-        <div class="tweak-sub">Make adjustments or ask questions about your plan.</div>
-        <div class="tweak-counter">Messages used: <span>${tweakUsed}${isPremium?'':`/${MAX_TWEAKS}`}</span></div>
+        <div class="tweak-sub">Ask questions or request adjustments to your plan.</div>
         <div class="tweak-msgs" id="tweakMsgs_${tab}"></div>
-        ${tweakLeft>0||isPremium?`
         <div class="inp-box">
-          <textarea class="inp-ta" id="tweakTa_${tab}" rows="1" placeholder="Ask Archie to adjust your plan…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak('${tab}');}" oninput="autoResize(this)"></textarea>
+          <textarea class="inp-ta" id="tweakTa_${tab}" rows="1" placeholder="Ask Archie…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak('${tab}');}" oninput="autoResize(this)"></textarea>
           <button class="inp-send" id="tweakSend_${tab}" onclick="sendTweak('${tab}')">↑</button>
         </div>
-        <div class="inp-hint">Enter to send · ${isPremium?'Unlimited messages':tweakLeft+' messages remaining'}</div>`
-        :`<div style="background:rgba(244,196,48,0.08);border:1px solid rgba(244,196,48,0.2);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--gold);">You've used all ${MAX_TWEAKS} free tweak messages for this plan. <button onclick="openUpgradeModal()" style="background:none;border:none;color:var(--gold);text-decoration:underline;cursor:pointer;font-size:13px;padding:0">Upgrade for unlimited →</button></div>`}
+        <div class="inp-hint">Enter to send · 10 messages per day</div>
       </div>
     </div>`;
   renderTweakMsgs(tab);
@@ -1355,128 +1124,104 @@ function renderFeatureOutput(tab,container){
 
 function confirmRegen(tab){
   if(confirm(`Regenerate your ${tab} plan? Your current plan will be replaced.`)){
-    featureData[tab]=null;tweakMsgs[tab]=[];tweakCounts[tab]=0;
+    featureData[tab]=null;tweakMsgs[tab]=[];
     renderFeatureSelector(tab,document.getElementById('view-'+tab));
   }
 }
 
-/* ══ TWEAKS ══ */
 function renderTweakMsgs(tab){
-  const w=document.getElementById('tweakMsgs_'+tab);
-  if(!w)return;
+  const w=document.getElementById('tweakMsgs_'+tab);if(!w)return;
   w.innerHTML='';
   (tweakMsgs[tab]||[]).forEach(m=>w.appendChild(buildMsgEl(m)));
   w.scrollTop=w.scrollHeight;
 }
 
 async function sendTweak(tab){
-  const isPremium=userProfile?.is_premium||false;
-  if(!isPremium){
-    // Check 48h window
-    const key='tweak_reset_'+tab;
-    const resetTime=localStorage.getItem(key);
-    const now=Date.now();
-    if(resetTime&&now>parseInt(resetTime)){
-      // 48h passed — reset count
-      tweakCounts[tab]=0;
-      localStorage.removeItem(key);
-    }
-    if(tweakCounts[tab]>=MAX_TWEAKS){
-      const hoursLeft=resetTime?Math.ceil((parseInt(resetTime)-now)/3600000):48;
-      showToast('Message limit reached. Resets in '+hoursLeft+'h or upgrade for unlimited.');
-      openUpgradeModal();return;
-    }
-    // Set reset timer on first message
-    if(tweakCounts[tab]===0)localStorage.setItem(key,String(now+48*3600000));
-  }
-  const ta=document.getElementById('tweakTa_'+tab);
-  if(!ta)return;
+  if(!canSendMsg()){showToast('Daily message limit reached. Come back tomorrow!');return;}
+  const ta=document.getElementById('tweakTa_'+tab);if(!ta)return;
   const text=ta.value.trim();if(!text)return;
   if(!tweakMsgs[tab])tweakMsgs[tab]=[];
   tweakMsgs[tab].push({role:'user',content:text});
   ta.value='';ta.style.height='auto';
   const send=document.getElementById('tweakSend_'+tab);if(send)send.disabled=true;
-  // Add typing indicator
-  const w=document.getElementById('tweakMsgs_'+tab);
-  if(w){w.appendChild(buildMsgEl({role:'user',content:text}));w.appendChild(buildTyping());w.scrollTop=w.scrollHeight;}
-  // Build context with original plan
-  const msgs=[
-    {role:'assistant',content:featureData[tab]?.output||''},
-    ...tweakMsgs[tab].slice(-8)
-  ];
+  renderTweakMsgs(tab);
+  const msgs=[{role:'assistant',content:featureData[tab]?.output||''},...tweakMsgs[tab].slice(-8)];
   try{
     const reply=await callAPI(msgs,TWEAK_SYS(tab));
+    incMsgCount();
     tweakMsgs[tab].push({role:'assistant',content:reply});
-    tweakCounts[tab]=(tweakCounts[tab]||0)+1;
-    await saveFeaturesToSupabase();
-    renderTweakMsgs(tab);
-    // Update counter display
-    const counter=document.querySelector(`#view-${tab} .tweak-counter span`);
-    if(counter)counter.textContent=tweakCounts[tab]+(isPremium?'':`/${MAX_TWEAKS}`);
-  }catch(e){tweakMsgs[tab].push({role:'assistant',content:`**Error** — ${e.message}`});renderTweakMsgs(tab);showToast(e.message);}
+  }catch(e){tweakMsgs[tab].push({role:'assistant',content:`**Error** — ${e.message}`});showToast(e.message);}
   if(send)send.disabled=false;
+  renderTweakMsgs(tab);
 }
 
 /* ══ PLAN MODAL ══ */
-function openPlanModal(){
+let nextWeekMode=false;
+function openPlanModal(forNextWeek=false){
+  nextWeekMode=forNextWeek;
   const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date();
   document.getElementById('modalWeekLabel').textContent=`Week commencing ${wc.toLocaleDateString('en-GB',{weekday:'long',month:'long',day:'numeric'})}`;
-  showModalChoose();document.getElementById('planModal').classList.add('open');
+  if(forNextWeek){showModalConfirm();}else{showModalChoose();}
+  document.getElementById('planModal').classList.add('open');
 }
-function closePlanModal(){document.getElementById('planModal').classList.remove('open');modalMsgs=[];}
+function closePlanModal(){document.getElementById('planModal').classList.remove('open');modalMsgs=[];nextWeekMode=false;}
 function showModalChoose(){document.getElementById('modalChoose').style.display='block';document.getElementById('modalConfirm').style.display='none';document.getElementById('modalChatWrap').style.display='none';}
-function showModalConfirm(){
-  if(!userProfile?.is_premium){openUpgradeModal();closePlanModal();return;}
-  document.getElementById('modalChoose').style.display='none';document.getElementById('modalConfirm').style.display='block';
-}
+function showModalConfirm(){document.getElementById('modalChoose').style.display='none';document.getElementById('modalConfirm').style.display='block';document.getElementById('modalChatWrap').style.display='none';}
 function startEditInModal(){
-  if(!isTrialActive()&&!userProfile?.is_premium){closePlanModal();openUpgradeModal();return;}
   document.getElementById('modalChoose').style.display='none';isEditMode=true;
   modalMsgs=[{role:'assistant',content:"What would you like to change — your events, goals, or both?"}];
   document.getElementById('modalChatWrap').style.display='flex';renderModalMsgs();
 }
 async function startNextWeek(){
-  const goals=weekData.goals||[];const missed=goals.filter(g=>g.done<g.target).length;
-  if(missed===0)weekData.streak=(weekData.streak||0)+1;else if(missed>=2){weekData.streak=0;weekData.streakStatus='reset';}
+  const goals=weekData.goals||[];
+  const missed=goals.filter(g=>g.done<g.target).length;
+  if(missed===0)weekData.streak=(weekData.streak||0)+1;
+  else if(missed>=2){weekData.streak=0;weekData.streakStatus='reset';}
+  // Calculate next Monday
   const wc=weekData.weekCommencing?new Date(weekData.weekCommencing+'T00:00:00'):new Date();
   const next=new Date(wc);next.setDate(next.getDate()+7);
-  const y=next.getFullYear(),m=String(next.getMonth()+1).padStart(2,'0'),d=String(next.getDate()).padStart(2,'0');
+  const y=next.getFullYear(),mo=String(next.getMonth()+1).padStart(2,'0'),d=String(next.getDate()).padStart(2,'0');
   const prevStreak=weekData.streak,prevStatus=weekData.streakStatus;
-  weekData={weekCommencing:`${y}-${m}-${d}`,events:[],goals:[],recommendations:[],streak:prevStreak,streakStatus:prevStatus};
+  weekData={weekCommencing:`${y}-${mo}-${d}`,events:[],goals:[],recommendations:[],streak:prevStreak,streakStatus:prevStatus};
   document.getElementById('modalConfirm').style.display='none';isEditMode=false;
-  modalMsgs=[{role:'assistant',content:`Let's build your week of **${next.toLocaleDateString('en-GB',{month:'long',day:'numeric'})}**! 🏗️\n\nWhat's in your diary?`}];
+  modalMsgs=[{role:'assistant',content:`Let's build your week of **${next.toLocaleDateString('en-GB',{month:'long',day:'numeric'})}**! 🏗️\n\nWhat's in your diary next week?`}];
   document.getElementById('modalChatWrap').style.display='flex';renderModalMsgs();
 }
-function renderModalMsgs(){const w=document.getElementById('modalChatMsgs');w.innerHTML='';modalMsgs.forEach(m=>{const r=buildMsgEl(m);r.style.marginBottom='12px';w.appendChild(r);});if(modalLoading)w.appendChild(buildTyping());w.scrollTop=w.scrollHeight;}
+function renderModalMsgs(){
+  const w=document.getElementById('modalChatMsgs');w.innerHTML='';
+  modalMsgs.forEach(m=>{const r=buildMsgEl(m);r.style.marginBottom='12px';w.appendChild(r);});
+  if(modalLoading)w.appendChild(buildTyping());
+  w.scrollTop=w.scrollHeight;
+}
 async function sendModalChat(){
+  if(!canSendMsg()){showToast('Daily message limit reached. Come back tomorrow!');closePlanModal();return;}
   const ta=document.getElementById('modalTa');const text=ta.value.trim();if(!text||modalLoading)return;
   modalMsgs.push({role:'user',content:text});ta.value='';ta.style.height='auto';
   modalLoading=true;document.getElementById('modalSend').disabled=true;renderModalMsgs();
   try{
-    const sys=isEditMode?EDIT_SYS:ONBOARD_SYS;
+    const sys=isEditMode?EDIT_SYS:NEXT_WEEK_SYS;
     const reply=await callAPI(modalMsgs.slice(-20),sys);
+    incMsgCount();
     let r=reply;const ready=r.includes('BLUEPRINT_READY');
     const jm=r.match(/```json([\s\S]*?)```/);
     if(jm){try{const p=JSON.parse(jm[1].trim());weekData={...weekData,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};}catch(e){}r=r.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();}
     modalMsgs.push({role:'assistant',content:r});modalLoading=false;document.getElementById('modalSend').disabled=false;
-    if(ready){renderModalMsgs();await saveWeekToSupabase();await new Promise(r=>setTimeout(r,700));closePlanModal();renderDashboard();switchTab('dashboard',document.querySelector('[data-tab="dashboard"]'));}
-    else renderModalMsgs();
-  }catch(e){modalMsgs.push({role:'assistant',content:`**Error** — ${e.message}`});modalLoading=false;document.getElementById('modalSend').disabled=false;renderModalMsgs();showToast(e.message);}
+    if(ready){
+      renderModalMsgs();
+      await saveWeekToSupabase();
+      await new Promise(r=>setTimeout(r,700));
+      closePlanModal();
+      renderDashboard();updateWeekNavBtns();
+      switchTab('dashboard',document.querySelector('[data-tab="dashboard"]'));
+    } else renderModalMsgs();
+  }catch(e){
+    modalMsgs.push({role:'assistant',content:`**Error** — ${e.message}`});
+    modalLoading=false;document.getElementById('modalSend').disabled=false;
+    renderModalMsgs();showToast(e.message);
+  }
 }
 
-/* ══ UPGRADE ══ */
-function openUpgradeModal(){document.getElementById('upgradeModal').classList.add('open');trackEvent('upgrade_modal_open');}
-function closeUpgradeModal(){document.getElementById('upgradeModal').classList.remove('open');}
-async function startCheckout(){
-  const btn=document.getElementById('stripeBtn');btn.disabled=true;btn.textContent='Redirecting…';
-  try{
-    const res=await fetch('/.netlify/functions/create-checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({priceId:STRIPE_PRICE,userId:currentUser?.id,email:currentUser?.email})});
-    const data=await res.json();
-    if(data.url)window.location.href=data.url;else throw new Error(data.error||'Checkout failed');
-  }catch(e){showToast(e.message);btn.disabled=false;btn.textContent='Upgrade for £4.99/month →';}
-}
-
-/* ══ API CALL ══ */
+/* ══ API ══ */
 async function callAPI(messages,system){
   const res=await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,system})});
   if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`Error ${res.status}`);}
@@ -1492,7 +1237,11 @@ function buildMsgEl(m){
     :`<div class="mbub">${md(m.content)}</div>`;
   return r;
 }
-function buildTyping(){const r=document.createElement('div');r.className='trow';r.innerHTML=`<div class="mav">🏗️</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;return r;}
+function buildTyping(){
+  const r=document.createElement('div');r.className='trow';
+  r.innerHTML=`<div class="mav">🏗️</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  return r;
+}
 
 /* ══ MARKDOWN ══ */
 function md(t){
@@ -1503,17 +1252,14 @@ function md(t){
   t=t.replace(/^## (.*?)$/gm,'<h2>$1</h2>');
   t=t.replace(/^### (.*?)$/gm,'<h3>$1</h3>');
   t=t.replace(/^#### (.*?)$/gm,'<strong>$1</strong>');
-  // Tables
   t=t.replace(/^\|(.+)\|$/gm,(match,content)=>{
     const cells=content.split('|').map(c=>c.trim());
     return `<tr>${cells.map(c=>`<td>${c}</td>`).join('')}</tr>`;
   });
   t=t.replace(/(<tr>.*?<\/tr>\n?)+/gs,s=>{
     const rows=s.trim().split('\n').filter(r=>r.includes('<tr>'));
-    if(rows.length<2)return s;
-    // Check if second row is separator
-    if(rows[1]&&rows[1].includes('---')){
-      const header=rows[0].replace(/<td>/g,'<th>').replace(/<\/td>/g,'<\/th>');
+    if(rows.length>=2&&rows[1].includes('---')){
+      const header=rows[0].replace(/<td>/g,'<th>').replace(/<\/td>/g,'</th>');
       const body=rows.slice(2).join('');
       return `<table><thead>${header}</thead><tbody>${body}</tbody></table>`;
     }
@@ -1537,22 +1283,14 @@ function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrol
 
 /* ══ BOOT ══ */
 window.addEventListener('DOMContentLoaded',async()=>{
-  trackEvent('page_view');checkConsent();
+  trackEvent('page_view');
+  checkConsent();
+  renderMsgLimit();
+  // Check for existing session
   const {data:{session}}=await sb.auth.getSession();
   if(session?.user){
     document.getElementById('screen-landing').style.display='none';
-    document.getElementById('screen-gate').style.display='none';
-    await loadUserAndContinue(session.user);
-  }
-  const params=new URLSearchParams(window.location.search);
-  if(params.get('upgraded')==='true'){
-    showToast('🎉 Welcome to Premium! All features unlocked.','ok');
-    if(currentUser){
-      const {data}=await sb.from('user_profiles').select('*').eq('id',currentUser.id).single();
-      userProfile=data;
-      if(data?.is_premium)showApp(data.name||currentUser.email.split('@')[0]);
-    }
-    window.history.replaceState({},'',window.location.pathname);
+    await loadUserData(session.user);
   }
 });
 </script>
