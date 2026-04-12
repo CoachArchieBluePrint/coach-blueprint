@@ -461,6 +461,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="sb-user">
       <div class="sb-user-av" id="sbUserAv">A</div>
       <div class="sb-user-name" id="sbUserName">Loading…</div>
+      <button onclick="doSignOut()" style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0;" title="Sign out">↩</button>
     </div>
     <button class="nav on" data-tab="dashboard" onclick="switchTab('dashboard',this)" style="margin-top:6px;">
       <span class="nav-ic">📅</span> Dashboard
@@ -708,10 +709,9 @@ async function loadUserData(user){
     loadWeekFromRow(allWeeks[0]);
     showLoader(()=>showApp(name));
   } else {
-    document.getElementById('screen-login').classList.remove('active');
-    document.getElementById('screen-login').style.display='none';
-    document.getElementById('screen-chat').classList.add('active');
-    startOnboarding(name);
+    // Returning user with no weeks — go to dashboard with empty state, 
+    // they can use Plan with Archie to build their first week
+    showLoader(()=>showApp(name));
   }
   checkConsent();
 }
@@ -1290,6 +1290,17 @@ function md(t){
 
 /* ══ UTILS ══ */
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+/* ══ SIGN OUT ══ */
+async function doSignOut(){
+  await sb.auth.signOut();
+  currentUser=null;userProfile=null;allWeeks=[];weekData={weekCommencing:'',events:[],goals:[],recommendations:[],streak:0,streakStatus:'active'};
+  featureData={travel:null,running:null,nutrition:null,workout:null};
+  document.getElementById('screen-app').classList.remove('active');
+  document.getElementById('screen-app').style.display='none';
+  const l=document.getElementById('screen-landing');
+  l.style.display='flex';l.classList.remove('out');
+}
 
 /* ══ BOOT ══ */
 window.addEventListener('DOMContentLoaded',async()=>{
