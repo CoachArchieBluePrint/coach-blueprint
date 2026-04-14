@@ -332,7 +332,68 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .modal-btn-s:hover{color:var(--text);}
 .modal-chat-msgs{padding:10px 22px;overflow-y:auto;flex:1;max-height:300px;}
 .modal-inp{padding:10px 22px 18px;border-top:1px solid var(--border);flex-shrink:0;}
+
+/* FEATURE OUTPUT REDESIGN */
+.feat-scroll{padding:24px;max-width:920px;width:100%;margin:0 auto;}
+.feat-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:16px;}
+.feat-title{font-family:var(--font-h);font-size:34px;font-weight:800;letter-spacing:.02em;margin-bottom:4px;}
+.feat-subtitle{font-size:13px;color:var(--muted);}
+/* TRAVEL */
+.dest-section{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+.dest-section:last-of-type{border-bottom:none;padding-bottom:0;}
+.dest-title{font-family:var(--font-h);font-size:26px;font-weight:800;letter-spacing:.02em;margin-bottom:6px;}
+.dest-summary{font-size:13.5px;color:var(--muted);margin-bottom:16px;line-height:1.7;}
+.dest-bubbles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.dest-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.dest-bubble-ic{font-size:26px;margin-bottom:8px;}
+.dest-bubble-tag{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:4px;}
+.dest-bubble-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.dest-bubble-body{font-size:13px;color:var(--muted);line-height:1.65;}
+/* RUNNING */
+.run-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
+.run-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.run-bubble-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.run-bubble-ic{font-size:28px;}
+.run-bubble-type{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:2px;}
+.run-bubble-name{font-family:var(--font-h);font-size:17px;font-weight:700;letter-spacing:.03em;}
+.run-bubble-stats{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.run-stat{background:var(--surface3);border-radius:8px;padding:7px 12px;text-align:center;}
+.run-stat-val{font-family:var(--font-h);font-size:18px;font-weight:700;color:var(--text);}
+.run-stat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.run-bubble-notes{font-size:13px;color:var(--muted);line-height:1.6;}
+/* NUTRITION */
+.nutrition-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px;}
+.section-title{font-family:var(--font-h);font-size:19px;font-weight:700;letter-spacing:.03em;margin-bottom:12px;}
+.meal-table{width:100%;border-collapse:collapse;}
+.meal-table th{background:var(--surface3);padding:8px 10px;text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.meal-table td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:12.5px;vertical-align:top;color:var(--text);}
+.meal-table tr:last-child td{border-bottom:none;}
+.meal-table .day-cell{font-weight:600;color:var(--cyan);white-space:nowrap;}
+.shop-category{margin-bottom:14px;}
+.shop-cat-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:7px;}
+.shop-items{display:flex;flex-wrap:wrap;gap:5px;}
+.shop-item{background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:12px;color:var(--muted);}
+.nut-tweak-section{border-top:1px solid var(--border);padding-top:18px;margin-top:4px;}
+.nut-tweak-title{font-family:var(--font-h);font-size:17px;font-weight:700;margin-bottom:4px;}
+.nut-tweak-sub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+/* WORKOUT */
+.workout-sched-wrap{margin-bottom:22px;}
+.workout-sched-wrap table{width:100%;border-collapse:collapse;}
+.workout-sched-wrap th{background:var(--surface3);padding:8px 12px;text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.workout-sched-wrap td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);}
+.workout-sched-wrap tr:last-child td{border-bottom:none;}
+.workout-sched-wrap .day-col{font-weight:600;color:var(--cyan);}
+.workout-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.workout-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.workout-bubble-title{font-family:var(--font-h);font-size:22px;font-weight:800;letter-spacing:.03em;margin-bottom:4px;}
+.workout-bubble-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.exercise-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.exercise-row:last-child{border-bottom:none;}
+.exercise-num{width:22px;height:22px;border-radius:50%;background:rgba(26,106,255,0.15);border:1px solid rgba(26,106,255,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--blue);flex-shrink:0;margin-top:1px;}
+.exercise-name{font-size:13px;font-weight:600;color:var(--text);}
+.exercise-sets{font-size:12px;color:var(--muted);}
 </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7607959299369414" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="toast"></div>
@@ -611,22 +672,73 @@ function renderMsgLimit(){
 const TODAY=new Date().toISOString().split('T')[0];
 const ONBOARD_SYS=`You are Archie the Architect, a friendly AI life coach. Have a warm natural conversation to collect: 1) The user's week commitments Mon-Sun (times if known, allDay if not). 2) Up to 4 goals (name, emoji, how many times to complete this week). Once you have BOTH confirmed, output ONLY this JSON then BLUEPRINT_READY on a new line:
 \`\`\`json
-{"weekCommencing":"YYYY-MM-DD","events":[{"day":"Monday","title":"Team standup","time":"09:00","allDay":false}],"goals":[{"name":"Run","emoji":"🏃","target":3,"done":0}],"recommendations":[{"icon":"🏃","tag":"FITNESS","title":"Nike Running","desc":"Gear for your runs","url":"https://www.nike.com/gb/running","cta":"Shop now"},{"icon":"📚","tag":"READING","title":"Audible","desc":"Listen on the go","url":"https://www.audible.co.uk","cta":"Try free"},{"icon":"💪","tag":"WELLNESS","title":"MyFitnessPal","desc":"Track nutrition free","url":"https://www.myfitnesspal.com","cta":"Get started"}]}
+{"weekCommencing":"YYYY-MM-DD","events":[{"day":"Monday","title":"Team standup","time":"09:00","allDay":false,"emoji":"📅"}],"goals":[{"name":"Run","emoji":"🏃","target":3,"done":0}],"recommendations":[{"icon":"🏃","tag":"FITNESS","title":"Nike Running","desc":"Gear for your runs","url":"https://www.nike.com/gb/running","cta":"Shop now"},{"icon":"📚","tag":"READING","title":"Audible","desc":"Listen on the go","url":"https://www.audible.co.uk","cta":"Try free"},{"icon":"💪","tag":"WELLNESS","title":"MyFitnessPal","desc":"Track nutrition free","url":"https://www.myfitnesspal.com","cta":"Get started"}]}
 \`\`\`
 BLUEPRINT_READY
 Rules:
 - weekCommencing = most recent Monday from today ${TODAY}
-- CRITICAL: Each event must be a SEPARATE object. Never combine two events into one title. "Work from home and gym" = TWO events: {"day":"Monday","title":"Work from home","allDay":true} and {"day":"Monday","title":"Gym","allDay":true}
+- CRITICAL: Each event must be a SEPARATE object. Never combine two events into one title. "Work from home and gym" = TWO events: {"day":"Monday","title":"Work from home","allDay":true,"emoji":"🏠"} and {"day":"Monday","title":"Gym","allDay":true,"emoji":"💪"}
+- Every event MUST include an emoji field. Pick the most relevant (gym=💪, meeting=📅, run=🏃, dinner=🍽️, cinema=🎬, yoga=🧘, work=💼, wfh=🏠, football=⚽, coffee=☕, shopping=🛒, doctor=🏥, default=📅)
 - Event titles must be properly capitalised
 - Max 4 goals. Exactly 3 recommendations relevant to their goals
 - Be warm and casual, one question at a time`;
 
 const EDIT_SYS=`You are Archie helping update the user's week. Ask what to change. Output updated JSON with BLUEPRINT_READY when done. Today is ${TODAY}. Each event must be a SEPARATE object — never combine activities. Titles properly capitalised.`;
 const NEXT_WEEK_SYS=`You are Archie helping the user plan next week. Ask about their commitments and goals for next week. Output JSON with BLUEPRINT_READY when done. Today is ${TODAY}. Each event must be a SEPARATE object. Titles properly capitalised.`;
-const TRAVEL_SYS=`You are Archie generating travel itineraries. Output 2 different destination itineraries. Use ## for destination names, ### for days. Keep tone inspiring and practical. Use markdown tables for daily structure.`;
-const RUNNING_SYS=`You are Archie generating a personalised weekly running schedule. Output a single repeatable training week with day-by-day structure, specific paces (easy/tempo/interval/long run), and brief session notes. Use tables for the weekly overview.`;
-const NUTRITION_SYS=`You are Archie generating a 7-day meal plan and shopping list. Create a practical weekly plan with a shopping list grouped by category. Keep meals simple and realistic. Use tables for the weekly overview.`;
-const WORKOUT_SYS=`You are Archie generating a weekly workout plan. Create a structured A/B (or A/B/C) split. Show the weekly schedule, then detail each workout with 4-6 exercises, sets, reps, and brief guidance.`;
+const TRAVEL_SYS=`You are Archie generating travel itineraries. Output 2 destinations. For each use EXACTLY this format:
+DESTINATION: [Name + country flag emoji]
+SUMMARY: [2-3 sentence inspiring overview]
+TRAVEL: [How to get there, flights, best airports, travel tips — 3-4 sentences]
+ACCOMMODATION: [Best areas to stay, types, price ranges — 3-4 sentences]
+ACTIVITIES: [Top things to do aligned with travel style — 3-4 sentences]
+---
+No markdown headers. No hashtags. Plain text only in each section.`;
+const RUNNING_SYS=`You are Archie generating a personalised running plan. Output each run as a SEPARATE block using EXACTLY this format:
+RUN: [Type e.g. Easy Run, Tempo Run, Interval Session, Long Run]
+DISTANCE: [e.g. 6K]
+PACE: [e.g. 6:30/km]
+DURATION: [e.g. 38 mins]
+NOTES: [2-3 sentences on purpose and how to execute]
+---
+Calculate paces from their current time. Output exactly the number of runs requested. No day assignments. No markdown headers.`;
+const NUTRITION_SYS=`You are Archie generating a meal plan and shopping list. Use EXACTLY this format:
+MEALS:
+Monday|breakfast|lunch|dinner
+Tuesday|breakfast|lunch|dinner
+Wednesday|breakfast|lunch|dinner
+Thursday|breakfast|lunch|dinner
+Friday|breakfast|lunch|dinner
+Saturday|breakfast|lunch|dinner
+Sunday|breakfast|lunch|dinner
+SHOPPING:
+PROTEIN: item1, item2, item3
+CARBS: item1, item2, item3
+VEG: item1, item2, item3
+DAIRY: item1, item2, item3
+PANTRY: item1, item2, item3
+Only include meal columns matching user selection. Keep meals simple. No markdown.`;
+const WORKOUT_SYS=`You are Archie generating a workout plan. Use EXACTLY this format:
+SCHEDULE:
+Monday|Workout A
+Tuesday|Rest
+Wednesday|Workout B
+Thursday|Rest
+Friday|Workout A
+Saturday|Rest
+Sunday|Rest
+WORKOUT_A: [Name e.g. Push Day]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+---
+WORKOUT_B: [Name e.g. Pull Day]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
+---
+4-6 exercises max. Adjust schedule to match frequency. Respect constraints.`;
 const TWEAK_SYS=(tab)=>`You are Archie helping refine the user's ${tab} plan. Be concise and actionable.`;
 
 /* ══ CONSENT ══ */
@@ -1118,80 +1230,235 @@ const AFF_CARDS={
     <a class="aff-card" href="https://www.getyourguide.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'getyourguide'})"><div class="aff-card-ic">🎟️</div><div class="aff-card-tag">ACTIVITIES</div><div class="aff-card-title">GetYourGuide</div><div class="aff-card-desc">Book tours, experiences and activities.</div><div class="aff-card-cta">Explore →</div></a>
   </div>`,
   running:`<div class="aff-grid">
-    <a class="aff-card" href="https://www.nike.com/gb/running" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'nike'})"><div class="aff-card-ic">👟</div><div class="aff-card-tag">FOOTWEAR</div><div class="aff-card-title">Nike Running</div><div class="aff-card-desc">Performance running shoes for every distance.</div><div class="aff-card-cta">Shop now →</div></a>
-    <a class="aff-card" href="https://www.garmin.com/en-GB/c/sports-fitness/running/" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'garmin'})"><div class="aff-card-ic">⌚</div><div class="aff-card-tag">GPS WATCH</div><div class="aff-card-title">Garmin</div><div class="aff-card-desc">Track every run with precision pace and GPS data.</div><div class="aff-card-cta">View watches →</div></a>
-    <a class="aff-card" href="https://www.myprotein.com/c/sports-nutrition/endurance" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'myprotein'})"><div class="aff-card-ic">⚡</div><div class="aff-card-tag">FUEL</div><div class="aff-card-title">MyProtein</div><div class="aff-card-desc">Gels, electrolytes and endurance nutrition.</div><div class="aff-card-cta">Shop fuel →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0k6odS9jPOG" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'garmin'})"><div class="aff-card-ic">⌚</div><div class="aff-card-tag">GPS WATCH</div><div class="aff-card-title">Garmin Running Watch</div><div class="aff-card-desc">Track every run with precision pace and GPS.</div><div class="aff-card-cta">View on Amazon →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0vnsTeO0wPO" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'cloudsurfer'})"><div class="aff-card-ic">👟</div><div class="aff-card-tag">RUNNING SHOES</div><div class="aff-card-title">On Cloudsurfer</div><div class="aff-card-desc">Lightweight performance running shoes.</div><div class="aff-card-cta">View on Amazon →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0cfs4Q3dePS" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'adidas'})"><div class="aff-card-ic">👟</div><div class="aff-card-tag">RUNNING SHOES</div><div class="aff-card-title">Adidas Running</div><div class="aff-card-desc">Iconic comfort and performance on every run.</div><div class="aff-card-cta">View on Amazon →</div></a>
   </div>`,
   nutrition:`<div class="aff-grid">
-    <a class="aff-card" href="https://huel.com/en-gb" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'huel'})"><div class="aff-card-ic">🥤</div><div class="aff-card-tag">COMPLETE NUTRITION</div><div class="aff-card-title">Huel</div><div class="aff-card-desc">Nutritionally complete meals — quick and balanced.</div><div class="aff-card-cta">Get started →</div></a>
-    <a class="aff-card" href="https://www.myfitnesspal.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'myfitnesspal'})"><div class="aff-card-ic">📊</div><div class="aff-card-tag">TRACKING</div><div class="aff-card-title">MyFitnessPal</div><div class="aff-card-desc">Track calories and macros to hit your goals.</div><div class="aff-card-cta">Track free →</div></a>
-    <a class="aff-card" href="https://www.gousto.co.uk" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'gousto'})"><div class="aff-card-ic">📦</div><div class="aff-card-tag">MEAL KITS</div><div class="aff-card-title">Gousto</div><div class="aff-card-desc">Fresh recipe kits delivered to your door.</div><div class="aff-card-cta">Try Gousto →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0kqxHvcO8w2" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'mealprep'})"><div class="aff-card-ic">📦</div><div class="aff-card-tag">MEAL PREP</div><div class="aff-card-title">Meal Prep Containers</div><div class="aff-card-desc">Glass containers for weekly meal prepping.</div><div class="aff-card-cta">View on Amazon →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0oRgQSD3mBR" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'protein'})"><div class="aff-card-ic">💪</div><div class="aff-card-tag">PROTEIN</div><div class="aff-card-title">Whey Protein</div><div class="aff-card-desc">High quality protein to hit your nutrition goals.</div><div class="aff-card-cta">View on Amazon →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0JVGPDOrNSh" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'recipebook'})"><div class="aff-card-ic">📖</div><div class="aff-card-tag">RECIPE BOOK</div><div class="aff-card-title">High Protein Recipes</div><div class="aff-card-desc">Delicious high protein recipes to fuel your goals.</div><div class="aff-card-cta">View on Amazon →</div></a>
   </div>`,
   workout:`<div class="aff-grid">
-    <a class="aff-card" href="https://www.gymshark.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'gymshark'})"><div class="aff-card-ic">🦈</div><div class="aff-card-tag">GYM KIT</div><div class="aff-card-title">Gymshark</div><div class="aff-card-desc">High-performance training kit.</div><div class="aff-card-cta">Shop now →</div></a>
-    <a class="aff-card" href="https://www.myprotein.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'myprotein'})"><div class="aff-card-ic">💊</div><div class="aff-card-tag">SUPPLEMENTS</div><div class="aff-card-title">MyProtein</div><div class="aff-card-desc">Protein, creatine and supplements for training.</div><div class="aff-card-cta">Shop →</div></a>
-    <a class="aff-card" href="https://www.bulk.com/uk" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'bulk'})"><div class="aff-card-ic">💪</div><div class="aff-card-tag">NUTRITION</div><div class="aff-card-title">Bulk</div><div class="aff-card-desc">Premium sports nutrition at honest prices.</div><div class="aff-card-cta">Shop Bulk →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0CtVIXTpFPA" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'dumbbells'})"><div class="aff-card-ic">🏋️</div><div class="aff-card-tag">EQUIPMENT</div><div class="aff-card-title">Adjustable Dumbbells</div><div class="aff-card-desc">Space-saving adjustable dumbbells for home training.</div><div class="aff-card-cta">View on Amazon →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0oRgQSD3mBR" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'protein'})"><div class="aff-card-ic">💊</div><div class="aff-card-tag">SUPPLEMENTS</div><div class="aff-card-title">Whey Protein</div><div class="aff-card-desc">Fuel recovery and muscle growth after every session.</div><div class="aff-card-cta">View on Amazon →</div></a>
+    <a class="aff-card" href="https://www.gymshark.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'gymshark'})"><div class="aff-card-ic">🦈</div><div class="aff-card-tag">GYM KIT</div><div class="aff-card-title">Gymshark</div><div class="aff-card-desc">High-performance training kit designed to move with you.</div><div class="aff-card-cta">Shop now →</div></a>
   </div>`
 };
 
 function renderFeatureOutput(tab,container){
   const data=featureData[tab];
   if(!data){renderFeatureSelector(tab,container);return;}
-  const msgs=tweakMsgs[tab]||[];
-  container.innerHTML=`
-    <div class="output-panel">
-      <div class="output-header">
-        <div class="output-title">${{travel:'🌍 Your Travel Plans',running:'🏃 Your Running Plan',nutrition:'🥗 Your Meal Plan',workout:'💪 Your Workout Plan'}[tab]}</div>
-        <button class="regen-btn" onclick="confirmRegen('${tab}')">🔄 Regenerate</button>
-      </div>
-      ${AFF_CARDS[tab]||''}
-      <div class="output-content">${md(data.output)}</div>
-      <div class="ads-banner" style="margin:24px 0 0;min-height:60px"><span>Advertisement</span></div>
-      <div class="tweak-section">
-        <div class="tweak-title">💬 Ask Archie to Tweak</div>
-        <div class="tweak-sub">Ask questions or request adjustments to your plan.</div>
-        <div class="tweak-msgs" id="tweakMsgs_${tab}"></div>
-        <div class="inp-box">
-          <textarea class="inp-ta" id="tweakTa_${tab}" rows="1" placeholder="Ask Archie…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTweak('${tab}');}" oninput="autoResize(this)"></textarea>
-          <button class="inp-send" id="tweakSend_${tab}" onclick="sendTweak('${tab}')">↑</button>
-        </div>
-        <div class="inp-hint">Enter to send · 10 messages per day</div>
-      </div>
-    </div>`;
-  renderTweakMsgs(tab);
+  if(tab==='travel')renderTravelOutput(container);
+  else if(tab==='running')renderRunningOutput(container);
+  else if(tab==='nutrition')renderNutritionOutput(container);
+  else if(tab==='workout')renderWorkoutOutput(container);
 }
 
 function confirmRegen(tab){
-  if(confirm(`Regenerate your ${tab} plan? Your current plan will be replaced.`)){
-    featureData[tab]=null;tweakMsgs[tab]=[];
+  if(confirm('Regenerate your '+tab+' plan? Your current plan will be replaced.')){
+    featureData[tab]=null;
     renderFeatureSelector(tab,document.getElementById('view-'+tab));
   }
 }
 
-function renderTweakMsgs(tab){
-  const w=document.getElementById('tweakMsgs_'+tab);if(!w)return;
-  w.innerHTML='';
-  (tweakMsgs[tab]||[]).forEach(m=>w.appendChild(buildMsgEl(m)));
-  w.scrollTop=w.scrollHeight;
+/* ── TRAVEL OUTPUT ── */
+function renderTravelOutput(container){
+  const raw=featureData.travel?.output||'';
+  const dests=parseTravel(raw);
+  let html='<div class="feat-scroll">';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Travel Plans</div><div class="feat-subtitle">Two handpicked destinations based on your travel style</div></div><button class="regen-btn" onclick="confirmRegen('travel')">🔄 Regenerate</button></div>';
+  html+=AFF_CARDS.travel;
+  dests.forEach(d=>{
+    html+='<div class="dest-section">';
+    html+='<div class="dest-title">'+d.name+'</div>';
+    if(d.summary)html+='<div class="dest-summary">'+d.summary+'</div>';
+    html+='<div class="dest-bubbles">';
+    html+='<div class="dest-bubble"><div class="dest-bubble-ic">✈️</div><div class="dest-bubble-tag">GETTING THERE</div><div class="dest-bubble-title">Travel</div><div class="dest-bubble-body">'+(d.travel||'')+'</div></div>';
+    html+='<div class="dest-bubble"><div class="dest-bubble-ic">🏨</div><div class="dest-bubble-tag">WHERE TO STAY</div><div class="dest-bubble-title">Accommodation</div><div class="dest-bubble-body">'+(d.accommodation||'')+'</div></div>';
+    html+='<div class="dest-bubble"><div class="dest-bubble-ic">🎟️</div><div class="dest-bubble-tag">WHAT TO DO</div><div class="dest-bubble-title">Activities</div><div class="dest-bubble-body">'+(d.activities||'')+'</div></div>';
+    html+='</div></div>';
+  });
+  html+='<div class="ads-banner" style="margin-top:20px"><span>Advertisement</span></div></div>';
+  container.innerHTML=html;
+}
+function parseTravel(raw){
+  const dests=[];
+  const blocks=raw.split('DESTINATION:').filter(s=>s.trim());
+  blocks.forEach(b=>{
+    const nameM=b.match(/^([^
+]+)/);
+    const summaryM=b.match(/SUMMARY:\s*([\s\S]*?)(?=TRAVEL:|ACCOMMODATION:|ACTIVITIES:|---|$)/);
+    const travelM=b.match(/TRAVEL:\s*([\s\S]*?)(?=ACCOMMODATION:|ACTIVITIES:|---|$)/);
+    const accM=b.match(/ACCOMMODATION:\s*([\s\S]*?)(?=ACTIVITIES:|---|$)/);
+    const actM=b.match(/ACTIVITIES:\s*([\s\S]*?)(?=---|$)/);
+    dests.push({
+      name:(nameM?nameM[1].trim():'Destination').replace(/[#*]/g,''),
+      summary:summaryM?summaryM[1].trim():'',
+      travel:travelM?travelM[1].trim():'',
+      accommodation:accM?accM[1].trim():'',
+      activities:actM?actM[1].trim():''
+    });
+  });
+  if(dests.length===0)dests.push({name:'Destination 1',summary:raw.substring(0,300),travel:'',accommodation:'',activities:''});
+  return dests;
 }
 
-async function sendTweak(tab){
-  if(!canSendMsg()){showToast('Daily message limit reached. Come back tomorrow!');return;}
-  const ta=document.getElementById('tweakTa_'+tab);if(!ta)return;
-  const text=ta.value.trim();if(!text)return;
-  if(!tweakMsgs[tab])tweakMsgs[tab]=[];
-  tweakMsgs[tab].push({role:'user',content:text});
+/* ── RUNNING OUTPUT ── */
+function renderRunningOutput(container){
+  const raw=featureData.running?.output||'';
+  const runs=parseRuns(raw);
+  let html='<div class="feat-scroll">';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Running Plan</div><div class="feat-subtitle">Your personalised training sessions — you decide when to run</div></div><button class="regen-btn" onclick="confirmRegen('running')">🔄 Regenerate</button></div>';
+  html+=AFF_CARDS.running;
+  html+='<div class="run-grid">';
+  runs.forEach(r=>{
+    const icons={'easy':'🟢','tempo':'🟡','interval':'🔴','fartlek':'🟠','long':'🔵'};
+    const ic=Object.entries(icons).find(([k])=>r.type.toLowerCase().includes(k))?.[1]||'🏃';
+    html+='<div class="run-bubble">';
+    html+='<div class="run-bubble-top"><div class="run-bubble-ic">'+ic+'</div><div><div class="run-bubble-type">Training Session</div><div class="run-bubble-name">'+r.type+'</div></div></div>';
+    html+='<div class="run-bubble-stats">';
+    if(r.distance)html+='<div class="run-stat"><div class="run-stat-val">'+r.distance+'</div><div class="run-stat-lbl">Distance</div></div>';
+    if(r.pace)html+='<div class="run-stat"><div class="run-stat-val">'+r.pace+'</div><div class="run-stat-lbl">Pace</div></div>';
+    if(r.duration)html+='<div class="run-stat"><div class="run-stat-val">'+r.duration+'</div><div class="run-stat-lbl">Duration</div></div>';
+    html+='</div>';
+    if(r.notes)html+='<div class="run-bubble-notes">'+r.notes+'</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='<div class="ads-banner" style="margin-top:20px"><span>Advertisement</span></div></div>';
+  container.innerHTML=html;
+}
+function parseRuns(raw){
+  const runs=[];
+  const blocks=raw.split('RUN:').filter(s=>s.trim());
+  blocks.forEach(b=>{
+    const tM=b.match(/^([^
+]+)/);
+    const dM=b.match(/DISTANCE:\s*([^
+]+)/);
+    const pM=b.match(/PACE:\s*([^
+]+)/);
+    const durM=b.match(/DURATION:\s*([^
+]+)/);
+    const nM=b.match(/NOTES:\s*([\s\S]*?)(?=---|$)/);
+    runs.push({type:tM?tM[1].trim():'Run',distance:dM?dM[1].trim():'',pace:pM?pM[1].trim():'',duration:durM?durM[1].trim():'',notes:nM?nM[1].trim():''});
+  });
+  return runs.length>0?runs:[{type:'Run',distance:'',pace:'',duration:'',notes:raw.substring(0,200)}];
+}
+
+/* ── NUTRITION OUTPUT ── */
+let nutTweakLoading=false;
+function renderNutritionOutput(container){
+  const raw=featureData.nutrition?.output||'';
+  const {meals,shopping}=parseNutrition(raw);
+  const sels=featureData.nutrition?.selections||{};
+  const mealType=sels.meals?.[0]||'Full day';
+  let html='<div class="feat-scroll">';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Meal Plan</div><div class="feat-subtitle">7-day plan tailored to your goals</div></div><button class="regen-btn" onclick="confirmRegen('nutrition')">🔄 Regenerate</button></div>';
+  html+=AFF_CARDS.nutrition;
+  html+='<div class="nutrition-layout">';
+  // Meals table
+  html+='<div><div class="section-title">Weekly Meals</div><table class="meal-table"><thead><tr><th>Day</th>';
+  if(mealType.includes('Breakfast')||mealType==='Full day')html+='<th>Breakfast</th>';
+  if(mealType.includes('Lunch')||mealType==='Full day')html+='<th>Lunch</th>';
+  if(mealType.includes('Dinner')||mealType==='Full day')html+='<th>Dinner</th>';
+  html+='</tr></thead><tbody>';
+  ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].forEach(day=>{
+    const r=meals[day]||{};
+    html+='<tr><td class="day-cell">'+day.substring(0,3)+'</td>';
+    if(mealType.includes('Breakfast')||mealType==='Full day')html+='<td>'+(r.breakfast||'—')+'</td>';
+    if(mealType.includes('Lunch')||mealType==='Full day')html+='<td>'+(r.lunch||'—')+'</td>';
+    if(mealType.includes('Dinner')||mealType==='Full day')html+='<td>'+(r.dinner||'—')+'</td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  // Shopping list
+  html+='<div><div class="section-title">Shopping List</div>';
+  Object.entries(shopping).forEach(([cat,items])=>{
+    if(!items.length)return;
+    html+='<div class="shop-category"><div class="shop-cat-title">'+cat+'</div><div class="shop-items">';
+    items.forEach(i=>{html+='<div class="shop-item">'+i+'</div>';});
+    html+='</div></div>';
+  });
+  html+='</div></div>';
+  // Tweak
+  html+='<div class="nut-tweak-section"><div class="nut-tweak-title">🔄 Tweak Your Plan</div><div class="nut-tweak-sub">Tell Archie what to change and your whole plan regenerates instantly.</div>';
+  html+='<div class="inp-box"><textarea class="inp-ta" id="nutTweakTa" rows="1" placeholder="e.g. make it vegetarian, more protein, remove eggs…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendNutTweak();}" oninput="autoResize(this)"></textarea><button class="inp-send" id="nutTweakSend" onclick="sendNutTweak()">↑</button></div>';
+  html+='<div class="inp-hint" id="nutTweakStatus">Enter to regenerate your full plan</div></div>';
+  html+='<div class="ads-banner" style="margin-top:20px"><span>Advertisement</span></div></div>';
+  container.innerHTML=html;
+}
+function parseNutrition(raw){
+  const meals={Monday:{},Tuesday:{},Wednesday:{},Thursday:{},Friday:{},Saturday:{},Sunday:{}};
+  const shopping={PROTEIN:[],CARBS:[],VEG:[],DAIRY:[],PANTRY:[]};
+  const mealM=raw.match(/MEALS:\s*([\s\S]*?)(?=SHOPPING:|$)/);
+  if(mealM){mealM[1].trim().split('\n').forEach(line=>{const p=line.split('|');if(p.length>=2&&meals[p[0].trim()])meals[p[0].trim()]={breakfast:p[1]?.trim(),lunch:p[2]?.trim(),dinner:p[3]?.trim()};});}
+  const shopM=raw.match(/SHOPPING:\s*([\s\S]*?)$/);
+  if(shopM){shopM[1].trim().split('\n').forEach(line=>{const m=line.match(/^(PROTEIN|CARBS|VEG|DAIRY|PANTRY):\s*(.+)/i);if(m)shopping[m[1].toUpperCase()]=m[2].split(',').map(i=>i.trim()).filter(Boolean);});}
+  return{meals,shopping};
+}
+async function sendNutTweak(){
+  const ta=document.getElementById('nutTweakTa');if(!ta)return;
+  const text=ta.value.trim();if(!text||nutTweakLoading)return;
+  nutTweakLoading=true;
+  const btn=document.getElementById('nutTweakSend');if(btn)btn.disabled=true;
+  const status=document.getElementById('nutTweakStatus');if(status)status.textContent='Regenerating your plan…';
   ta.value='';ta.style.height='auto';
-  const send=document.getElementById('tweakSend_'+tab);if(send)send.disabled=true;
-  renderTweakMsgs(tab);
-  const msgs=[{role:'assistant',content:featureData[tab]?.output||''},...tweakMsgs[tab].slice(-8)];
+  const sels=featureData.nutrition?.selections||{};
+  const prompt='Original: meals='+sels.meals?.[0]+', goal='+sels.goal?.[0]+', preference='+sels.constraint?.[0]+'. Tweak: '+text+'. Regenerate the full meal plan with this change applied.';
   try{
-    const reply=await callAPI(msgs,TWEAK_SYS(tab));
-    incMsgCount();
-    tweakMsgs[tab].push({role:'assistant',content:reply});
-  }catch(e){tweakMsgs[tab].push({role:'assistant',content:`**Error** — ${e.message}`});showToast(e.message);}
-  if(send)send.disabled=false;
-  renderTweakMsgs(tab);
+    const NUT_TWEAK=`Regenerate a meal plan with a tweak applied. Use EXACTLY the same format: MEALS: then SHOPPING: Output the full new plan.`;
+    const reply=await callAPI([{role:'user',content:prompt}],NUT_TWEAK);
+    featureData.nutrition={...featureData.nutrition,output:reply};
+    await saveFeaturesToSupabase();
+    renderNutritionOutput(document.getElementById('view-nutrition'));
+    showToast('Meal plan updated! ✓','ok');
+  }catch(e){if(status)status.textContent='Error — try again';showToast(e.message);}
+  nutTweakLoading=false;if(btn)btn.disabled=false;
+}
+
+/* ── WORKOUT OUTPUT ── */
+function renderWorkoutOutput(container){
+  const raw=featureData.workout?.output||'';
+  const {schedule,workouts}=parseWorkout(raw);
+  let html='<div class="feat-scroll">';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Workout Plan</div><div class="feat-subtitle">Repeatable weekly structure — train consistently and progress over time</div></div><button class="regen-btn" onclick="confirmRegen('workout')">🔄 Regenerate</button></div>';
+  html+=AFF_CARDS.workout;
+  // Schedule table
+  if(schedule.length>0){
+    html+='<div class="workout-sched-wrap"><div class="section-title" style="margin-bottom:10px">Weekly Schedule</div><table><thead><tr><th>Day</th><th>Session</th></tr></thead><tbody>';
+    schedule.forEach(r=>{html+='<tr><td class="day-col">'+r.day+'</td><td>'+r.session+'</td></tr>';});
+    html+='</tbody></table></div>';
+  }
+  // Workout bubbles
+  html+='<div class="section-title" style="margin:20px 0 12px">Workouts</div><div class="workout-grid">';
+  workouts.forEach(w=>{
+    html+='<div class="workout-bubble"><div class="workout-bubble-title">'+w.name+'</div><div class="workout-bubble-sub">'+w.exercises.length+' exercises</div>';
+    w.exercises.forEach((ex,i)=>{
+      html+='<div class="exercise-row"><div class="exercise-num">'+(i+1)+'</div><div><div class="exercise-name">'+ex.name+'</div><div class="exercise-sets">'+ex.sets+(ex.tip?' · '+ex.tip:'')+'</div></div></div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='<div class="ads-banner" style="margin-top:20px"><span>Advertisement</span></div></div>';
+  container.innerHTML=html;
+}
+function parseWorkout(raw){
+  const schedule=[];const workouts=[];
+  const schedM=raw.match(/SCHEDULE:\s*([\s\S]*?)(?=WORKOUT_[A-Z]+:|$)/);
+  if(schedM){schedM[1].trim().split('\n').forEach(line=>{const p=line.split('|');if(p.length>=2)schedule.push({day:p[0].trim(),session:p[1].trim()});});}
+  const wNames=[];const wBlocks=[];
+  let remaining=raw;
+  const wRegex=/WORKOUT_[A-Z]+:\s*([^\n]+)([\s\S]*?)(?=WORKOUT_[A-Z]+:|$)/g;
+  let m;
+  while((m=wRegex.exec(raw))!==null){
+    wNames.push(m[1].trim());
+    const exs=[];
+    m[2].split('\n').forEach(line=>{const ep=line.match(/EXERCISE:\s*([^|]+)\|([^|]+)\|?(.*)/);if(ep)exs.push({name:ep[1].trim(),sets:ep[2].trim(),tip:ep[3]?.trim()||''});});
+    if(exs.length>0)workouts.push({name:wNames[wNames.length-1],exercises:exs});
+  }
+  return{schedule,workouts};
 }
 
 /* ══ PLAN MODAL ══ */
