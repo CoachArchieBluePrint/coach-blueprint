@@ -1267,7 +1267,7 @@ function renderTravelOutput(container){
   const raw=featureData.travel?.output||'';
   const dests=parseTravel(raw);
   let html='<div class="feat-scroll">';
-  html+='<div class="feat-header"><div><div class="feat-title">Your Travel Plans</div><div class="feat-subtitle">Two handpicked destinations based on your travel style</div></div><button class="regen-btn" onclick="confirmRegen('travel')">🔄 Regenerate</button></div>';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Travel Plans</div><div class="feat-subtitle">Two handpicked destinations based on your travel style</div></div><button class="regen-btn" onclick="confirmRegen(\'travel\')">🔄 Regenerate</button></div>';
   html+=AFF_CARDS.travel;
   dests.forEach(d=>{
     html+='<div class="dest-section">';
@@ -1286,8 +1286,7 @@ function parseTravel(raw){
   const dests=[];
   const blocks=raw.split('DESTINATION:').filter(s=>s.trim());
   blocks.forEach(b=>{
-    const nameM=b.match(/^([^
-]+)/);
+    const nameM=b.match(/^([^\n]+)/);
     const summaryM=b.match(/SUMMARY:\s*([\s\S]*?)(?=TRAVEL:|ACCOMMODATION:|ACTIVITIES:|---|$)/);
     const travelM=b.match(/TRAVEL:\s*([\s\S]*?)(?=ACCOMMODATION:|ACTIVITIES:|---|$)/);
     const accM=b.match(/ACCOMMODATION:\s*([\s\S]*?)(?=ACTIVITIES:|---|$)/);
@@ -1309,7 +1308,7 @@ function renderRunningOutput(container){
   const raw=featureData.running?.output||'';
   const runs=parseRuns(raw);
   let html='<div class="feat-scroll">';
-  html+='<div class="feat-header"><div><div class="feat-title">Your Running Plan</div><div class="feat-subtitle">Your personalised training sessions — you decide when to run</div></div><button class="regen-btn" onclick="confirmRegen('running')">🔄 Regenerate</button></div>';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Running Plan</div><div class="feat-subtitle">Your personalised training sessions — you decide when to run</div></div><button class="regen-btn" onclick="confirmRegen(\'running\')">🔄 Regenerate</button></div>';
   html+=AFF_CARDS.running;
   html+='<div class="run-grid">';
   runs.forEach(r=>{
@@ -1333,15 +1332,11 @@ function parseRuns(raw){
   const runs=[];
   const blocks=raw.split('RUN:').filter(s=>s.trim());
   blocks.forEach(b=>{
-    const tM=b.match(/^([^
-]+)/);
-    const dM=b.match(/DISTANCE:\s*([^
-]+)/);
-    const pM=b.match(/PACE:\s*([^
-]+)/);
-    const durM=b.match(/DURATION:\s*([^
-]+)/);
-    const nM=b.match(/NOTES:\s*([\s\S]*?)(?=---|$)/);
+    const tM=b.match(/^([^\n]+)/);
+    const dM=b.match(/DISTANCE:[^\S\n]*([^\n]+)/);
+    const pM=b.match(/PACE:[^\S\n]*([^\n]+)/);
+    const durM=b.match(/DURATION:[^\S\n]*([^\n]+)/);
+    const nM=b.match(/NOTES:[\s\S]*?([^\n].+?)(?=---|$)/s);
     runs.push({type:tM?tM[1].trim():'Run',distance:dM?dM[1].trim():'',pace:pM?pM[1].trim():'',duration:durM?durM[1].trim():'',notes:nM?nM[1].trim():''});
   });
   return runs.length>0?runs:[{type:'Run',distance:'',pace:'',duration:'',notes:raw.substring(0,200)}];
@@ -1355,7 +1350,7 @@ function renderNutritionOutput(container){
   const sels=featureData.nutrition?.selections||{};
   const mealType=sels.meals?.[0]||'Full day';
   let html='<div class="feat-scroll">';
-  html+='<div class="feat-header"><div><div class="feat-title">Your Meal Plan</div><div class="feat-subtitle">7-day plan tailored to your goals</div></div><button class="regen-btn" onclick="confirmRegen('nutrition')">🔄 Regenerate</button></div>';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Meal Plan</div><div class="feat-subtitle">7-day plan tailored to your goals</div></div><button class="regen-btn" onclick="confirmRegen(\'nutrition\')">🔄 Regenerate</button></div>';
   html+=AFF_CARDS.nutrition;
   html+='<div class="nutrition-layout">';
   // Meals table
@@ -1384,7 +1379,7 @@ function renderNutritionOutput(container){
   html+='</div></div>';
   // Tweak
   html+='<div class="nut-tweak-section"><div class="nut-tweak-title">🔄 Tweak Your Plan</div><div class="nut-tweak-sub">Tell Archie what to change and your whole plan regenerates instantly.</div>';
-  html+='<div class="inp-box"><textarea class="inp-ta" id="nutTweakTa" rows="1" placeholder="e.g. make it vegetarian, more protein, remove eggs…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendNutTweak();}" oninput="autoResize(this)"></textarea><button class="inp-send" id="nutTweakSend" onclick="sendNutTweak()">↑</button></div>';
+  html+='<div class="inp-box"><textarea class="inp-ta" id="nutTweakTa" rows="1" placeholder="e.g. make it vegetarian, more protein, remove eggs…" onkeydown=\"if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendNutTweak();}\"></textarea><button class=\"inp-send\" id=\"nutTweakSend\" onclick=\"sendNutTweak()\">↑</button></div>';
   html+='<div class="inp-hint" id="nutTweakStatus">Enter to regenerate your full plan</div></div>';
   html+='<div class="ads-banner" style="margin-top:20px"><span>Advertisement</span></div></div>';
   container.innerHTML=html;
@@ -1423,7 +1418,7 @@ function renderWorkoutOutput(container){
   const raw=featureData.workout?.output||'';
   const {schedule,workouts}=parseWorkout(raw);
   let html='<div class="feat-scroll">';
-  html+='<div class="feat-header"><div><div class="feat-title">Your Workout Plan</div><div class="feat-subtitle">Repeatable weekly structure — train consistently and progress over time</div></div><button class="regen-btn" onclick="confirmRegen('workout')">🔄 Regenerate</button></div>';
+  html+='<div class="feat-header"><div><div class="feat-title">Your Workout Plan</div><div class="feat-subtitle">Repeatable weekly structure — train consistently and progress over time</div></div><button class="regen-btn" onclick="confirmRegen(\'workout\')">🔄 Regenerate</button></div>';
   html+=AFF_CARDS.workout;
   // Schedule table
   if(schedule.length>0){
