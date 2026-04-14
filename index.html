@@ -241,7 +241,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .cal-title{font-family:var(--font-h);font-size:17px;font-weight:700;letter-spacing:.04em;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;}
-.cal-day{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:9px 7px;min-height:110px;display:flex;flex-direction:column;gap:4px;}
+.cal-day{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:9px 7px;min-height:110px;display:flex;flex-direction:column;gap:4px;position:relative;}
 .cal-day.today{border-color:rgba(26,106,255,0.45);background:rgba(26,106,255,0.05);}
 .cal-day-name{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;}
 .cal-day-num{font-family:var(--font-h);font-size:17px;font-weight:700;line-height:1;margin-bottom:3px;}
@@ -677,7 +677,22 @@ Rules:
 - CRITICAL: Each event must be a SEPARATE object. Never combine two events into one title. "Work from home and gym" = TWO events: {"day":"Monday","title":"Work from home","allDay":true,"emoji":"🏠"} and {"day":"Monday","title":"Gym","allDay":true,"emoji":"💪"}
 - Every event MUST include an emoji field. Pick the most relevant (gym=💪, meeting=📅, run=🏃, dinner=🍽️, cinema=🎬, yoga=🧘, work=💼, wfh=🏠, football=⚽, coffee=☕, shopping=🛒, doctor=🏥, default=📅)
 - Event titles must be properly capitalised
-- Max 4 goals. Exactly 3 recommendations relevant to their goals
+- Max 4 goals.
+- For recommendations pick exactly 3 from this list ONLY, choosing the most relevant to the user's goals and week:
+  {"icon":"⌚","tag":"RUNNING","title":"Garmin Running Watch","desc":"Track every run with precision pace and GPS.","url":"https://amzlink.to/az0k6odS9jPOG","cta":"View on Amazon"}
+  {"icon":"👟","tag":"RUNNING","title":"Adidas Running Shoes","desc":"Iconic comfort and performance on every run.","url":"https://amzlink.to/az0cfs4Q3dePS","cta":"View on Amazon"}
+  {"icon":"⚡","tag":"RUNNING","title":"Energy Gels","desc":"Fuel your long runs and race day performance.","url":"https://amzlink.to/az0KWFQnTCmWN","cta":"View on Amazon"}
+  {"icon":"🏋️","tag":"FITNESS","title":"Adjustable Dumbbells","desc":"Space-saving dumbbells for home training.","url":"https://amzlink.to/az0CtVIXTpFPA","cta":"View on Amazon"}
+  {"icon":"💊","tag":"FITNESS","title":"Whey Protein","desc":"High quality protein to hit your goals.","url":"https://amzlink.to/az0oRgQSD3mBR","cta":"View on Amazon"}
+  {"icon":"🍬","tag":"FITNESS","title":"Creatine Gummies","desc":"Boost strength and performance deliciously.","url":"https://amzlink.to/az0zseCfSfl2U","cta":"View on Amazon"}
+  {"icon":"📦","tag":"NUTRITION","title":"Meal Prep Containers","desc":"Glass containers for weekly meal prepping.","url":"https://amzlink.to/az0kqxHvcO8w2","cta":"View on Amazon"}
+  {"icon":"📖","tag":"NUTRITION","title":"High Protein Recipes","desc":"Delicious high protein recipes to fuel your goals.","url":"https://amzlink.to/az0JVGPDOrNSh","cta":"View on Amazon"}
+  {"icon":"📖","tag":"NUTRITION","title":"Speedy Healthy Cookbook","desc":"Quick and healthy recipes for busy people.","url":"https://amzlink.to/az0NWOvaL5BX7","cta":"View on Amazon"}
+  {"icon":"📚","tag":"MINDSET","title":"Atomic Habits","desc":"Tiny changes that deliver remarkable results.","url":"https://amzlink.to/az0nYsH9KfDYF","cta":"View on Amazon"}
+  {"icon":"⏰","tag":"MINDSET","title":"The 5AM Club","desc":"Own your morning, elevate your life.","url":"https://amzlink.to/az0jbhCU62BlS","cta":"View on Amazon"}
+  {"icon":"✈️","tag":"TRAVEL","title":"Skyscanner","desc":"Compare flights and find the best price.","url":"https://www.skyscanner.net","cta":"Search flights"}
+  {"icon":"🏨","tag":"TRAVEL","title":"Hostelworld","desc":"Book hostels and budget stays worldwide.","url":"https://www.hostelworld.com","cta":"Find a stay"}
+  {"icon":"🎟️","tag":"TRAVEL","title":"GetYourGuide","desc":"Book tours, experiences and activities.","url":"https://www.getyourguide.com","cta":"Explore"}
 - Be warm and casual, one question at a time`;
 
 const EDIT_SYS=`You are Archie helping update the user's week. Ask what to change. Output updated JSON with BLUEPRINT_READY when done. Today is ${TODAY}. Each event must be a SEPARATE object — never combine activities. Titles properly capitalised.`;
@@ -753,15 +768,7 @@ D2: [Meal name] | [One sentence description]
 D3: [Meal name] | [One sentence description]
 
 Keep meals realistic, specific and varied. No shopping list. No weekly schedule. No markdown.`;
-const WORKOUT_SYS=`You are Archie generating a workout plan. Use EXACTLY this format:
-SCHEDULE:
-Monday|Workout A
-Tuesday|Rest
-Wednesday|Workout B
-Thursday|Rest
-Friday|Workout A
-Saturday|Rest
-Sunday|Rest
+const WORKOUT_SYS=`You are Archie generating a workout plan. Output only the workout sessions as separate blocks. Use EXACTLY this format:
 WORKOUT_A: [Name e.g. Push Day]
 EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
 EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
@@ -774,7 +781,7 @@ EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
 EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
 EXERCISE: [Name]|[Sets x Reps]|[Brief tip]
 ---
-4-6 exercises max. Adjust schedule to match frequency. Respect constraints.`;
+4-6 exercises per workout max. Create as many workout blocks as needed for the frequency. Respect constraints. No schedule table. No days assigned.`;
 const TWEAK_SYS=(tab)=>`You are Archie helping refine the user's ${tab} plan. Be concise and actionable.`;
 
 /* ══ CONSENT ══ */
@@ -1104,8 +1111,13 @@ function renderCalendar(){
       html+=`</div>`;
     }
     if(!allDay.length&&!timed.length)html+=`<div class="cal-empty">Free</div>`;
-    html+='<button class="cal-add-btn" onclick="openAddEvent(\"'+day+'\")" title="Add event">+</button>';
     col.innerHTML=html;
+    // Add + button via DOM to avoid quote escaping issues
+    const addBtn=document.createElement('button');
+    addBtn.className='cal-add-btn';addBtn.title='Add event';addBtn.textContent='+';
+    addBtn.setAttribute('data-day',day);
+    addBtn.addEventListener('click',function(e){e.stopPropagation();openAddEvent(this.getAttribute('data-day'));});
+    col.appendChild(addBtn);
     grid.appendChild(col);
   });
 }
@@ -1264,7 +1276,7 @@ const AFF_CARDS={
   workout:`<div class="aff-grid">
     <a class="aff-card" href="https://amzlink.to/az0CtVIXTpFPA" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'dumbbells'})"><div class="aff-card-ic">🏋️</div><div class="aff-card-tag">EQUIPMENT</div><div class="aff-card-title">Adjustable Dumbbells</div><div class="aff-card-desc">Space-saving adjustable dumbbells for home training.</div><div class="aff-card-cta">View on Amazon →</div></a>
     <a class="aff-card" href="https://amzlink.to/az0oRgQSD3mBR" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'protein'})"><div class="aff-card-ic">💊</div><div class="aff-card-tag">SUPPLEMENTS</div><div class="aff-card-title">Whey Protein</div><div class="aff-card-desc">Fuel recovery and muscle growth after every session.</div><div class="aff-card-cta">View on Amazon →</div></a>
-    <a class="aff-card" href="https://www.gymshark.com" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'gymshark'})"><div class="aff-card-ic">🦈</div><div class="aff-card-tag">GYM KIT</div><div class="aff-card-title">Gymshark</div><div class="aff-card-desc">High-performance training kit designed to move with you.</div><div class="aff-card-cta">Shop now →</div></a>
+    <a class="aff-card" href="https://amzlink.to/az0zseCfSfl2U" target="_blank" rel="noopener" onclick="trackEvent('aff_click',{partner:'creatine'})"><div class="aff-card-ic">🦈</div><div class="aff-card-tag">GYM KIT</div><div class="aff-card-title">Creatine Gummies</div><div class="aff-card-desc">Tasty creatine gummies to boost strength and performance.</div><div class="aff-card-cta">Shop now →</div></a>
   </div>`
 };
 
@@ -1355,29 +1367,26 @@ function parseTravel(raw){
     const airportM=b.match(/AIRPORT:\s*([^\n]+)/);
     const transferM=b.match(/TRANSFER:\s*([^\n]+)/);
     const tipM=b.match(/TIP:\s*([^\n]+)/);
-    // Parse stay places
+    // Parse stay — only from STAY: section
     const stay=[];
-    const stayMatches=b.matchAll(/PLACE(\d+):\s*([^|]+)\|([^|\n]+)\|([^\n]+)/g);
-    for(const m of stayMatches){
-      // Only grab PLACE entries before ACTIVITIES section
-      const idx=b.indexOf('ACTIVITIES:');
-      if(idx<0||b.indexOf('PLACE'+m[1]+':') < idx){
-        stay.push({name:m[2].trim(),price:m[3].trim(),desc:m[4].trim()});
-      }
+    const staySection=b.match(/STAY:\s*([\s\S]*?)(?=ACTIVITIES:|FOOD:|---|$)/);
+    if(staySection){
+      const sm=staySection[1].matchAll(/PLACE\d+:\s*([^|]+)\|([^|\n]+)\|([^\n]+)/g);
+      for(const m of sm) stay.push({name:m[1].trim(),price:m[2].trim(),desc:m[3].trim()});
     }
     // Parse activities
     const activities=[];
     const actSection=b.match(/ACTIVITIES:\s*([\s\S]*?)(?=FOOD:|---|$)/);
     if(actSection){
-      const actMatches=actSection[1].matchAll(/ACT\d+:\s*([^|]+)\|([^\n]+)/g);
-      for(const m of actMatches) activities.push({name:m[1].trim(),desc:m[2].trim()});
+      const am=actSection[1].matchAll(/ACT\d+:\s*([^|]+)\|([^\n]+)/g);
+      for(const m of am) activities.push({name:m[1].trim(),desc:m[2].trim()});
     }
-    // Parse food
+    // Parse food — only from FOOD: section
     const food=[];
-    const foodSection=b.match(/FOOD:\s*([\s\S]*?)(?=---|$)/);
+    const foodSection=b.match(/FOOD:\s*([\s\S]*?)(?=---|DESTINATION:|$)/);
     if(foodSection){
-      const foodMatches=foodSection[1].matchAll(/PLACE\d+:\s*([^|]+)\|([^\n]+)/g);
-      for(const m of foodMatches) food.push({name:m[1].trim(),desc:m[2].trim()});
+      const fm=foodSection[1].matchAll(/PLACE\d+:\s*([^|]+)\|([^\n]+)/g);
+      for(const m of fm) food.push({name:m[1].trim(),desc:m[2].trim()});
     }
     dests.push({
       name:(nameM?nameM[1].trim():'Destination').replace(/[#*]/g,''),
@@ -1492,14 +1501,8 @@ function renderWorkoutOutput(container){
   let html='<div class="feat-scroll">';
   html+='<div class="feat-header"><div><div class="feat-title">Your Workout Plan</div><div class="feat-subtitle">Repeatable weekly structure — train consistently and progress over time</div></div><button class="regen-btn" onclick="confirmRegen(\'workout\')">🔄 Regenerate</button></div>';
   html+=AFF_CARDS.workout;
-  // Schedule table
-  if(schedule.length>0){
-    html+='<div class="workout-sched-wrap"><div class="section-title" style="margin-bottom:10px">Weekly Schedule</div><table><thead><tr><th>Day</th><th>Session</th></tr></thead><tbody>';
-    schedule.forEach(r=>{html+='<tr><td class="day-col">'+r.day+'</td><td>'+r.session+'</td></tr>';});
-    html+='</tbody></table></div>';
-  }
   // Workout bubbles
-  html+='<div class="section-title" style="margin:20px 0 12px">Workouts</div><div class="workout-grid">';
+  html+='<div class="workout-grid">';
   workouts.forEach(w=>{
     html+='<div class="workout-bubble"><div class="workout-bubble-title">'+w.name+'</div><div class="workout-bubble-sub">'+w.exercises.length+' exercises</div>';
     w.exercises.forEach((ex,i)=>{
@@ -1763,14 +1766,29 @@ async function sendNextWeekChat(){
   nextWeekLoading=true;document.getElementById('nextWeekSend').disabled=true;
   renderNextWeekMsgs();
   try{
-    const NEXT_SYS=`You are Archie helping plan next week. Same rules as onboarding. weekCommencing must be the Monday of NEXT week from today ${new Date().toISOString().split('T')[0]}. Each event separate with emoji. Output JSON+BLUEPRINT_READY.`;
+    const nextMonday=window._nwd?.weekCommencing||'next week';
+    const NEXT_SYS=`You are Archie the Architect helping the user plan their next week. Have a warm natural conversation. Collect: 1) Their week commitments Mon-Sun. 2) Up to 4 goals for next week. Once you have BOTH confirmed, output ONLY this JSON then BLUEPRINT_READY:
+\`\`\`json
+{"weekCommencing":"${nextMonday}","events":[{"day":"Monday","title":"Team standup","time":"09:00","allDay":false,"emoji":"📅"}],"goals":[{"name":"Run","emoji":"🏃","target":3,"done":0}],"recommendations":[{"icon":"⌚","tag":"RUNNING","title":"Garmin Running Watch","desc":"Track every run with precision pace and GPS.","url":"https://amzlink.to/az0k6odS9jPOG","cta":"View on Amazon"}]}
+\`\`\`
+BLUEPRINT_READY
+Rules:
+- weekCommencing = ${nextMonday} (already calculated — use this exact date)
+- CRITICAL: Each activity = ONE separate event object. Each event MUST have an emoji field.
+- Event titles properly capitalised. Max 4 goals.
+- Pick 3 recommendations from our product list relevant to their goals.
+- Be warm and casual, one question at a time.`;
     const reply=await callAPI(nextWeekMsgs.slice(-20),NEXT_SYS);
     const ready=reply.includes('BLUEPRINT_READY');
     const jm=reply.match(/\`\`\`json([\s\S]*?)\`\`\`/);
     let cr=reply;
     if(jm){
-      try{const p=JSON.parse(jm[1].trim());if(p.weekCommencing)p.weekCommencing=snapToMonday(p.weekCommencing);window._nwd={...window._nwd,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};}catch(e){}
-      cr=reply.replace(/\`\`\`json[\s\S]*?\`\`\`/,'').replace('BLUEPRINT_READY','').trim();
+      try{
+        const p=JSON.parse(jm[1].trim());
+        if(p.weekCommencing)p.weekCommencing=snapToMonday(p.weekCommencing);
+        window._nwd={...window._nwd,...p,streak:weekData.streak,streakStatus:weekData.streakStatus};
+      }catch(e){console.error('Next week JSON parse error',e);}
+      cr=reply.replace(/```json[\s\S]*?```/,'').replace('BLUEPRINT_READY','').trim();
     }
     nextWeekMsgs.push({role:'assistant',content:cr});
     nextWeekLoading=false;document.getElementById('nextWeekSend').disabled=false;
