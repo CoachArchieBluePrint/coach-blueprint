@@ -914,16 +914,7 @@ function navigateWeek(dir){
   updateWeekNavBtns();
 }
 
-function updateWeekNavBtns(){
-  const prev=document.getElementById('weekPrev');
-  const next=document.getElementById('weekNext');
-  if(prev)prev.disabled=(currentWeekIdx>=allWeeks.length-1);
-  if(next){
-    // Always enable next — at end it triggers next week build
-    next.disabled=false;
-    next.title=currentWeekIdx===0?'Build next week':'Next week';
-  }
-}
+function updateWeekNavBtns(){}
 
 /* ══ SUPABASE ══ */
 async function saveWeekToSupabase(){
@@ -1113,7 +1104,7 @@ function renderCalendar(){
       html+=`</div>`;
     }
     if(!allDay.length&&!timed.length)html+=`<div class="cal-empty">Free</div>`;
-    html+='<button class="cal-add-btn" onclick="openAddEvent(&#39;'+day+'&#39;)" title="Add event">+</button>';
+    html+='<button class="cal-add-btn" onclick="openAddEvent(\"'+day+'\")" title="Add event">+</button>';
     col.innerHTML=html;
     grid.appendChild(col);
   });
@@ -1139,12 +1130,11 @@ function switchTab(tabId,el){
   const titles={dashboard:'Dashboard',travel:'🌍 Travel',running:'🏃 Running',nutrition:'🥗 Nutrition',workout:'💪 Workout'};
   const name=userProfile?.name||currentUser?.email?.split('@')[0]||'there';
   document.getElementById('tbTitle').textContent=tabId==='dashboard'?`Welcome back, ${name} 👋`:titles[tabId];
-  document.getElementById('tbSub').textContent=tabId==='dashboard'?'Ready':'Your personalised plan';
-  // Hide week nav on feature tabs
-  document.querySelector('.week-nav').style.display=tabId==='dashboard'?'flex':'none';
+  // tbSub removed
+
   if(tabId==='dashboard'){
     document.getElementById('view-dashboard').style.display='block';
-    renderDashboard();updateWeekNavBtns();
+    renderDashboard();
   } else {
     document.getElementById('view-'+tabId).classList.add('active');
     renderFeatureView(tabId);
